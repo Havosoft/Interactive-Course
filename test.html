@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Safe Social Networking — Interactive</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js CDN -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Tippy (optional) -->
+  <link href="https://unpkg.com/tippy.js@6/dist/tippy.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.min.js"></script>
+
+  <style>
+    :root{
+      --page-bg: #0A0125;
+      --card-bg: rgba(255,255,255,0.03);
+      --card-border: rgba(255,255,255,0.06);
+      --muted: #cbd5e1;
+      --accent: #8B5CF6;
+    }
+    html,body{height:100%; overflow-x:hidden;}
+    body{
+      background: var(--page-bg);
+      color: #E6EEF8;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .card{
+      background: var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius:12px;
+    }
+    /* Hide scrollbars if any inside iframe context */
+    ::-webkit-scrollbar { width:0; height:0; background: transparent; }
+    /* small helper */
+    .btn { @apply px-4 py-2 rounded font-medium; }
+  </style>
+</head>
+<body class="antialiased">
+
+  <div class="max-w-5xl mx-auto p-5" x-data="socialModule()" x-init="init()">
+    <!-- Header -->
+    <header class="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-white">Safe Social Networking</h1>
+        <p class="text-sm text-gray-300 mt-1">Recognize scams and protect privacy while using social platforms</p>
+
+        <div class="mt-3 text-xs text-gray-400">
+          <strong>Learning objectives:</strong>
+          <ul class="ml-4 list-disc">
+            <li>Identify common social network scams & red flags</li>
+            <li>Apply privacy settings & safe sharing habits</li>
+            <li>Respond correctly to suspicious messages and requests</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <div class="text-sm text-gray-300">Progress</div>
+        <div class="mt-1 flex gap-1 w-36">
+          <template x-for="(s,i) in sections" :key="i">
+            <div :title="s" class="flex-1 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
+          </template>
+        </div>
+        <div class="mt-2 text-xs text-gray-400">Saved locally</div>
+      </div>
+    </header>
+
+    <!-- Nav -->
+    <nav class="mb-6 flex gap-2 flex-wrap">
+      <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="btn text-white">Intro</button>
+      <button @click="go('scenarios')" :class="active==='scenarios' ? 'bg-purple-600' : 'bg-gray-700'" class="btn text-white">Scenarios</button>
+      <button @click="go('hotspot')" :class="active==='hotspot' ? 'bg-purple-600' : 'bg-gray-700'" class="btn text-white">Hotspot Lab</button>
+      <button @click="go('privacy')" :class="active==='privacy' ? 'bg-purple-600' : 'bg-gray-700'" class="btn text-white">Privacy Check</button>
+      <button @click="go('takeaway')" :class="active==='takeaway' ? 'bg-purple-600' : 'bg-gray-700'" class="btn text-white">Takeaway</button>
+    </nav>
+
+    <!-- Intro -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-xl font-semibold text-white mb-2">Introduction</h2>
+      <p class="text-gray-300">Social networks connect people — but they also expose users to scams (fake profiles, malicious links, account takeovers) and privacy risks from oversharing or unsafe third-party apps. This module gives practical scenarios and choices to practice safe decisions.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div class="space-y-3">
+          <div class="p-3 rounded border border-gray-700">
+            <h3 class="font-semibold">Common Risks</h3>
+            <ul class="text-sm text-gray-300 ml-4 list-disc mt-2">
+              <li>Fake friend/connection requests</li>
+              <li>Malicious links & attachments</li>
+              <li>Third-party apps requesting excessive permissions</li>
+              <li>Location / check-in oversharing</li>
+            </ul>
+          </div>
+          <div class="p-3 rounded border border-gray-700">
+            <h3 class="font-semibold">Good Practices</h3>
+            <p class="text-sm text-gray-300 mt-2">Verify unknown requests, use privacy settings, remove old apps, and report suspicious activity.</p>
+          </div>
+        </div>
+
+        <div class="p-3 rounded border border-gray-700">
+          <!-- placeholder illustration -->
+          <img src="https://images.unsplash.com/photo-1534996850269-7a6e45a3c73a?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=0e6d2f7c1c4b68c6e1b6a4a5b8c1b2b6"
+               alt="social networking" class="w-full h-52 object-cover rounded" />
+          <p class="text-sm text-gray-300 mt-3">Replace this image with an SVG from unDraw or Storyset for consistent illustration style.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('scenarios')" class="bg-purple-600 px-4 py-2 rounded">Start Scenarios →</button>
+      </div>
+    </section>
+
+    <!-- Scenarios -->
+    <section x-show="active==='scenarios'" x-cloak class="card p-6 rounded-lg space-y-6">
+      <h2 class="text-xl font-semibold text-white">Interactive Scenarios</h2>
+      <p class="text-gray-300">Choose actions and see outcomes — correct choices improve safety score.</p>
+
+      <!-- Scenario 1: Friend request from unknown profile -->
+      <article class="p-4 rounded border border-gray-700">
+        <div class="md:flex gap-4">
+          <div class="flex-1">
+            <h3 class="font-semibold">1) Unexpected Friend Request</h3>
+            <p class="text-sm text-gray-300">You receive a friend request from someone who attended your uni but has very few posts and only a single profile photo.</p>
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <button @click="scenarioAction('friend','accept')" class="px-3 py-2 rounded bg-yellow-600">Accept</button>
+              <button @click="scenarioAction('friend','inspect')" class="px-3 py-2 rounded bg-green-600">Inspect Profile First</button>
+              <button @click="scenarioAction('friend','ignore')" class="px-3 py-2 rounded bg-gray-700">Ignore / Block</button>
+            </div>
+            <div class="mt-3" x-html="outcomes.friend"></div>
+          </div>
+          <div class="w-44">
+            <img src="https://source.unsplash.com/600x400/?profile,person" alt="profile" class="rounded object-cover h-36 w-full"/>
+          </div>
+        </div>
+      </article>
+
+      <!-- Scenario 2: Malicious DM link -->
+      <article class="p-4 rounded border border-gray-700">
+        <div class="md:flex gap-4">
+          <div class="flex-1">
+            <h3 class="font-semibold">2) Direct Message with Link</h3>
+            <p class="text-sm text-gray-300">A direct message from a 'friend' contains a shortened link promising "earnings" info.</p>
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <button @click="scenarioAction('dm','click')" class="px-3 py-2 rounded bg-red-600">Click Link</button>
+              <button @click="scenarioAction('dm','verify')" class="px-3 py-2 rounded bg-green-600">Verify with friend via call</button>
+              <button @click="scenarioAction('dm','report')" class="px-3 py-2 rounded bg-purple-600">Report Message</button>
+            </div>
+            <div class="mt-3" x-html="outcomes.dm"></div>
+          </div>
+          <div class="w-44">
+            <img src="https://source.unsplash.com/600x400/?message,chat" alt="dm" class="rounded object-cover h-36 w-full"/>
+          </div>
+        </div>
+      </article>
+
+      <!-- Scenario 3: Third-party app permission -->
+      <article class="p-4 rounded border border-gray-700">
+        <div class="md:flex gap-4">
+          <div class="flex-1">
+            <h3 class="font-semibold">3) Third-Party App Asking Permissions</h3>
+            <p class="text-sm text-gray-300">An app asks to read your friends list, posts, and to post on your behalf to "personalize experience".</p>
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <button @click="scenarioAction('app','allow')" class="px-3 py-2 rounded bg-yellow-600">Allow</button>
+              <button @click="scenarioAction('app','limit')" class="px-3 py-2 rounded bg-green-600">Limit permissions</button>
+              <button @click="scenarioAction('app','deny')" class="px-3 py-2 rounded bg-red-600">Deny</button>
+            </div>
+            <div class="mt-3" x-html="outcomes.app"></div>
+          </div>
+          <div class="w-44">
+            <img src="https://source.unsplash.com/600x400/?app,permissions" alt="app" class="rounded object-cover h-36 w-full"/>
+          </div>
+        </div>
+      </article>
+
+      <!-- Scenario 4: Location sharing -->
+      <article class="p-4 rounded border border-gray-700">
+        <div class="md:flex gap-4">
+          <div class="flex-1">
+            <h3 class="font-semibold">4) Check-in / Location Sharing</h3>
+            <p class="text-sm text-gray-300">You are tempted to post a live check-in at the airport showing gate and boarding time.</p>
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <button @click="scenarioAction('loc','shareNow')" class="px-3 py-2 rounded bg-red-600">Share Live</button>
+              <button @click="scenarioAction('loc','shareLater')" class="px-3 py-2 rounded bg-yellow-600">Share After Trip</button>
+              <button @click="scenarioAction('loc','dont')" class="px-3 py-2 rounded bg-green-600">Don't Share</button>
+            </div>
+            <div class="mt-3" x-html="outcomes.loc"></div>
+          </div>
+          <div class="w-44">
+            <img src="https://source.unsplash.com/600x400/?location,travel" alt="location" class="rounded object-cover h-36 w-full"/>
+          </div>
+        </div>
+      </article>
+
+      <div class="flex justify-end">
+        <button @click="complete('scenarios'); go('hotspot')" class="bg-purple-600 px-4 py-2 rounded">Next: Hotspot Lab →</button>
+      </div>
+    </section>
+
+    <!-- Hotspot lab: click hotspots on a mock profile/email -->
+    <section x-show="active==='hotspot'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-xl font-semibold text-white">Hotspot Lab — examine this profile</h2>
+      <p class="text-gray-300 mb-3">Click the hotspots to reveal why each area might be a red flag.</p>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="p-4 rounded border border-gray-700 bg-gray-900">
+          <div class="relative">
+            <!-- Placeholder mock profile; replace src with a cleaner mockup or SVG -->
+            <img src="https://source.unsplash.com/900x700/?social,profile" alt="mock profile" class="w-full h-64 object-cover rounded" />
+            <!-- hotspots -->
+            <button @click="revealHot('photo')" class="absolute top-6 left-6 bg-purple-600 px-2 py-1 text-xs rounded">Photo</button>
+            <button @click="revealHot('fewposts')" class="absolute top-6 right-6 bg-purple-600 px-2 py-1 text-xs rounded">Few posts</button>
+            <button @click="revealHot('mutuals')" class="absolute bottom-6 left-6 bg-purple-600 px-2 py-1 text-xs rounded">Mutuals</button>
+            <button @click="revealHot('link')" class="absolute bottom-6 right-6 bg-purple-600 px-2 py-1 text-xs rounded">External Link</button>
+          </div>
+        </div>
+
+        <div class="p-4 rounded border border-gray-700">
+          <h3 class="font-semibold text-white">Findings</h3>
+          <div class="mt-3 text-sm text-gray-300" x-html="hotspotResult">Click a hotspot to inspect.</div>
+          <div class="mt-4">
+            <button @click="complete('hotspot')" class="bg-purple-600 px-4 py-2 rounded">Mark done</button>
+            <button @click="go('privacy')" class="ml-2 bg-gray-700 px-4 py-2 rounded">Next: Privacy Check →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy check interactive checklist -->
+    <section x-show="active==='privacy'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-xl font-semibold text-white">Privacy Settings — Interactive Checklist</h2>
+      <p class="text-gray-300 mb-3">Toggle items you already have in place. Click Analyze to get recommendations.</p>
+
+      <div class="grid md:grid-cols-2 gap-3">
+        <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+          <input type="checkbox" x-model="settings.privateProfile"> Private / friends-only profile
+        </label>
+        <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+          <input type="checkbox" x-model="settings.locationOff"> Location services off for posts
+        </label>
+        <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+          <input type="checkbox" x-model="settings.appAudit"> Regular third-party app audit
+        </label>
+        <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+          <input type="checkbox" x-model="settings.twofa"> Two-Factor Authentication enabled
+        </label>
+        <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+          <input type="checkbox" x-model="settings.strongPass"> Strong, unique passwords
+        </label>
+        <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+          <input type="checkbox" x-model="settings.report"> Know how to report abuse
+        </label>
+      </div>
+
+      <div class="mt-4">
+        <button @click="analyzeSettings" class="bg-purple-600 px-4 py-2 rounded">Analyze</button>
+        <button @click="complete('privacy'); go('takeaway')" class="ml-2 bg-gray-700 px-4 py-2 rounded">Finish → Takeaway</button>
+      </div>
+
+      <div class="mt-4" x-html="settingsResult"></div>
+    </section>
+
+    <!-- Takeaway -->
+    <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-xl font-semibold text-white">Takeaway</h2>
+      <p class="text-gray-300 mb-3">Social networks are powerful — but users must treat connections, links, and apps with skepticism. Apply privacy controls, verify unknown requests, audit apps, and report suspicious activity.</p>
+
+      <div class="flex gap-3 mt-3">
+        <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Restart Module</button>
+        <a href="https://undraw.co/illustrations" target="_blank" class="bg-gray-700 px-4 py-2 rounded">Illustrations (undraw)</a>
+      </div>
+    </section>
+
+    <footer class="mt-6 text-xs text-gray-500">Host and embed with iframe. Swap placeholder images with brand/illustration assets as needed.</footer>
+  </div>
+
+  <!-- Alpine.js module logic -->
+  <script>
+    function socialModule(){
+      return {
+        active: 'intro',
+        sections: ['intro','scenarios','hotspot','privacy','takeaway'],
+        completed: {},
+        outcomes: {friend:'', dm:'', app:'', loc:''},
+        hotspotResult: '',
+        settings: {privateProfile:false, locationOff:false, appAudit:false, twofa:false, strongPass:false, report:false},
+        settingsResult: '',
+        init(){
+          // restore progress
+          this.sections.forEach(s => { this.completed[s] = localStorage.getItem('done_'+s) === '1'; });
+          this.active = localStorage.getItem('lastSection') || 'intro';
+          // restore settings if any
+          try {
+            const saved = JSON.parse(localStorage.getItem('social_settings'));
+            if(saved) this.settings = saved;
+          } catch(e){}
+          setTimeout(()=>{ if(window.tippy) tippy('[data-tippy-content]'); }, 300);
+        },
+        go(id){
+          this.active = id;
+          localStorage.setItem('lastSection', id);
+        },
+        complete(name){
+          this.completed[name] = true;
+          localStorage.setItem('done_'+name,'1');
+        },
+        scenarioAction(which, action){
+          if(which==='friend'){
+            if(action==='accept'){
+              this.outcomes.friend = '<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Accepting a weak profile risk exposes you to scams. Verify first.</div>';
+            } else if(action==='inspect'){
+              this.outcomes.friend = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">You inspected: mutual friends were few, profile photos duplicated across web. Good catch, do not accept without confirmation.</div>';
+              this.complete('scenarios');
+            } else {
+              this.outcomes.friend = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Blocking prevents potential scam — safe default for unknowns.</div>';
+              this.complete('scenarios');
+            }
+          }
+          if(which==='dm'){
+            if(action==='click'){
+              this.outcomes.dm = '<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Link was malicious — credentials stolen. Never click shortened links from messages without verification.</div>';
+            } else if(action==='verify'){
+              this.outcomes.dm = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">You verified the sender by an independent channel — link was malicious and avoided. Good practice.</div>';
+              this.complete('scenarios');
+            } else {
+              this.outcomes.dm = '<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Reporting alerts platform moderators and may protect others. Good action.</div>';
+              this.complete('scenarios');
+            }
+          }
+          if(which==='app'){
+            if(action==='allow'){
+              this.outcomes.app = '<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">App had broad permissions; allowing grants access to friends, posts — major privacy risk.</div>';
+            } else if(action==='limit'){
+              this.outcomes.app = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Limiting permissions reduces exposure while you test the app. Good compromise.</div>';
+              this.complete('scenarios');
+            } else {
+              this.outcomes.app = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Denying prevented data sharing — safe when app legitimacy is unclear.</div>';
+              this.complete('scenarios');
+            }
+          }
+          if(which==='loc'){
+            if(action==='shareNow'){
+              this.outcomes.loc = '<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Live location reveals your whereabouts — risk for theft or social engineering.</div>';
+            } else if(action==='shareLater'){
+              this.outcomes.loc = '<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Sharing later reduces immediate exposure while still allowing storytelling later.</div>';
+              this.complete('scenarios');
+            } else {
+              this.outcomes.loc = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Not sharing is the safest option to protect privacy and security.</div>';
+              this.complete('scenarios');
+            }
+          }
+          localStorage.setItem('social_outcomes', JSON.stringify(this.outcomes));
+        },
+        revealHot(part){
+          if(part==='photo'){
+            this.hotspotResult = '<div class="text-yellow-300">Single profile photo may be copied from other sites — reverse-image search is useful.</div>';
+          } else if(part==='fewposts'){
+            this.hotspotResult = '<div class="text-yellow-300">Recent account with few posts is a common sign of fake accounts.</div>';
+          } else if(part==='mutuals'){
+            this.hotspotResult = '<div class="text-yellow-300">Mutuals are only a few and appear random — check their profiles before trusting.</div>';
+          } else {
+            this.hotspotResult = '<div class="text-red-300">External links in bio can be malicious or phishing. Verify via known channels.</div>';
+          }
+        },
+        analyzeSettings(){
+          localStorage.setItem('social_settings', JSON.stringify(this.settings));
+          const missing = [];
+          if(!this.settings.privateProfile) missing.push('private profile');
+          if(!this.settings.locationOff) missing.push('location off');
+          if(!this.settings.appAudit) missing.push('app audit');
+          if(!this.settings.twofa) missing.push('two-factor auth');
+          if(!this.settings.strongPass) missing.push('strong passwords');
+          if(!this.settings.report) missing.push('reporting knowledge');
+
+          if(missing.length===0){
+            this.settingsResult = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Great — your profile looks well-protected.</div>';
+          } else {
+            this.settingsResult = '<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Recommended actions: ' + missing.join(', ') + '</div>';
+          }
+        },
+        restart(){
+          // clear progress & data
+          this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false; });
+          localStorage.removeItem('lastSection');
+          localStorage.removeItem('social_settings');
+          localStorage.removeItem('social_outcomes');
+          this.settings = {privateProfile:false, locationOff:false, appAudit:false, twofa:false, strongPass:false, report:false};
+          this.outcomes = {friend:'', dm:'', app:'', loc:''};
+          this.hotspotResult = '';
+          this.settingsResult = '';
+          this.go('intro');
+        }
+      }
+    }
+  </script>
+</body>
+</html>
