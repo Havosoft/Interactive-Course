@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Aviation Cybersecurity — Ground Systems Ransomware (Interactive)</title>
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Alpine.js CDN -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<!-- Tippy for optional tooltips -->
+<link href="https://unpkg.com/tippy.js@6/dist/tippy.css" rel="stylesheet"/>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.min.js"></script>
+
+<style>
+  /* small custom */
+  .card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); }
+  .btn { @apply px-4 py-2 rounded font-medium; }
+</style>
+</head>
+<body class="text-gray-100 antialiased" style="background-color:#0A0125;">
+
+<div class="max-w-6xl mx-auto p-6" x-data="courseModule()" x-init="init()">
+  <!-- Header -->
+  <header class="flex items-start justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-purple-300">Aviation Cybersecurity</h1>
+      <p class="text-sm text-gray-400">Ground Systems — Ransomware </p>      
+    </div>
+
+    <div class="text-right">
+      <div class="text-sm text-gray-300">Progress</div>
+        <div class="mt-1 flex gap-1">
+        <template x-for="(s,i) in sections">
+            <div 
+            :title="s" 
+            class="flex-1 h-3 rounded" 
+            :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'">
+            </div>
+        </template>
+        </div>      
+    </div>
+  </header>
+
+  <!-- Player / Nav -->
+  <nav class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Intro</button>
+    <button @click="go('scenarios')" :class="active==='scenarios' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Scenarios</button>    
+    <button @click="go('phish')" :class="active==='phish' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Phishing Lab</button>
+    <button @click="go('password')" :class="active==='password' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Password Test</button>
+    <button @click="go('patch')" :class="active==='patch' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Patch Risk</button>  
+    <button @click="go('defence')" :class="active==='defence' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Defences</button>  
+    <button @click="go('takeaway')" :class="active==='takeaway' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Takeaway</button>
+  </nav>
+
+  <!-- Content panels -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Introduction — Why ground systems matter</h2>
+    <p class="text-gray-300 mb-4">Nigeria’s aviation sector relies on ground systems: flight scheduling & dispatch, fueling coordination, baggage handling, passenger check-in, air traffic communications. Ransomware targeting these systems can ground flights, delay passengers, and threaten safety.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <div class="p-4 rounded border border-gray-700">
+          <h3 class="font-semibold">Flight Scheduling & Dispatch</h3>
+          <p class="text-sm text-gray-400">Critical for timely departures and crew coordination.</p>
+        </div>
+        <div class="p-4 rounded border border-gray-700">
+          <h3 class="font-semibold">Fueling Coordination</h3>
+          <p class="text-sm text-gray-400">Ransomware here can halt refueling and delay flights.</p>
+        </div>
+        <div class="p-4 rounded border border-gray-700">
+          <h3 class="font-semibold">Baggage Handling</h3>
+          <p class="text-sm text-gray-400">Errors lead to lost luggage, diverted resources, and passenger chaos.</p>
+        </div>
+      </div>
+      <div class="p-4 rounded border border-gray-700">
+        <img src="ChatGPT Image Sep 15, 2025, 11_41_20 AM.png" alt="airport" class="rounded w-full object-cover h-auto mb-3"/>
+        <p class="text-sm text-gray-400">When ground systems fail, entire supply chains and schedules ripple across regions. This module uses realistic scenarios to practice decisions and spot red flags.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('scenarios')" class="bg-purple-600 px-4 py-2 rounded">Start Scenarios →</button>
+    </div>
+  </section>
+
+  <!-- Scenarios -->
+  <section x-show="active==='scenarios'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-purple-200">Scenarios — choose actions and see outcomes</h2>
+
+    <!-- Scenario 1: Phishing -->
+    <article class="p-4 rounded border border-gray-700">
+      <div class="md:flex gap-4">
+        <div class="flex-1">
+          <h3 class="font-semibold">1) Phishing Attack on Airline Staff — Lagos</h3>
+          <p class="text-sm text-gray-300">A staff member receives an invoice-like email from a fuel supplier. They click the attachment and ransomware installs, locking fueling coordination.</p>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <button @click="scenarioAction('phish','verify')" class="px-3 py-2 rounded bg-green-600">Verify sender & call supplier</button>
+            <button @click="scenarioAction('phish','open')" class="px-3 py-2 rounded bg-yellow-600">Open attachment (risky)</button>
+            <button @click="scenarioAction('phish','report')" class="px-3 py-2 rounded bg-purple-600">Report to IT</button>
+          </div>
+          <div class="mt-3" x-html="outcomes.phish"></div>
+        </div>
+        <div class="w-44">
+          <img src="Gemini_Generated_Image_wew7rkwew7rkwew7.png" alt="phishing" class="rounded object-cover h-36 w-full"/>
+        </div>
+      </div>
+    </article>
+
+    <!-- Scenario 2: Flight Scheduling -->
+    <article class="p-4 rounded border border-gray-700">
+      <div class="md:flex gap-4">
+        <div class="flex-1">
+          <h3 class="font-semibold">2) Ransomware in Flight Scheduling — Abuja</h3>
+          <p class="text-sm text-gray-300">Scheduling system compromised — pilots can't download updated flight plans.</p>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <button @click="scenarioAction('schedule','manual')" class="px-3 py-2 rounded bg-yellow-600">Switch to manual paper dispatch</button>
+            <button @click="scenarioAction('schedule','restore')" class="px-3 py-2 rounded bg-green-600">Restore from offline backup</button>
+            <button @click="scenarioAction('schedule','wait')" class="px-3 py-2 rounded bg-red-600">Wait for vendor fix</button>
+          </div>
+          <div class="mt-3" x-html="outcomes.schedule"></div>
+        </div>
+        <div class="w-44">
+          <img src="Gemini_Generated_Image_cwc0cpcwc0cpcwc0 1.png" alt="dispatch" class="rounded object-cover h-36 w-full"/>
+        </div>
+      </div>
+    </article>
+
+    <!-- Scenario 3: Weak Passwords -->
+    <article class="p-4 rounded border border-gray-700">
+      <div class="md:flex gap-4">
+        <div class="flex-1">
+          <h3 class="font-semibold">3) Weak Passwords — Port Harcourt</h3>
+          <p class="text-sm text-gray-300">Attacker uses default admin credentials on baggage servers and deploys ransomware.</p>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <button @click="scenarioAction('passwords','enableMFA')" class="px-3 py-2 rounded bg-green-600">Enable MFA & reset creds</button>
+            <button @click="scenarioAction('passwords','audit')" class="px-3 py-2 rounded bg-purple-600">Run credential audit</button>
+            <button @click="scenarioAction('passwords','ignore')" class="px-3 py-2 rounded bg-red-600">Ignore weak creds</button>
+          </div>
+          <div class="mt-3" x-html="outcomes.passwords"></div>
+        </div>
+        <div class="w-44">
+          <img src="Gemini_Generated_Image_k0dtzkk0dtzkk0dt.png" alt="password" class="rounded object-cover h-36 w-full"/>
+        </div>
+      </div>
+    </article>
+
+    <!-- Scenario 4: Unpatched Systems -->
+    <article class="p-4 rounded border border-gray-700">
+      <div class="md:flex gap-4">
+        <div class="flex-1">
+          <h3 class="font-semibold">4) Unpatched Systems — Kano</h3>
+          <p class="text-sm text-gray-300">Old check-in kiosks unpatched get exploited; ransomware spreads at check-in counters.</p>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <button @click="scenarioAction('patching','patchNow')" class="px-3 py-2 rounded bg-green-600">Patch immediately</button>
+            <button @click="scenarioAction('patching','isolateKiosk')" class="px-3 py-2 rounded bg-yellow-600">Isolate kiosks</button>
+            <button @click="scenarioAction('patching','defer')" class="px-3 py-2 rounded bg-red-600">Defer patches</button>
+          </div>
+          <div class="mt-3" x-html="outcomes.patching"></div>
+        </div>
+        <div class="w-44">
+          <img src="Gemini_Generated_Image_fsv9hefsv9hefsv9.png" alt="kiosk" class="rounded object-cover h-36 w-full"/>
+        </div>
+      </div>
+    </article>
+
+    <!-- Scenario 5: USB Drop -->
+    <article class="p-4 rounded border border-gray-700">
+      <div class="md:flex gap-4">
+        <div class="flex-1">
+          <h3 class="font-semibold">5) Insider / USB Drop — Murtala Muhammed</h3>
+          <p class="text-sm text-gray-300">Ex-contractor plants a USB near staff lounge; an employee plugs it in.</p>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2">
+            <button @click="scenarioAction('usb','report')" class="px-3 py-2 rounded bg-green-600">Report & hand over USB</button>
+            <button @click="scenarioAction('usb','scan')" class="px-3 py-2 rounded bg-yellow-600">Scan USB on isolated machine</button>
+            <button @click="scenarioAction('usb','plug')" class="px-3 py-2 rounded bg-red-600">Plug into work PC</button>
+          </div>
+          <div class="mt-3" x-html="outcomes.usb"></div>
+        </div>
+        <div class="w-44">
+          <img src="Gemini_Generated_Image_g795kkg795kkg795.png" alt="usb" class="rounded object-cover h-36 w-full"/>
+        </div>
+      </div>
+    </article>
+
+    <div class="flex justify-end">
+      <button @click="complete('scenarios'); go('phish')" class="bg-purple-600 px-4 py-2 rounded">Next: Phishing Lab →</button>
+    </div>
+  </section>
+
+  <!-- Phishing lab (hotspots) -->
+  <section x-show="active==='phish'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Phishing Lab — analyze the email</h2>
+    <p class="text-gray-300 mb-3">Click hotspots (Sender, Subject, Attachment) to reveal red flags.</p>
+
+    <div class="bg-gray-800 p-4 rounded border border-gray-700">
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="text-xs text-gray-400">From</div>
+          <div class="font-medium">accounts@fuel-supplier.co <button @click="reveal('from')" class="ml-2 text-xs px-2 py-1 bg-gray-700 rounded">Check</button></div>
+
+          <div class="mt-2 text-xs text-gray-400">Subject</div>
+          <div>Invoice #9482 - URGENT <button @click="reveal('subject')" class="ml-2 text-xs px-2 py-1 bg-gray-700 rounded">Check</button></div>
+
+          <div class="mt-2 text-xs text-gray-400">Attachment</div>
+          <div><span class="font-medium">invoice_9482_final.zip</span> <button @click="reveal('attachment')" class="ml-2 text-xs px-2 py-1 bg-gray-700 rounded">Check</button></div>
+        </div>
+
+        <div class="w-48">
+          <img src="Gemini_Generated_Image_rtvbwbrtvbwbrtvb.png" alt="email" class="rounded h-36 w-full object-cover"/>
+        </div>
+      </div>
+
+      <div class="mt-4 p-3 rounded border border-gray-700 bg-gray-900 text-sm" id="phishResult" x-html="phishResult"></div>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('scenarios')" class="text-gray-400">Back to Scenarios</button>
+      <div>
+        <button @click="complete('phish')" class="bg-purple-600 px-4 py-2 rounded">Mark done</button>
+        <button @click="go('password')" class="bg-gray-700 px-4 py-2 rounded ml-2">Next: Password Test →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Password tester -->
+  <section x-show="active==='password'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Password Strength Tester</h2>
+    <p class="text-gray-300 mb-3">Try sample passwords — the tester will give feedback and a suggested improvement.</p>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <input x-model="pwd" @input="evaluatePwd" placeholder="Type a password to test" class="w-full p-3 rounded bg-gray-800 border border-gray-700 text-gray-100"/>
+        <div class="mt-3">
+          <div class="h-3 bg-gray-700 rounded overflow-hidden">
+            <div :style="`width:${pwdScore}%`" class="h-3 rounded" :class="pwdScore<40? 'bg-red-500' : (pwdScore<70? 'bg-yellow-400':'bg-green-500')"></div>
+          </div>
+          <div class="mt-2 text-sm text-gray-300">Strength: <strong x-text="pwdLabel"></strong></div>
+          <ul class="list-disc ml-5 mt-2 text-sm text-gray-400">
+            <li x-show="!pwdCriteria.length">Type a password to see suggestions.</li>
+            <template x-for="c in pwdCriteria"><li x-text="c"></li></template>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold">Guidance</h3>
+        <p class="text-sm text-gray-300">Use MFA, unique passwords, password managers, and rotate credentials for service accounts.</p>
+        <div class="mt-3">
+          <button @click="complete('password'); go('patch')" class="bg-purple-600 px-4 py-2 rounded">Next: Patch Risk →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Patch risk slider -->
+  <section x-show="active==='patch'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Patch Age → Risk Visualiser</h2>
+    <p class="text-gray-300 mb-3">Slide to simulate how many days a system has gone unpatched and see risk impact.</p>
+
+    <div class="p-4 bg-gray-800 rounded border border-gray-700">
+      <input type="range" min="0" max="180" step="1" x-model="patchDays" @input="calcPatchRisk" class="w-full"/>
+      <div class="mt-3 text-sm text-gray-300">Unpatched for: <strong x-text="patchDays"></strong> days</div>
+
+      <div class="mt-4">
+        <div class="h-4 bg-gray-700 rounded overflow-hidden">
+          <div :style="`width:${patchRisk}%`" class="h-4 rounded" :class="patchRisk>70 ? 'bg-red-500' : (patchRisk>40 ? 'bg-yellow-400' : 'bg-green-500')"></div>
+        </div>
+        <div class="mt-2 text-sm text-gray-300">Estimated risk level: <strong x-text="patchLabel"></strong></div>
+        <div class="mt-2 text-xs text-gray-400">Tip: Keep critical ground systems patched within 30 days if possible.</div>
+      </div>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('password')" class="text-gray-400">Back</button>
+      <button @click="complete('patch'); go('defence')" class="bg-purple-600 px-4 py-2 rounded">Next: Defences →</button>
+    </div>
+  </section>
+
+  <!-- Defences (interactive checklist) -->
+  <section x-show="active==='defence'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Best Practices — Interactive Checklist</h2>
+    <p class="text-gray-300 mb-3">Check the items your organisation already has in place and analyze gaps.</p>
+
+    <div class="grid md:grid-cols-2 gap-3">
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.backups"> Regular Backups (offline)
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.segmentation"> Network Segmentation
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.email"> Email Security & Awareness
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.mfa"> Multi-Factor Authentication (MFA)
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.intel"> Threat Intel Sharing (ISAC)
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.patch"> Regular Patching
+      </label>
+    </div>
+
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+      <button @click="complete('defence'); go('takeaway')" class="ml-2 bg-gray-700 px-4 py-2 rounded">Finish → Takeaway</button>
+    </div>
+
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- Takeaway -->
+  <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Takeaway</h2>
+    <p class="text-gray-300 mb-3">Ransomware against aviation ground systems is a safety and operational risk. Use backups, segmentation, email filtering, incident playbooks, MFA, threat-sharing, and timely patching to reduce risk.</p>
+    <p class="text-sm text-gray-400 mb-4">Replace placeholder images with your organisation's assets. If you'd like the module wrapped for SCORM/xAPI reporting, I can add that next.</p>
+
+    <div class="flex gap-3">
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Restart Module</button>      
+    </div>
+  </section>
+
+  <footer class="mt-6 text-xs text-gray-500">Host this file and embed with an iframe. Designed to be self-contained and mobile-friendly.</footer>
+</div>
+
+<script>
+  function courseModule(){
+    return {
+      active: 'intro',
+      sections: ['intro','scenarios','phish','password','patch','defence','takeaway'],
+      completed: {},
+      outcomes: {phish:'', schedule:'', passwords:'', patching:'', usb:''},
+      phishResult: '',
+      pwd: '',
+      pwdScore: 0,
+      pwdLabel: '—',
+      pwdCriteria: [],
+      patchDays: 10,
+      patchRisk: 20,
+      patchLabel: 'Low',
+      checklist: {backups:false, segmentation:false, email:false, mfa:false, intel:false, patch:false},
+      gapResult: '',
+      init(){
+        // restore progress
+        this.sections.forEach(s => { this.completed[s] = localStorage.getItem('done_'+s) === '1' });
+        this.active = localStorage.getItem('lastSection') || 'intro';
+        // restore checklist
+        try {
+          const saved = JSON.parse(localStorage.getItem('checklist'));
+          if(saved) this.checklist = saved;
+        } catch(e){}
+        this.calcPatchRisk();
+        // tippy init (tooltips)
+        setTimeout(()=>{ if(window.tippy) tippy('[data-tippy-content]'); },500);
+      },
+      go(id){
+        this.active = id;
+        localStorage.setItem('lastSection', id);
+      },
+      complete(name){
+        this.completed[name] = true;
+        localStorage.setItem('done_'+name,'1');
+      },
+      scenarioAction(which, action){
+        // map outcomes
+        if(which==='phish'){
+          if(action==='verify'){
+            this.outcomes.phish = '<div class="p-3 rounded bg-gray-800 border border-green-600 text-green-300">You verified the supplier and prevented the attack. Good practice: confirm invoices by phone.</div>';
+            this.complete('scenarios');
+          } else if(action==='open'){
+            this.outcomes.phish = '<div class="p-3 rounded bg-gray-800 border border-red-600 text-red-300">You opened the attachment. Ransomware deployed; fueling systems locked. Incident response required.</div>';
+          } else {
+            this.outcomes.phish = '<div class="p-3 rounded bg-gray-800 border border-yellow-600 text-yellow-300">You reported to IT. Containment likely, but delays occur while investigating.</div>';
+            this.complete('scenarios');
+          }
+        }
+
+        if(which==='schedule'){
+          if(action==='manual'){
+            this.outcomes.schedule = '<div class="p-3 rounded bg-gray-800 border border-yellow-600 text-yellow-300">Manual dispatch helps short-term but slows operations significantly.</div>';
+            this.complete('scenarios');
+          } else if(action==='restore'){
+            this.outcomes.schedule = '<div class="p-3 rounded bg-gray-800 border border-green-600 text-green-300">Offline backups restored — flights resume with minimal disruption. Excellent preparedness.</div>';
+            this.complete('scenarios');
+          } else {
+            this.outcomes.schedule = '<div class="p-3 rounded bg-gray-800 border border-red-600 text-red-300">Waiting prolonged downtime; passengers stranded — poor outcome.</div>';
+          }
+        }
+
+        if(which==='passwords'){
+          if(action==='enableMFA'){
+            this.outcomes.passwords = '<div class="p-3 rounded bg-gray-800 border border-green-600 text-green-300">MFA and credential reset block the attacker. Good control.</div>';
+            this.complete('scenarios');
+          } else if(action==='audit'){
+            this.outcomes.passwords = '<div class="p-3 rounded bg-gray-800 border border-purple-600 text-purple-300">Audit found weak/default accounts — patching and credential rotation scheduled.</div>';
+            this.complete('scenarios');
+          } else {
+            this.outcomes.passwords = '<div class="p-3 rounded bg-gray-800 border border-red-600 text-red-300">Attacker used default password to deploy ransomware — severe impact.</div>';
+          }
+        }
+
+        if(which==='patching'){
+          if(action==='patchNow'){
+            this.outcomes.patching = '<div class="p-3 rounded bg-gray-800 border border-green-600 text-green-300">Patching reduces exploit window and stops the spread.</div>';
+            this.complete('scenarios');
+          } else if(action==='isolateKiosk'){
+            this.outcomes.patching = '<div class="p-3 rounded bg-gray-800 border border-yellow-600 text-yellow-300">Isolating kiosks reduces spread, but root vulnerability remains.</div>';
+            this.complete('scenarios');
+          } else {
+            this.outcomes.patching = '<div class="p-3 rounded bg-gray-800 border border-red-600 text-red-300">Defer patches: attackers exploit the older software leading to system compromise.</div>';
+          }
+        }
+
+        if(which==='usb'){
+          if(action==='report'){
+            this.outcomes.usb = '<div class="p-3 rounded bg-gray-800 border border-green-600 text-green-300">Reporting prevents infection and allows for forensic analysis.</div>';
+            this.complete('scenarios');
+          } else if(action==='scan'){
+            this.outcomes.usb = '<div class="p-3 rounded bg-gray-800 border border-yellow-600 text-yellow-300">Scanning on isolated machine can reveal malware safely.</div>';
+            this.complete('scenarios');
+          } else {
+            this.outcomes.usb = '<div class="p-3 rounded bg-gray-800 border border-red-600 text-red-300">Plugging the USB infected the dispatch system — major operational impact.</div>';
+          }
+        }
+
+        // persist outcomes to localStorage optionally
+        localStorage.setItem('outcomes', JSON.stringify(this.outcomes));
+      },
+      reveal(part){
+        if(part==='from') {
+          this.phishResult = '<div class="text-yellow-300">Sender appears similar to supplier but domain mismatch (fuel-supplier.co vs fuel-supplier.com). Display name spoofing detected.</div>';
+        } else if(part==='subject'){
+          this.phishResult = '<div class="text-yellow-300">Subject uses urgency language (URGENT). Social-engineering tactic to force quick clicks.</div>';
+        } else {
+          this.phishResult = '<div class="text-red-300">Attachment is a .zip — suspicious. Attachments should be verified via other channels first.</div>';
+        }
+      },
+      evaluatePwd(){
+        const s = this.pwd || '';
+        let score=0; const crit=[];
+        if(s.length>=12){ score+=30 } else if(s.length>=8){ score+=10 } else { crit.push('Make passwords longer (8+ chars, ideally 12+)') }
+        if(/[a-z]/.test(s) && /[A-Z]/.test(s)) score+=20; else crit.push('Use mixed upper & lower case');
+        if(/\d/.test(s)) score+=20; else crit.push('Include numbers');
+        if(/[^A-Za-z0-9]/.test(s)) score+=20; else crit.push('Include special characters');
+        if(!/(password|1234|admin)/i.test(s)) score+=10; else crit.push('Avoid common words or sequences');
+
+        this.pwdScore = Math.min(100,score);
+        this.pwdLabel = this.pwdScore>70 ? 'Strong' : (this.pwdScore>40 ? 'Moderate' : 'Weak');
+        this.pwdCriteria = crit;
+      },
+      calcPatchRisk(){
+        const d = Number(this.patchDays||0);
+        // simple risk mapping
+        if(d<=30){ this.patchRisk=20; this.patchLabel='Low' }
+        else if(d<=90){ this.patchRisk=55; this.patchLabel='Medium' }
+        else { this.patchRisk=90; this.patchLabel='High' }
+      },
+      analyzeGaps(){
+        // save checklist and compute missing
+        localStorage.setItem('checklist', JSON.stringify(this.checklist));
+        const keys = Object.keys(this.checklist);
+        const missing = keys.filter(k => !this.checklist[k]);
+        if(missing.length===0){
+          this.gapResult = '<div class="p-3 rounded bg-gray-800 border border-green-600 text-green-300">No major gaps identified — good baseline.</div>';
+        } else {
+          this.gapResult = '<div class="p-3 rounded bg-gray-800 border border-yellow-600 text-yellow-300">Missing controls: ' + missing.join(', ') + '</div>';
+        }
+      },
+      restart(){
+        // clear progress
+        this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false;});
+        localStorage.removeItem('lastSection');
+        localStorage.removeItem('checklist');
+        this.checklist = {backups:false, segmentation:false, email:false, mfa:false, intel:false, patch:false};
+        this.outcomes = {phish:'', schedule:'', passwords:'', patching:'', usb:''};
+        this.pwd=''; this.pwdScore=0; this.pwdLabel='—'; this.pwdCriteria=[];
+        this.go('intro');
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
