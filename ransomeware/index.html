@@ -218,8 +218,7 @@
 
     <div class="mt-4 flex justify-between">
       <button @click="go('scenarios')" class="text-gray-400">Back to Scenarios</button>
-      <div>
-        <button @click="complete('phish')" class="bg-purple-600 px-4 py-2 rounded">Mark done</button>
+      <div>        
         <button @click="go('password')" class="bg-gray-700 px-4 py-2 rounded ml-2">Next: Password Test →</button>
       </div>
     </div>
@@ -316,15 +315,12 @@
   <!-- Takeaway -->
   <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg">
     <h2 class="text-2xl font-semibold text-purple-200">Takeaway</h2>
-    <p class="text-gray-300 mb-3">Ransomware against aviation ground systems is a safety and operational risk. Use backups, segmentation, email filtering, incident playbooks, MFA, threat-sharing, and timely patching to reduce risk.</p>
-    <p class="text-sm text-gray-400 mb-4">Replace placeholder images with your organisation's assets. If you'd like the module wrapped for SCORM/xAPI reporting, I can add that next.</p>
+    <p class="text-gray-300 mb-3">Ransomware against aviation ground systems is a safety and operational risk. Use backups, segmentation, email filtering, incident playbooks, MFA, threat-sharing, and timely patching to reduce risk.</p>    
 
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Restart Module</button>      
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>      
     </div>
-  </section>
-
-  <footer class="mt-6 text-xs text-gray-500">Host this file and embed with an iframe. Designed to be self-contained and mobile-friendly.</footer>
+  </section>  
 </div>
 
 <script>
@@ -471,14 +467,18 @@
         }
       },
       restart(){
-        // clear progress
-        this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false;});
-        localStorage.removeItem('lastSection');
-        localStorage.removeItem('checklist');
-        this.checklist = {backups:false, segmentation:false, email:false, mfa:false, intel:false, patch:false};
-        this.outcomes = {phish:'', schedule:'', passwords:'', patching:'', usb:''};
-        this.pwd=''; this.pwdScore=0; this.pwdLabel='—'; this.pwdCriteria=[];
-        this.go('intro');
+       // (Optional) clear progress first
+      // this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false;});
+      // localStorage.removeItem('lastSection');
+      // localStorage.removeItem('checklist');
+      // this.checklist = {backups:false, segmentation:false, email:false, mfa:false, intel:false, patch:false};
+      // this.outcomes = {phish:'', schedule:'', passwords:'', patching:'', usb:''};
+      // this.pwd=''; this.pwdScore=0; this.pwdLabel='—'; this.pwdCriteria=[];
+
+      // Redirect to quiz in top-level window (not iframe)
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Aviation-Cybersecurity-Ground-Systems-Ransomware?lecture_uuid=743d9794-9d03-44b0-8ede-1954400df335#Quiz";
+
+
       }
     }
   }
