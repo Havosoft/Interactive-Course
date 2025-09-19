@@ -211,8 +211,8 @@
     <p class="text-gray-300 mt-2">5G expands connectivity and capability — but also increases the attack surface through slices, edge nodes and attached devices. Proper policy enforcement, device authentication, monitoring and regulatory compliance are key to safe adoption.</p>
 
     <div class="mt-4 flex gap-3">
-      <a :href="quizUrl" class="bg-green-600 px-4 py-2 rounded text-white">Go to Quiz</a>
-      <!-- <button @click="restart()" class="bg-accent px-4 py-2 rounded text-white">Quiz</button> -->
+      <!-- <a :href="quizUrl" class="bg-green-600 px-4 py-2 rounded text-white">Go to Quiz</a> -->
+      <button @click="restart()" class="bg-accent px-4 py-2 rounded text-white">Quiz</button>
     </div>
   </section>
   
@@ -280,11 +280,12 @@
       },
 
       restart(){
-        this.sections.forEach(s => { localStorage.removeItem('5g_done_'+s); this.completed[s]=false; });
-        localStorage.removeItem('5g_last'); localStorage.removeItem('5g_outcomes'); localStorage.removeItem('5g_checklist');
-        this.outcomes = {}; this.checklist = { isolation:false, deviceAuth:false, edgePatch:false, monitoring:false, compliance:false, playbooks:false };
-        this.gapResult = '';
-        this.go('intro');
+        // this.sections.forEach(s => { localStorage.removeItem('5g_done_'+s); this.completed[s]=false; });
+        // localStorage.removeItem('5g_last'); localStorage.removeItem('5g_outcomes'); localStorage.removeItem('5g_checklist');
+        // this.outcomes = {}; this.checklist = { isolation:false, deviceAuth:false, edgePatch:false, monitoring:false, compliance:false, playbooks:false };
+        // this.gapResult = '';
+        // this.go('intro');
+        window.top.location.href = "https://lms.collaboratoor.com/student/my-course/enterprise-workforce-5g-network-policy-compliance?lecture_uuid=3b25b365-bb29-4923-a179-d38667fd6823#Quiz";
       }
     }
   }

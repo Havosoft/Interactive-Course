@@ -213,8 +213,8 @@
 
     <div class="mt-4 flex gap-3">
       <!-- Replace the href with your LMS quiz start URL if you want it to lead to the quiz -->
-      <a :href="quizUrl" class="bg-green-600 px-4 py-2 rounded text-white">Quiz</a>
-      <!-- <button @click="restart()" class="bg-accent px-4 py-2 rounded text-white">Restart Module</button> -->
+      <!-- <a :href="quizUrl" class="bg-green-600 px-4 py-2 rounded text-white">Quiz</a> -->
+      <button @click="restart()" class="bg-accent px-4 py-2 rounded text-white">Quiz</button>
     </div>
   </section>
 
@@ -295,11 +295,12 @@
 
       restart(){
         // clear saved state
-        this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s] = false; });
-        localStorage.removeItem('mna_last'); localStorage.removeItem('mna_outcomes'); localStorage.removeItem('mna_checklist');
-        this.outcomes = {}; this.checklist = { role:false, mfa:false, encrypt:false, monitor:false, sanitize:false, timed:false };
-        this.gapResult = '';
-        this.go('intro');
+        // this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s] = false; });
+        // localStorage.removeItem('mna_last'); localStorage.removeItem('mna_outcomes'); localStorage.removeItem('mna_checklist');
+        // this.outcomes = {}; this.checklist = { role:false, mfa:false, encrypt:false, monitor:false, sanitize:false, timed:false };
+        // this.gapResult = '';
+        // this.go('intro');
+        window.top.location.href = "https://lms.collaboratoor.com/student/my-course/enterprise-workforce-secure-ma-data-rooms?lecture_uuid=e415b152-b606-4edf-b171-3b4767611a09#Quiz";
       }
     }
   }
