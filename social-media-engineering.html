@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Social-Media Engineering Defence — Interactive</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js CDN -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    [x-cloak] { display: none !important; }
+    .svg-placeholder svg { width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased">
+  <div class="max-w-5xl mx-auto p-6" x-data="socialMediaModule()" x-init="init()">
+
+    <!-- Header -->
+    <header class="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-indigo-300">Social-Media Engineering Defence</h1>
+        <p class="text-sm text-slate-400 mt-1">Protect people and orgs from social-media-driven reconnaissance and spear-phishing.</p>
+
+        <div class="mt-3 text-xs text-slate-400">
+          <strong>Learning objectives:</strong>
+          <ul class="ml-4 list-disc">
+            <li>Understand how attackers harvest intelligence on platforms like LinkedIn and GitHub</li>
+            <li>Recognize oversharing risks and spear-phishing tactics</li>
+            <li>Apply countermeasures to protect personal and corporate data</li>
+            <li>Build safer social media habits while maintaining professional presence</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <div class="text-sm text-slate-300">Progress</div>
+        <div class="mt-2 flex gap-1">
+          <template x-for="(s,i) in sections" :key="i">
+            <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-emerald-500' : 'bg-slate-700'"></div>
+          </template>
+        </div>
+        <div class="mt-2 text-xs text-slate-400">Saved locally (browser)</div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="mb-6 flex gap-2 flex-wrap">
+      <button @click="go('intro')" :class="active==='intro' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Intro</button>
+      <button @click="go('usecases')" :class="active==='usecases' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Use Cases</button>
+      <button @click="go('best')" :class="active==='best' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Best Practices</button>
+      <button @click="go('checklist')" :class="active==='checklist' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Checklist</button>
+      <button @click="go('takeaway')" :class="active==='takeaway' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Takeaway</button>
+    </nav>
+
+    <!-- Intro -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200 mb-3">Introduction</h2>
+      <p class="text-slate-300 mb-3">
+        Attackers harvest publicly available professional and technical information from platforms such as LinkedIn, GitHub, and X.
+        That intelligence enables highly personalised spear-phishing and impersonation attacks. This module helps you recognize and reduce exposure.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <ul class="list-disc ml-5 text-slate-300">
+            <li>Harvesting roles and teams to craft targeted emails</li>
+            <li>Scanning repos for secrets or tool names</li>
+            <li>Impersonation of recruiters/executives to build trust</li>
+          </ul>
+        </div>
+        <div class="p-4 rounded border border-slate-700">
+          <div class="svg-placeholder w-full h-40">
+            <!-- small generic social SVG (replace with unDraw if desired) -->
+            <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="social-network">
+              <rect x="4" y="8" width="112" height="64" rx="6" fill="#0b1220"/>
+              <circle cx="30" cy="30" r="10" fill="#06b6d4"/>
+              <rect x="48" y="20" width="64" height="8" rx="3" fill="#111827"/>
+              <rect x="48" y="32" width="40" height="8" rx="3" fill="#7c3aed"/>
+            </svg>
+          </div>
+          <p class="text-sm text-slate-400 mt-3">We'll walk through five realistic use cases and give actionable guidance to reduce risk.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-indigo-600 px-4 py-2 rounded">Start Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg mb-6 space-y-4">
+      <h2 class="text-xl font-semibold text-indigo-200">Use Cases — choose an action and see outcomes</h2>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-slate-700 grid md:grid-cols-5 gap-4 items-center">
+          <div class="md:col-span-1 flex justify-center">
+            <div class="w-28 h-28 svg-placeholder" x-html="uc.svg"></div>
+          </div>
+
+          <div class="md:col-span-3">
+            <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+            <p class="text-slate-300" x-text="uc.desc"></p>
+
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-emerald-600">Correct action</button>
+              <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-amber-500">Partial / mitigated</button>
+              <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-rose-600">Risky / ignore</button>
+            </div>
+
+            <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+          </div>
+
+          <div class="md:col-span-1 text-right">
+            <div class="text-xs text-slate-400">Scenario</div>
+            <div class="text-sm text-slate-200" x-text="uc.location"></div>
+          </div>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('best')" class="bg-indigo-600 px-4 py-2 rounded">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- Best Practices -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200">Best Practices</h2>
+      <ul class="ml-5 list-disc mt-3 text-slate-300">
+        <li>Profile hygiene: limit public details about role responsibility and systems.</li>
+        <li>GitHub: never commit secrets; enable secret scanning and .gitignore.</li>
+        <li>Verify recruiters and contacts via secondary channels before sharing attachments.</li>
+        <li>Adjust privacy settings and avoid posting internal project specifics.</li>
+        <li>Report impersonation and suspicious DMs to IT/security and the platform.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-between">
+        <button @click="go('usecases')" class="text-slate-400">Back</button>
+        <button @click="complete('best'); go('checklist')" class="bg-indigo-600 px-4 py-2 rounded">Next: Checklist →</button>
+      </div>
+    </section>
+
+    <!-- Checklist -->
+    <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200">Interactive Checklist</h2>
+      <p class="text-slate-300 mt-2">Check items already in place and analyze gaps.</p>
+
+      <div class="grid md:grid-cols-2 gap-3 mt-4">
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.profileHygiene"> Profile hygiene policy & training
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.githubControls"> GitHub secrets scanning & review
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.verifyContacts"> Verify external recruiters/contacts
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.privacySettings"> Company privacy settings & reviews
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.reporting"> Reporting & takedown process
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.awareness"> Continuous awareness training
+        </label>
+      </div>
+
+      <div class="mt-4">
+        <button @click="analyzeGaps" class="bg-indigo-600 px-4 py-2 rounded">Analyze Gaps</button>
+        <button @click="complete('checklist'); go('takeaway')" class="ml-3 bg-slate-700 px-4 py-2 rounded">Finish → Takeaway</button>
+      </div>
+
+      <div class="mt-4" x-html="gapResult"></div>
+    </section>
+
+    <!-- Takeaway -->
+    <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200">Takeaway</h2>
+      <p class="text-slate-300 mt-3">
+        Attackers use social platforms to gather high-fidelity intelligence that enables spear-phishing. Reduce exposure by limiting oversharing,
+        locking down code and repos, verifying contacts, and training staff to spot personalised phishing attempts.
+      </p>
+
+      <div class="flex gap-3 mt-4">
+        <button @click="restart()" class="bg-emerald-600 px-4 py-2 rounded">Restart Module</button>
+        <a href="https://undraw.co/" target="_blank" class="bg-slate-700 px-4 py-2 rounded">Illustration resources (unDraw)</a>
+      </div>
+    </section>
+
+    <footer class="mt-6 text-xs text-slate-500">Embed this module with an iframe. Replace inline SVG strings in the `useCases` array with your preferred unDraw SVG code if you like.</footer>
+  </div>
+
+<script>
+function socialMediaModule(){
+  return {
+    active: 'intro',
+    sections: ['intro','usecases','best','checklist','takeaway'],
+    completed: {},
+    // each use case includes inline SVG markup in `svg` — replace with unDraw SVG for production
+    useCases: [
+      {
+        id:'u1',
+        title:'LinkedIn Role Mining',
+        desc:'Attacker scrapes LinkedIn roles to find finance staff and sends spear-phish wire transfer emails.',
+        location:'LinkedIn profiles',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+                <rect x="6" y="10" width="108" height="80" rx="8" fill="#071233"/>
+                <circle cx="36" cy="40" r="12" fill="#06b6d4"/>
+                <rect x="56" y="28" width="48" height="8" rx="3" fill="#111827"/>
+                <rect x="56" y="40" width="36" height="8" rx="3" fill="#7c3aed"/>
+              </svg>`
+      },
+      {
+        id:'u2',
+        title:'GitHub Secrets Exposure',
+        desc:'Developer pushes a repo with old API keys; attackers search for leaked credentials and use them.',
+        location:'GitHub repo',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+                <rect x="8" y="12" width="104" height="76" rx="6" fill="#0b1220"/>
+                <path d="M20 30h80v10H20z" fill="#111827"/>
+                <rect x="22" y="44" width="76" height="24" fill="#06b6d4"/>
+                <rect x="26" y="70" width="28" height="6" fill="#111827"/>
+              </svg>`
+      },
+      {
+        id:'u3',
+        title:'Recruiter Impersonation',
+        desc:'Fake LinkedIn recruiter sends an attachment disguised as an interview task containing malware.',
+        location:'Direct Message / Email',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+                <rect x="6" y="12" width="108" height="76" rx="6" fill="#071233"/>
+                <rect x="14" y="26" width="92" height="12" rx="3" fill="#7c3aed"/>
+                <path d="M20 46h60v20H20z" fill="#06b6d4"/>
+                <circle cx="94" cy="86" r="6" fill="#f97316"/>
+              </svg>`
+      },
+      {
+        id:'u4',
+        title:'Social Graph Mapping',
+        desc:'Attackers map team reporting structures from public profiles to craft believable manager impersonations.',
+        location:'Public profiles & connections',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+                <rect x="6" y="12" width="108" height="76" rx="6" fill="#0b1220"/>
+                <circle cx="30" cy="34" r="8" fill="#06b6d4"/>
+                <circle cx="60" cy="34" r="8" fill="#7c3aed"/>
+                <circle cx="90" cy="34" r="8" fill="#f59e0b"/>
+                <path d="M30 44h60" stroke="#111827" stroke-width="2"/>
+              </svg>`
+      },
+      {
+        id:'u5',
+        title:'Oversharing Technical Projects',
+        desc:'Engineer posts internal defenses and tools publicly; attackers use that intel to refine exploits.',
+        location:'Blog / Repo / Social post',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+                <rect x="8" y="12" width="104" height="76" rx="6" fill="#071233"/>
+                <rect x="18" y="24" width="84" height="12" fill="#111827"/>
+                <rect x="18" y="40" width="64" height="8" fill="#7c3aed"/>
+                <rect x="18" y="54" width="40" height="8" fill="#06b6d4"/>
+              </svg>`
+      }
+    ],
+    outcomes: { u1:'', u2:'', u3:'', u4:'', u5:'' },
+    checklist: { profileHygiene:false, githubControls:false, verifyContacts:false, privacySettings:false, reporting:false, awareness:false },
+    gapResult: '',
+    init(){
+      // restore progress
+      this.sections.forEach(s => { this.completed[s] = localStorage.getItem('sme_done_'+s) === '1' });
+      this.active = localStorage.getItem('sme_lastSection') || 'intro';
+      // restore checklist
+      try {
+        const saved = JSON.parse(localStorage.getItem('sme_checklist'));
+        if(saved) this.checklist = saved;
+      } catch(e){}
+      // restore outcomes optionally
+      try {
+        const savedOut = JSON.parse(localStorage.getItem('sme_outcomes'));
+        if(savedOut) this.outcomes = savedOut;
+      } catch(e){}
+    },
+    go(id){
+      this.active = id;
+      localStorage.setItem('sme_lastSection', id);
+    },
+    complete(name){
+      this.completed[name] = true;
+      localStorage.setItem('sme_done_'+name,'1');
+    },
+    ucAct(id, action){
+      if(action==='correct'){
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-800 border border-emerald-600 text-emerald-300">Correct — strong mitigation: reduces attacker reconnaissance and risk of targeted phishing.</div>`;
+      } else if(action==='partial'){
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-800 border border-amber-500 text-amber-300">Partially mitigated — some controls exist but additional measures needed.</div>`;
+      } else {
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-800 border border-rose-600 text-rose-300">Risky — action increases exposure to targeted social engineering and phishing.</div>`;
+      }
+      localStorage.setItem('sme_outcomes', JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('sme_checklist', JSON.stringify(this.checklist));
+      const missing = Object.keys(this.checklist).filter(k => !this.checklist[k]);
+      if(missing.length === 0){
+        this.gapResult = `<div class="p-3 rounded bg-slate-800 border border-emerald-600 text-emerald-300">All good — minimal gaps found.</div>`;
+      } else {
+        this.gapResult = `<div class="p-3 rounded bg-slate-800 border border-amber-500 text-amber-300">Missing controls: ${missing.join(', ')}</div>`;
+      }
+    },
+    restart(){
+      // this.sections.forEach(s => { localStorage.removeItem('sme_done_'+s); this.completed[s]=false; });
+      // localStorage.removeItem('sme_lastSection');
+      // localStorage.removeItem('sme_checklist');
+      // localStorage.removeItem('sme_outcomes');
+      // this.checklist = { profileHygiene:false, githubControls:false, verifyContacts:false, privacySettings:false, reporting:false, awareness:false };
+      // this.outcomes = { u1:'', u2:'', u3:'', u4:'', u5:'' };
+      // this.gapResult = '';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/enterprise-workforce-social-media-engineering-defence?lecture_uuid=5b47d8a3-52d8-4b4a-bf2e-83a486e04fbb#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

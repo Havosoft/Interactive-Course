@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Secure Print & Scan Workflows — Interactive</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    /* small custom */
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    [x-cloak] { display: none !important; }
+    /* make injected SVGs scale nicely */
+    .svg-placeholder svg { width: 100%; height: 100%; display: block; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased">
+  <div class="max-w-5xl mx-auto p-6" x-data="securePrintModule()" x-init="init()">
+    <!-- Header -->
+    <header class="flex items-start justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-indigo-300">Secure Print & Scan Workflows</h1>
+        <p class="text-sm text-slate-400 mt-1">Protect printers, scans, and MFP workflows from data leakage.</p>
+
+        <div class="mt-3 text-xs text-slate-400">
+          <strong>Learning objectives:</strong>
+          <ul class="ml-4 list-disc">
+            <li>Understand MFP risks & data leakage vectors</li>
+            <li>Prevent leaks via secure print & scan best practices</li>
+            <li>Handle sensitive information safely at printers</li>
+            <li>Recognize printer security is part of cybersecurity</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <div class="text-sm text-slate-300">Progress</div>
+        <div class="mt-2 flex gap-1">
+          <template x-for="(s,i) in sections" :key="i">
+            <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-emerald-500' : 'bg-slate-700'"></div>
+          </template>
+        </div>
+        <div class="mt-2 text-xs text-slate-400">Saved locally (browser)</div>
+      </div>
+    </header>
+
+    <!-- Nav -->
+    <nav class="mb-6 flex gap-2 flex-wrap">
+      <button @click="go('intro')" :class="active==='intro' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Intro</button>
+      <button @click="go('usecases')" :class="active==='usecases' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Use Cases</button>
+      <button @click="go('best')" :class="active==='best' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Best Practices</button>
+      <button @click="go('checklist')" :class="active==='checklist' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Checklist</button>
+      <button @click="go('takeaway')" :class="active==='takeaway' ? 'bg-indigo-600' : 'bg-slate-700'" class="px-4 py-2 rounded text-sm">Takeaway</button>
+    </nav>
+
+    <!-- Intro -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200 mb-3">Introduction</h2>
+      <p class="text-slate-300 mb-3">
+        Multifunction printers (MFPs) — print, scan, fax devices — are networked endpoints that often store copies of documents,
+        connect to corporate email and file systems, and can become points of data leakage if not secured.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <ul class="list-disc ml-5 text-slate-300">
+            <li>They store digital copies of printed/scanned jobs.</li>
+            <li>They connect to networks and can be remotely accessed if misconfigured.</li>
+            <li>Their hard drives may contain thousands of sensitive documents.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded border border-slate-700">
+          <!-- simple inline svg illustration - replace with unDraw SVG if desired -->
+          <div class="svg-placeholder w-full h-40">
+            <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="printer">
+              <rect x="10" y="10" width="100" height="60" rx="4" fill="#0f172a"/>
+              <rect x="20" y="20" width="80" height="28" fill="#111827"/>
+              <rect x="24" y="24" width="72" height="20" fill="#0ea5a4"/>
+              <rect x="20" y="52" width="40" height="12" fill="#0b1220"/>
+              <circle cx="90" cy="60" r="4" fill="#4f46e5"/>
+            </svg>
+          </div>
+          <p class="text-sm text-slate-400 mt-3">This module covers common risks (uncollected printouts, unsecured scan-to-email, exposed HDDs), use-case decisions, and mitigation steps.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-indigo-600 px-4 py-2 rounded">Start Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- Use cases -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg mb-6 space-y-4">
+      <h2 class="text-xl font-semibold text-indigo-200">Use Cases — choose an action and see outcomes</h2>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-slate-700 grid md:grid-cols-5 gap-4 items-center">
+          <div class="md:col-span-1 flex justify-center">
+            <!-- inline svg rendered -->
+            <div class="w-28 h-28 svg-placeholder" x-html="uc.svg"></div>
+          </div>
+
+          <div class="md:col-span-3">
+            <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+            <p class="text-slate-300" x-text="uc.desc"></p>
+
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-emerald-600">Correct action</button>
+              <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-amber-500">Partial / mitigated</button>
+              <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-rose-600">Risky / ignore</button>
+            </div>
+
+            <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+          </div>
+
+          <div class="md:col-span-1 text-right">
+            <div class="text-xs text-slate-400">Scenario</div>
+            <div class="text-sm text-slate-200" x-text="uc.location"></div>
+          </div>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('best')" class="bg-indigo-600 px-4 py-2 rounded">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- Best Practices -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200">Best Practices for Secure Print & Scan</h2>
+      <ul class="ml-5 list-disc mt-3 text-slate-300">
+        <li>Secure Print Release: use PIN or badge to release jobs.</li>
+        <li>Encrypt scan-to-mail and restrict recipients.</li>
+        <li>Harden MFP admin interfaces and disable unused protocols.</li>
+        <li>Wipe or destroy internal storage before disposal.</li>
+        <li>Log & monitor printing and scanning activity.</li>
+        <li>Disable or restrict scan-to-USB and other risky functions.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-between">
+        <button @click="go('usecases')" class="text-slate-400">Back</button>
+        <button @click="complete('best'); go('checklist')" class="bg-indigo-600 px-4 py-2 rounded">Next: Checklist →</button>
+      </div>
+    </section>
+
+    <!-- Interactive checklist -->
+    <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200">Interactive Checklist</h2>
+      <p class="text-slate-300 mt-2">Tick items your org has in place then analyze gaps.</p>
+
+      <div class="grid md:grid-cols-2 gap-3 mt-4">
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.securePrint"> Secure print release (PIN/badge)
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.encryptScans"> Scan-to-email TLS enforced
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.hardening"> Admin hardening & fw rules
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.wipeOnDisposal"> Wipe HDD before disposal
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.logging"> Print/scan logging & monitoring
+        </label>
+        <label class="p-3 rounded border border-slate-700 flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.restrictUsb"> Restrict scan-to-USB
+        </label>
+      </div>
+
+      <div class="mt-4">
+        <button @click="analyzeGaps" class="bg-indigo-600 px-4 py-2 rounded">Analyze Gaps</button>
+        <button @click="complete('checklist'); go('takeaway')" class="ml-3 bg-slate-700 px-4 py-2 rounded">Finish → Takeaway</button>
+      </div>
+
+      <div class="mt-4" x-html="gapResult"></div>
+    </section>
+
+    <!-- Takeaway -->
+    <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg mb-6">
+      <h2 class="text-xl font-semibold text-indigo-200">Takeaway</h2>
+      <p class="text-slate-300 mt-3">
+        Printers and scanners are networked devices that handle sensitive data. Use secure print release,
+        encrypted scan workflows, access controls, device hardening, monitoring, and secure disposal to reduce risk.
+      </p>
+
+      <div class="flex gap-3 mt-4">
+        <button @click="restartOrGotoQuiz()" class="bg-emerald-600 px-4 py-2 rounded">Restart Module</button>
+        <a href="https://unsplash.com/s/photos/printer" target="_blank" class="bg-slate-700 px-4 py-2 rounded">Image resources</a>
+      </div>
+    </section>
+
+    <footer class="mt-6 text-xs text-slate-500">Embed this module with an iframe. Replace inline SVG strings in the `useCases` array with your preferred SVG code from unDraw.</footer>
+  </div>
+
+<script>
+function securePrintModule(){
+  return {
+    active: 'intro',
+    sections: ['intro','usecases','best','checklist','takeaway'],
+    completed: {},
+    // Use-cases: svg contains inline SVG markup (simple examples here)
+    useCases: [
+      {
+        id:'c1',
+        title:'Uncollected Printouts',
+        desc:'User sends payroll to shared printer but forgets to pick it up; sensitive info seen by others.',
+        location:'Shared printer',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+            <rect x="12" y="20" width="96" height="68" rx="6" fill="#0b1220"/>
+            <rect x="22" y="30" width="76" height="28" rx="3" fill="#111827"/>
+            <rect x="28" y="36" width="64" height="18" rx="2" fill="#06b6d4"/>
+            <rect x="28" y="68" width="40" height="8" rx="2" fill="#0f172a"/>
+            <circle cx="90" cy="84" r="6" fill="#7c3aed"/>
+          </svg>`
+      },
+      {
+        id:'c2',
+        title:'Unsecured Scan-to-Email',
+        desc:'Scan job emailed externally without TLS/encryption; attachment intercepted.',
+        location:'Scan-to-email',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+            <rect x="8" y="18" width="104" height="70" rx="6" fill="#071233"/>
+            <path d="M20 40h80v28H20z" fill="#0ea5a4"/>
+            <path d="M30 44l20 12 28-16" stroke="#0b1220" stroke-width="2" fill="none"/>
+            <circle cx="92" cy="90" r="6" fill="#f97316"/>
+          </svg>`
+      },
+      {
+        id:'c3',
+        title:'Hard Drive Exposure',
+        desc:'Printer resold without wiping internal HDD; thousands of sensitive scans remain.',
+        location:'Decommission',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+            <rect x="10" y="20" width="100" height="60" rx="6" fill="#0b1220"/>
+            <rect x="24" y="28" width="72" height="16" rx="2" fill="#111827"/>
+            <rect x="24" y="50" width="40" height="10" rx="2" fill="#ef4444"/>
+            <rect x="70" y="50" width="20" height="10" rx="2" fill="#22c55e"/>
+          </svg>`
+      },
+      {
+        id:'c4',
+        title:'Unauthorized Remote Printing',
+        desc:'Misconfigured MFP exposed to internet; attackers send print jobs remotely.',
+        location:'Network-exposed MFP',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+            <rect x="10" y="22" width="100" height="58" rx="6" fill="#071233"/>
+            <rect x="22" y="32" width="40" height="20" rx="3" fill="#06b6d4"/>
+            <path d="M68 36h30v12H68z" fill="#111827"/>
+            <circle cx="92" cy="86" r="6" fill="#ef4444"/>
+          </svg>`
+      },
+      {
+        id:'c5',
+        title:'Insider Misuse (scan-to-USB)',
+        desc:'Employee copies sensitive reports to USB and walks out with them.',
+        location:'Local USB port',
+        svg: `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img">
+            <rect x="12" y="20" width="96" height="66" rx="6" fill="#0b1220"/>
+            <rect x="28" y="36" width="60" height="30" rx="3" fill="#111827"/>
+            <rect x="44" y="72" width="32" height="8" rx="2" fill="#f59e0b"/>
+            <rect x="60" y="74" width="10" height="12" fill="#ef4444"/>
+          </svg>`
+      }
+    ],
+    // prepopulate outcomes so no undefined
+    outcomes: { c1:'', c2:'', c3:'', c4:'', c5:'' },
+    checklist: { securePrint:false, encryptScans:false, hardening:false, wipeOnDisposal:false, logging:false, restrictUsb:false },
+    gapResult: '',
+    init(){
+      // restore completed
+      this.sections.forEach(s => { this.completed[s] = localStorage.getItem('done_'+s) === '1' });
+      this.active = localStorage.getItem('lastSection') || 'intro';
+      // restore checklist
+      try {
+        const saved = JSON.parse(localStorage.getItem('secure_print_checklist'));
+        if(saved) this.checklist = saved;
+      } catch(e){}
+    },
+    go(id){
+      this.active = id;
+      localStorage.setItem('lastSection', id);
+    },
+    complete(name){
+      this.completed[name] = true;
+      localStorage.setItem('done_'+name,'1');
+    },
+    ucAct(id, action){
+      if(action === 'correct'){
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-800 border border-emerald-600 text-emerald-300">Correct — this reduces risk and aligns with best practices.</div>`;
+      } else if(action === 'partial'){
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-800 border border-amber-500 text-amber-300">Partially mitigated — additional steps required (see checklist).</div>`;
+      } else {
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-800 border border-rose-600 text-rose-300">Risky choice — may result in data leakage or regulatory exposure.</div>`;
+      }
+      // persist outcomes optionally
+      localStorage.setItem('secure_print_outcomes', JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('secure_print_checklist', JSON.stringify(this.checklist));
+      const missing = Object.keys(this.checklist).filter(k => !this.checklist[k]);
+      if(missing.length === 0){
+        this.gapResult = `<div class="p-3 rounded bg-slate-800 border border-emerald-600 text-emerald-300">No major gaps identified — good baseline.</div>`;
+      } else {
+        this.gapResult = `<div class="p-3 rounded bg-slate-800 border border-amber-500 text-amber-300">Missing controls: ${missing.join(', ')}</div>`;
+      }
+    },
+    restartOrGotoQuiz(){
+      // If you want to redirect to LMS quiz, replace the URL below with the start-quiz route.
+      // For now, restart the module
+      // this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s] = false; });
+      // localStorage.removeItem('lastSection');
+      // localStorage.removeItem('secure_print_checklist');
+      // localStorage.removeItem('secure_print_outcomes');
+      // this.checklist = { securePrint:false, encryptScans:false, hardening:false, wipeOnDisposal:false, logging:false, restrictUsb:false };
+      // this.outcomes = { c1:'', c2:'', c3:'', c4:'', c5:'' };
+      // this.gapResult = '';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Enterprise-Workforce-–-Secure-Print-Scan-Workflows?lecture_uuid=ac794cce-7d0d-455b-8f4a-f47ed092264b#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>
