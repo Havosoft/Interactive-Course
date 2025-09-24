@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Enterprise Workforce — Shadow IT Discovery (Interactive)</title>
+<title>Enterprise Workforce — Shadow IT Discovery</title>
 
 <!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
@@ -412,16 +412,17 @@ function shadowModule(){
       }
     },
     restart(){
-      this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false; });
-      localStorage.removeItem('lastSection');
-      localStorage.removeItem('shadow_check');
-      localStorage.removeItem('shadow_outcomes');
-      localStorage.removeItem('shadow_discovered');
-      this.check = {monitor:false, edr:false, casb:false, training:false, audit:false, collab:false};
-      this.outcomes = {chat:'', saas:''};
-      this.scanDays = 30;
-      this.runScan();
-      this.go('intro');
+      // this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false; });
+      // localStorage.removeItem('lastSection');
+      // localStorage.removeItem('shadow_check');
+      // localStorage.removeItem('shadow_outcomes');
+      // localStorage.removeItem('shadow_discovered');
+      // this.check = {monitor:false, edr:false, casb:false, training:false, audit:false, collab:false};
+      // this.outcomes = {chat:'', saas:''};
+      // this.scanDays = 30;
+      // this.runScan();
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Enterprise-Workforce-Shadow-IT-Discovery?lecture_uuid=1fd2a9da-d35e-4269-8786-569d50ac64d0#Quiz";      
     }
   }
 }
