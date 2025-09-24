@@ -362,13 +362,14 @@ function aviationInsiderModule(){
       this.saveState();
     },
     restart(){
-      this.useCases.forEach(u => u.completed = false);
-      this.outcomes = { c1:'', c2:'', c3:'', c4:'', c5:'' };
-      this.checklist = { accessControl:false, surveillance:false, reporting:false, playbooks:false };
-      this.gapResult = '';
-      this.active = 'intro';
-      localStorage.removeItem('aviationInsiderState');
-      ['intro','usecases','defence','takeaway'].forEach(s => localStorage.removeItem('aviationInsider_done_'+s));
+    //   this.useCases.forEach(u => u.completed = false);
+    //   this.outcomes = { c1:'', c2:'', c3:'', c4:'', c5:'' };
+    //   this.checklist = { accessControl:false, surveillance:false, reporting:false, playbooks:false };
+    //   this.gapResult = '';
+    //   this.active = 'intro';
+    //   localStorage.removeItem('aviationInsiderState');
+    //   ['intro','usecases','defence','takeaway'].forEach(s => localStorage.removeItem('aviationInsider_done_'+s));
+    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Aviation-Cybersecurity-Ground-Systems-Ransomware?lecture_uuid=743d9794-9d03-44b0-8ede-1954400df335#Quiz";
     },
     saveState(){
       const s = { useCases: this.useCases, outcomes: this.outcomes, checklist: this.checklist, active: this.active };
