@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en" x-data="emailModule()" x-init="init()" class="antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Email & Phishing Awareness</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    html, body { height:100%; background:#0A0125; }
+    body { color:#E5E7EB; }
+    .card { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); }
+    [x-cloak]{display:none!important;}
+  </style>
+</head>
+<body>
+
+<div class="max-w-6xl mx-auto p-6">
+  <!-- HEADER -->
+  <header class="mb-6 flex justify-between items-start">
+    <div>
+      <h1 class="text-3xl font-bold text-white">Email & Phishing Awareness</h1>
+      <p class="text-sm text-gray-400 mt-1">Recognize, prevent, and respond to email-based threats</p>
+
+      <div class="mt-4 text-sm card p-4 rounded">
+        <strong class="block text-white mb-2">Learning Objectives</strong>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Recognize common email-based threats, including phishing, spear-phishing, and malware.</li>
+          <li>Apply safe email practices to protect sensitive information.</li>
+          <li>Verify the legitimacy of senders and links.</li>
+          <li>Report suspicious emails to IT or security teams.</li>
+          <li>Check if accounts have been compromised using trusted resources.</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="text-sm text-gray-400">Progress</div>
+      <div class="mt-2 flex gap-1">
+        <template x-for="s in navOrder" :key="s">
+          <div class="w-12 h-3 rounded" :class="completed[s]?'bg-green-500':'bg-gray-700'"></div>
+        </template>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="mb-6 flex flex-wrap gap-2">
+    <template x-for="s in navOrder" :key="s">
+      <button @click="go(s)"
+              :class="active===s?'bg-purple-600 text-white':'bg-gray-700 text-gray-200'"
+              class="px-4 py-2 rounded font-medium">
+        <span x-text="labels[s]"></span>
+      </button>
+    </template>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="space-y-6">
+
+    <!-- INTRO -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Introduction</h2>
+      <p class="mt-3 text-gray-300">
+        Email remains the most common attack vector used by cybercriminals. Phishing attacks trick employees into divulging passwords, clicking malicious links, or downloading malware. Even well-intentioned emails can pose risks if they are spoofed or maliciously crafted.
+      </p>
+
+      <h3 class="mt-4 font-semibold text-white">Why Email Security Matters</h3>
+      <ul class="list-disc pl-5 mt-2 text-gray-300 space-y-1">
+        <li><strong>Credential Theft:</strong> Attackers often use phishing emails to steal login information, giving them access to corporate systems.</li>
+        <li><strong>Malware Delivery:</strong> Email attachments may contain ransomware, spyware, or viruses.</li>
+        <li><strong>Business Email Compromise:</strong> Sophisticated attacks impersonate executives or trusted partners to authorize fraudulent transactions.
+</li>
+        <li><strong>Data Breaches:</strong>  Compromised email accounts can lead to the leakage of sensitive documents, client information, or internal communications.</li>
+      </ul>
+      <p>By understanding email threats and practicing vigilance, employees play a key role in protecting organizational data.</p>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
+      <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-gray-700 space-y-3">
+          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+          <p class="text-gray-300" x-text="uc.desc"></p>
+
+          <!-- Buttons -->
+          <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2" x-show="uc.id!=='uc5'">
+            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct</button>
+            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial</button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky</button>
+          </div>
+
+          <!-- Special for UC5 -->
+          <div class="mt-3 grid grid-cols-2 gap-2" x-show="uc.id==='uc5'">
+            <button @click="breachResult='breached'" class="px-3 py-2 rounded bg-red-600">Breached Email</button>
+            <button @click="breachResult='clean'" class="px-3 py-2 rounded bg-green-600">Not Breached Email</button>
+          </div>
+
+          <!-- Outcome -->
+          <div class="mt-3" x-html="outcomes[uc.id]" x-show="uc.id!=='uc5'"></div>
+
+          <!-- Image Placeholder for UC5 -->
+          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='breached'">
+            <div class="p-3 bg-gray-900 border border-red-600 text-red-300 rounded">
+              <div class="mt-3 grid grid-cols-2 gap-2" >
+            <img src="Screenshot 2025-09-29 145115.png" alt="">
+            <img src="Screenshot 2025-09-29 145139.png" alt="">
+          </div>
+            </div>
+          </div>
+          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='clean'">
+            <div class="p-3 bg-gray-900 border border-green-600 text-green-300 rounded">
+              <img src="Screenshot 2025-09-29 145152.png" alt="">
+            </div>
+          </div>
+
+          <p class="mt-2 text-sm text-gray-400 italic" x-text="uc.lesson"></p>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Best Practices for Defence</h2>
+      <ul class="list-disc pl-5 mt-3 text-gray-300 space-y-2">
+        <li><strong>Verify Senders:</strong> Check the sender’s email address for subtle misspellings or unusual domains. Confirm requests for sensitive actions with the person directly through a trusted channel.</li>
+        <li><strong>Hover Before Clicking:</strong> Check the URL destination by hovering before clicking to ensure it points to a legitimate site.
+</li>
+        <li><strong>Avoid Sharing Credentials:</strong> Never enter your password on unverified pages. Never share credentials over email, chat, or phone.</li>
+        <li><strong>Report Suspicious Emails:</strong> Notify IT or security teams immediately. Use built-in “Report Phishing” buttons if available in your email client.</li>
+        <li><strong>Use Trusted Tools:</strong> Services like Have I Been Pwned help detect breaches. Enter your email to see if it appears in past data breaches. Take action: change passwords, enable MFA, and monitor account activity.</li>
+        <li><strong>Continuous Education:</strong> Stay updated on the latest phishing tactics. Participate in periodic phishing simulation exercises if provided by your organization.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('best'); go('conclusion')" class="bg-purple-600 px-4 py-2 rounded">Finish → Conclusion</button>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Conclusion</h2>
+      <p class="text-gray-300 mt-3">
+        Phishing and email-based attacks are persistent threats. By verifying senders, avoiding suspicious links, reporting incidents, and proactively checking for compromised emails, employees protect themselves and the organization. Vigilance is key to cybersecurity hygiene.
+      </p>
+
+      <div class="mt-6 flex gap-3">
+        <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+function emailModule(){
+  return {
+    navOrder:['intro','usecases','best','conclusion'],
+    labels:{intro:'Intro', usecases:'Use Cases', best:'Best Practices', conclusion:'Conclusion'},
+    active: localStorage.getItem('em_active')||'intro',
+    completed: JSON.parse(localStorage.getItem('em_completed')||'{}'),
+    outcomes: JSON.parse(localStorage.getItem('em_outcomes')||'{}'),
+    breachResult:'',
+    useCases:[
+      {id:'uc1',title:'Credential Harvesting via Phishing Email',desc:'An employee receives an email appearing to come from IT, asking them to reset their password via a link. The link directs to a fake login page designed to steal credentials.',lesson:'Always verify senders and URLs.'},
+      {id:'uc2',title:'Malware-Laden Attachment',desc:'A seemingly legitimate email contains an invoice attachment that, when opened, installs malware on the workstation.',lesson:'Open attachments only from trusted sources.'},
+      {id:'uc3',title:'Spear Phishing Attack',desc:'A personalized email targets a finance employee, referencing a current project and instructing them to make a payment. The email is from a spoofed executive address.',lesson:'Verify unusual requests through official channels,  even if the sender appears legitimate.'},
+      {id:'uc4',title:'Urgent Threat or Account Lock',desc:'An email claims the employee’s account will be locked immediately unless action is taken. Employees are pressured to click links or enter credentials.',lesson:'Be cautious of urgent messages; confirm authenticity before responding.'},
+      {id:'uc5',title:'Breached Email Account Detection',desc:'An employee wants to know if their email has been involved in a previous breach. They can use Have I Been Pwned.com to check if their email appears in known data breaches.',lesson:'Proactively monitoring your email for breaches allows early action, such as changing passwords and enabling MFA.'},
+    ],
+
+    init(){ this.useCases.forEach(u=>{ if(!(u.id in this.outcomes)) this.outcomes[u.id]=''; }); },
+
+    go(s){ this.active=s; localStorage.setItem('em_active',s); },
+    complete(s){ this.completed[s]=true; localStorage.setItem('em_completed',JSON.stringify(this.completed)); },
+
+    ucAct(id,action){
+      if(action==='correct'){
+        this.outcomes[id]=`<div class="p-3 bg-gray-900 border border-green-600 text-green-300 rounded">Good choice — reduces phishing risk.</div>`;
+      } else if(action==='partial'){
+        this.outcomes[id]=`<div class="p-3 bg-gray-900 border border-yellow-600 text-yellow-300 rounded">Partial — helpful but not full protection.</div>`;
+      } else {
+        this.outcomes[id]=`<div class="p-3 bg-gray-900 border border-red-600 text-red-300 rounded">Risky — leaves account exposed.</div>`;
+      }
+      localStorage.setItem('em_outcomes',JSON.stringify(this.outcomes));
+    },
+
+    restart(){
+      // localStorage.removeItem('em_active'); localStorage.removeItem('em_completed'); localStorage.removeItem('em_outcomes');
+      // this.active='intro'; this.completed={}; this.outcomes={}; this.breachResult='';
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-1?lecture_uuid=d131f071-59c2-4b69-99f6-344215730ef3#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

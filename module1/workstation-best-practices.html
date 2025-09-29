@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" x-data="workstationModule()" x-init="init()" class="antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Workstation Best Practices — Interactive</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    html, body { height: 100%; background: #0A0125; }
+    body { color: #E5E7EB; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .svg-box { width:64px; height:64px; }
+    [x-cloak] { display:none !important; }
+  </style>
+</head>
+<body>
+
+<div class="max-w-6xl mx-auto p-6">
+
+  <!-- Header -->
+  <header class="mb-6 flex items-start justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-white">Workstation Best Practices</h1>
+      <p class="text-sm text-gray-300 mt-1">Protect devices and sensitive data by following simple, practical steps</p>
+
+      <div class="mt-4 text-sm text-gray-300 card p-4 rounded">
+        <strong class="block text-white mb-2">Learning Objectives</strong>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Understand the risks of leaving workstations unsecured.</li>
+          <li>Apply practical measures to protect computers and sensitive data.</li>
+          <li>Follow organizational policies for workstation security.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-right">
+      <div class="text-sm text-gray-400">Progress</div>
+      <div class="mt-2 flex gap-1">
+        <template x-for="s in navOrder" :key="s">
+          <div :title="labels[s]" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
+        </template>
+      </div>
+      <div class="mt-2 text-xs text-gray-400">Progress saved locally</div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="mb-6 flex flex-wrap gap-2">
+    <template x-for="s in navOrder" :key="s">
+      <button @click="go(s)"
+              :class="active===s ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-200'"
+              class="px-4 py-2 rounded font-medium">
+        <span x-text="labels[s]"></span>
+      </button>
+    </template>
+  </nav>
+
+  <main class="space-y-6">
+
+    <!-- INTRO -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Introduction</h2>
+      <p class="mt-3 text-gray-300">
+        Workstations are a common entry point for unauthorized access in an office. Unattended or improperly secured devices can allow attackers — or curious visitors — to access sensitive information.
+      </p>
+
+      <h3 class="mt-4 text-lg font-semibold text-white">Common risks include</h3>
+      <ul class="list-disc pl-5 mt-2 text-gray-300 space-y-1">
+        <li>Unlocked computers left unattended.</li>
+        <li>Visible confidential documents or screens.</li>
+        <li>Outdated software and unpatched systems.</li>
+        <li>Use of unapproved applications or USB devices.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
+      <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and see outcomes</h2>
+      <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
+          <!-- inline SVG placeholder (replace with your SVG markup if you want) -->
+          <div class="md:col-span-1 flex justify-center">
+            <div class="p-2 bg-gray-900 rounded">
+              <svg class="svg-box text-purple-300" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.02)"/>
+                <circle cx="18" cy="26" r="4" fill="currentColor" />
+                <path d="M30 28h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M30 36h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="md:col-span-3">
+            <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+            <p class="text-gray-300 mt-1" x-text="uc.desc"></p>
+
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct action</button>
+              <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
+              <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
+            </div>
+
+            <div class="mt-3" x-html="outcomes[uc.id]"></div>
+          </div>
+
+          <div class="md:col-span-1 text-right text-xs text-gray-400">
+            <div x-text="uc.context"></div>
+          </div>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Best Practices for Defence</h2>
+
+      <ul class="list-disc pl-5 mt-3 text-gray-300 space-y-2">
+        <li><strong>Lock Workstations:</strong> Use shortcuts (Win+L for Windows, Control+Command+Q for Mac) when leaving your desk.</li>
+        <li><strong>Clean Desk Policy:</strong> Keep sensitive documents out of sight and secured.</li>
+        <li><strong>Monitor Positioning:</strong> Use privacy screens or orient monitors away from public corridors.</li>
+        <li><strong>Software Updates:</strong> Apply patches promptly and use only approved software.</li>
+        <li><strong>USB Security:</strong> Avoid unapproved USB devices and follow IT policies.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Continue → Checklist</button>
+      </div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section x-show="active==='checklist'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Interactive Checklist</h2>
+      <p class="text-gray-300 mt-2">Tick the controls your team already has and analyse any gaps.</p>
+
+      <div class="grid md:grid-cols-2 gap-3 mt-4">
+        <template x-for="(label,key) in checklistLabels" :key="key">
+          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+            <input type="checkbox" x-model="checklist[key]" class="h-4 w-4">
+            <div class="text-sm text-gray-200" x-text="label"></div>
+          </label>
+        </template>
+      </div>
+
+      <div class="mt-4 flex gap-2">
+        <button @click="analyzeGaps()" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+        <button @click="saveChecklist()" class="bg-gray-700 px-4 py-2 rounded">Save</button>
+      </div>
+
+      <div class="mt-4" x-html="gapResult"></div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('checklist'); go('conclusion')" class="bg-purple-600 px-4 py-2 rounded">Finish → Conclusion</button>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-200">Conclusion</h2>
+      <p class="text-gray-300 mt-3">
+        Workstation security prevents unauthorized access and protects sensitive company information. By locking devices, organizing desks, updating software, and following IT policies, employees reduce the risk of data breaches and maintain a secure work environment.
+      </p>
+
+      <div class="mt-6 flex gap-3">
+        <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>       
+      </div>      
+    </section>
+
+  </main>
+</div>
+
+<script>
+function workstationModule(){
+  return {
+    navOrder: ['intro','usecases','best','checklist','conclusion'],
+    labels: {
+      intro: 'Intro',
+      usecases: 'Use Cases',
+      best: 'Best Practices',
+      checklist: 'Checklist',
+      conclusion: 'Conclusion'
+    },
+
+    // state
+    active: localStorage.getItem('ws_active') || 'intro',
+    completed: JSON.parse(localStorage.getItem('ws_completed') || '{}'),
+    useCases: [
+      {
+        id: 'uc1',
+        title: 'Unattended Unlocked Computer',
+        desc: 'An employee steps away without locking their computer. A visitor accesses confidential files.',
+        context: 'Desktop/Office'
+      },
+      {
+        id: 'uc2',
+        title: 'Sensitive Screen Visibility',
+        desc: 'A monitor displays client data facing a public corridor and unauthorized individuals view confidential info.',
+        context: 'Public-facing workstation'
+      },
+      {
+        id: 'uc3',
+        title: 'Outdated Software Vulnerability',
+        desc: 'Workstation software is unpatched, leaving it open to exploit and lateral movement.',
+        context: 'Workstation software'
+      },
+      {
+        id: 'uc4',
+        title: 'Unauthorized USB Device',
+        desc: 'An unknown USB is plugged in, introducing malware to the workstation and network.',
+        context: 'Peripheral/USB'
+      }
+    ],
+    outcomes: JSON.parse(localStorage.getItem('ws_outcomes') || JSON.stringify({
+      uc1:'', uc2:'', uc3:'', uc4:''
+    })),
+
+    checklist: JSON.parse(localStorage.getItem('ws_checklist') || JSON.stringify({
+      lock: false, cleanDesk:false, privacy:false, updates:false, usbPolicy:false
+    })),
+
+    checklistLabels: {
+      lock: 'Lock workstations when unattended (Win+L / Ctrl+Cmd+Q)',
+      cleanDesk: 'Clean desk policy enforced',
+      privacy: 'Privacy screens / monitor orientation',
+      updates: 'Automated updates / patching',
+      usbPolicy: 'USB device policy & restrictions'
+    },
+
+    gapResult: '',
+
+    init(){
+      // ensure useCase outcomes exist
+      this.useCases.forEach(u => { if(!(u.id in this.outcomes)) this.outcomes[u.id] = ''; });
+      // restore completed object
+      this.completed = Object.assign({}, JSON.parse(localStorage.getItem('ws_completed') || '{}'));
+    },
+
+    go(section){
+      this.active = section;
+      localStorage.setItem('ws_active', section);
+    },
+
+    complete(section){
+      this.completed[section] = true;
+      localStorage.setItem('ws_completed', JSON.stringify(this.completed));
+    },
+
+    ucAct(id, action){
+      if(action === 'correct'){
+        this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Good — this action follows best practices and reduces exposure.</div>`;
+      } else if(action === 'partial'){
+        this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Partial mitigation — some protection exists, but gaps remain.</div>`;
+      } else {
+        this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Risky — this exposes the workstation and increases likelihood of compromise.</div>`;
+      }
+      localStorage.setItem('ws_outcomes', JSON.stringify(this.outcomes));
+    },
+
+    analyzeGaps(){
+      const missing = Object.keys(this.checklist).filter(k => !this.checklist[k]);
+      if(missing.length === 0){
+        this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">No major gaps identified — good baseline.</div>`;
+      } else {
+        const names = missing.map(m => this.checklistLabels[m] || m);
+        this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Missing controls: ${names.join(', ')}</div>`;
+      }
+      localStorage.setItem('ws_checklist', JSON.stringify(this.checklist));
+    },
+
+    saveChecklist(){
+      localStorage.setItem('ws_checklist', JSON.stringify(this.checklist));
+      this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Checklist saved.</div>`;
+    },
+
+    restart(){
+    //   localStorage.removeItem('ws_active');
+    //   localStorage.removeItem('ws_completed');
+    //   localStorage.removeItem('ws_outcomes');
+    //   localStorage.removeItem('ws_checklist');
+    //   this.active = 'intro';
+    //   this.completed = {};
+    //   this.outcomes = { uc1:'', uc2:'', uc3:'', uc4:'' };
+    //   this.checklist = { lock:false, cleanDesk:false, privacy:false, updates:false, usbPolicy:false };
+    //   this.gapResult = '';
+    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Medical-Device-Firmware-Security?module-1?lecture_uuid=97333a56-30a7-4aca-80b2-41d4938cf75d#Quiz";
+    },
+
+    exportProgress(){
+      const data = { completed:this.completed, outcomes:this.outcomes, checklist:this.checklist };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'workstation-progress.json'; document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
