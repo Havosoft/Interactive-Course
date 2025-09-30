@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Travel Security — Airports, Hotels, Co-Working Spaces</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js CDN -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    /* small custom */
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); }
+    [x-cloak] { display:none; }
+  </style>
+</head>
+<body class="bg-[#0A0125] text-gray-100 antialiased">
+
+<div class="max-w-6xl mx-auto p-6" x-data="travelModule()" x-init="init()">
+  <!-- Header -->
+  <header class="flex items-start justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-purple-300">Travel Security</h1>
+      <p class="text-sm text-gray-400">Airports, Hotels, Co-Working Spaces — practical guidance for safe travel</p>
+
+      <div class="mt-3 text-xs text-gray-400">
+        <strong>Learning objectives:</strong>
+        <ul class="ml-4 list-disc">
+          <li>Recognize security risks associated with business travel and temporary workspaces.</li>
+          <li>Apply safe practices when using airport facilities, hotels, and co-working spaces.</li>
+          <li>Protect personal devices, sensitive documents, and company data while traveling.</li>
+          <li>Respond appropriately to security incidents in public or temporary work environments.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-right">
+      <div class="text-sm text-gray-300">Progress</div>
+      <div class="mt-1 flex gap-1">
+        <template x-for="(s,i) in sections" :key="i">
+          <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
+        </template>
+      </div>
+      <div class="mt-2 text-xs text-gray-400">Saved locally (browser)</div>
+    </div>
+  </header>
+
+  <!-- Nav -->
+  <nav class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Use Cases</button>
+    <button @click="go('best')" :class="active==='best' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Checklist</button>
+    <button @click="go('conclusion')" :class="active==='conclusion' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Conclusion</button>
+  </nav>
+
+  <!-- INTRO -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Introduction</h2>
+
+    <p class="text-gray-300 mb-4">
+      Business travel and working in temporary or public spaces can expose employees and organizational data to unique security threats. Airports, hotels, and co-working spaces are high-traffic areas where malicious actors can attempt theft, espionage, or cyber attacks. Awareness and preparation are essential to mitigate risks.
+    </p>
+
+    <h3 class="text-lg font-semibold text-white mb-2">Why Travel Security Matters</h3>
+    <ul class="list-disc pl-5 text-gray-300 space-y-2">
+      <li><strong>Device Theft:</strong> Laptops, phones, and tablets are common targets in public areas.</li>
+      <li><strong>Data Interception:</strong> Public Wi-Fi networks at airports or hotels can be exploited to intercept sensitive communications.</li>
+      <li><strong>Physical Security Threats:</strong> Unauthorized access to rooms, workspaces, or luggage can lead to data compromise.</li>
+      <li><strong>Social Engineering Risks:</strong> High-traffic environments make employees targets for phishing, impersonation, or manipulation.</li>
+    </ul>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
+    <p class="text-gray-300 mb-3">Choose an action for each scenario and see the likely outcome.</p>
+
+    <template x-for="uc in useCases" :key="uc.id">
+      <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
+        <div class="md:col-span-1 flex justify-center">
+          <!-- inline SVG placeholder — replace with actual SVG markup -->
+          <div class="w-28 h-28 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
+        </div>
+
+        <div class="md:col-span-3">
+          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+          <p class="text-gray-300" x-text="uc.desc"></p>
+          <p class="text-sm text-green-300 mt-1" x-text="uc.lesson"></p>
+
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct action</button>
+            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
+          </div>
+
+          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+        </div>
+
+        <div class="md:col-span-1 text-right">
+          <div class="text-xs text-gray-400">Context</div>
+          <div class="text-sm text-gray-200" x-text="uc.location"></div>
+        </div>
+      </article>
+    </template>
+
+    <div class="flex justify-end">
+      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+    </div>
+  </section>
+
+  <!-- BEST PRACTICES -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">🛡 Best Practices for Defence</h2>
+
+    <div class="mt-3 text-gray-300 space-y-3">
+      <p><strong class="text-white">1. Physical Security of Devices</strong><br>
+      Always carry laptops and mobile devices on your person when possible. Use locked compartments or hotel safes when leaving devices unattended.</p>
+
+      <p><strong class="text-white">2. Secure Network Connections</strong><br>
+      Avoid unsecured Wi-Fi; always use VPN connections. Verify the legitimacy of networks before connecting.</p>
+
+      <p><strong class="text-white">3. Screen Privacy</strong><br>
+      Use privacy screens to prevent shoulder surfing. Position screens to minimize visibility to bystanders.</p>
+
+      <p><strong class="text-white">4. Safe Handling of Documents</strong><br>
+      Avoid leaving sensitive documents unattended. Use encrypted digital files instead of printed versions when possible.</p>
+
+      <p><strong class="text-white">5. Travel Preparation and Awareness</strong><br>
+      Research destinations for potential security risks. Keep backup copies of critical data in secure, encrypted formats. Be aware of social engineering attempts.</p>
+
+      <p><strong class="text-white">6. Emergency Response Measures</strong><br>
+      Enable remote wipe and tracking on all devices. Report lost or stolen devices immediately. Know company protocols for responding to data breaches while traveling.</p>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-gray-400">Back to Use Cases</button>
+      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Next: Checklist →</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Interactive Checklist</h2>
+    <p class="text-gray-300 text-sm mb-4">Tick the items you follow when traveling:</p>
+
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.carryDevices"> Always keep devices on person when travelling
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.vpn"> Use VPN on public Wi-Fi
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.privacyScreen"> Use privacy screens / position monitors away from view
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.secureDocs"> Avoid leaving sensitive documents unattended
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.remoteWipe"> Remote wipe & tracking enabled
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.backups"> Backups of critical data (secure/encrypted)
+      </label>
+    </div>
+
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-gray-700 px-4 py-2 rounded">Finish → Conclusion</button>
+    </div>
+
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Conclusion</h2>
+
+    <p class="text-gray-300 mb-4">
+      Travel security is an essential aspect of protecting both personal and corporate assets. Airports, hotels, and co-working spaces are high-risk areas for physical and cyber threats. By securing devices, using encrypted communications, maintaining document confidentiality, and being aware of surroundings, employees can minimize the risks of traveling and working remotely. Vigilance and preparation are key to maintaining security on the move.
+    </p>
+
+    <div class="flex gap-3">
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>      
+    </div>
+  </section>
+</div>
+
+<script>
+function travelModule(){
+  return {
+    active: 'intro',
+    sections: ['intro','usecases','best','checklist','conclusion'],
+    completed: {},
+    useCases: [
+      {
+        id:'uc1',
+        title:'Airport Public Charging Station Risk',
+        desc:'An employee plugs their laptop into a public USB charging station. Malware is injected via a compromised port.',
+        lesson:'Lesson: Use your own power sources or USB data blockers; avoid public charging ports.',
+        location:'Airport — charging area',
+        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect width="72" height="72" rx="12" fill="#111827" />
+                <g transform="translate(12,12)">
+                  <rect x="6" y="6" width="36" height="36" rx="6" fill="#0ea5a0"/>
+                  <path d="M12 18h12v4H12z" fill="#062e2c" opacity="0.9"/>
+                  <circle cx="30" cy="30" r="3" fill="#062e2c"/>
+                </g>
+              </svg>`
+      },
+      {
+        id:'uc2',
+        title:'Hotel Room Security Breach',
+        desc:'A laptop containing sensitive company documents is left unattended in a hotel room. Cleaning staff or unauthorized visitors access the device.',
+        lesson:'Lesson: Secure devices in locked drawers or safes; never leave them unattended.',
+        location:'Hotel room',
+        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+                <rect width="72" height="72" rx="12" fill="#111827"/>
+                <g transform="translate(10,10)">
+                  <rect x="4" y="6" width="40" height="28" rx="4" fill="#f59e0b"/>
+                  <rect x="10" y="12" width="28" height="16" rx="2" fill="#0b1220"/>
+                </g>
+              </svg>`
+      },
+      {
+        id:'uc3',
+        title:'Co-Working Space Wi-Fi Vulnerability',
+        desc:'An employee connects to an unsecured Wi-Fi network at a co-working space. Attackers on the same network intercept confidential communications.',
+        lesson:'Lesson: Always use a VPN and verify the legitimacy of public networks.',
+        location:'Co-working space — shared Wi-Fi',
+        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+                <rect width="72" height="72" rx="12" fill="#111827"/>
+                <g transform="translate(14,14)">
+                  <path d="M10 28a8 8 0 0112 0" stroke="#60a5fa" stroke-width="2" fill="none"/>
+                  <path d="M7 22a15 15 0 0118 0" stroke="#3b82f6" stroke-width="2" fill="none"/>
+                  <circle cx="19" cy="30" r="2" fill="#060b17"/>
+                </g>
+              </svg>`
+      },
+      {
+        id:'uc4',
+        title:'Theft of Luggage Containing Devices',
+        desc:'A briefcase with a company laptop and sensitive documents is stolen at an airport.',
+        lesson:'Lesson: Keep devices on your person, use anti-theft bags, and enable remote wipe capabilities.',
+        location:'Airport — baggage area',
+        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+                <rect width="72" height="72" rx="12" fill="#111827"/>
+                <g transform="translate(12,12)">
+                  <rect x="6" y="10" width="36" height="22" rx="3" fill="#ef4444"/>
+                  <rect x="12" y="14" width="24" height="14" rx="2" fill="#0b1220"/>
+                </g>
+              </svg>`
+      },
+      {
+        id:'uc5',
+        title:'Shoulder Surfing',
+        desc:"While working in a public lounge, an employee’s screen displaying sensitive client data is visible to strangers nearby.",
+        lesson:'Lesson: Use privacy screens, position screens away from public view, and be aware of surroundings.',
+        location:'Public lounge / waiting area',
+        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+                <rect width="72" height="72" rx="12" fill="#111827"/>
+                <g transform="translate(12,12)">
+                  <rect x="6" y="8" width="36" height="24" rx="4" fill="#10b981"/>
+                  <rect x="10" y="12" width="28" height="16" rx="2" fill="#06121a"/>
+                </g>
+              </svg>`
+      }
+    ],
+    outcomes: {},
+    checklist: { carryDevices:false, vpn:false, privacyScreen:false, secureDocs:false, remoteWipe:false, backups:false },
+    gapResult: '',
+    init(){
+      // restore progress and outcomes
+      this.sections.forEach(s => { this.completed[s] = localStorage.getItem('travel_done_'+s) === '1'; });
+      this.active = localStorage.getItem('travel_last') || 'intro';
+      try {
+        const saved = JSON.parse(localStorage.getItem('travel_outcomes'));
+        if(saved) this.outcomes = saved;
+      } catch(e){}
+      try {
+        const savedc = JSON.parse(localStorage.getItem('travel_checklist'));
+        if(savedc) this.checklist = savedc;
+      } catch(e){}
+    },
+    go(id){
+      this.active = id;
+      localStorage.setItem('travel_last', id);
+    },
+    complete(name){
+      this.completed[name] = true;
+      localStorage.setItem('travel_done_'+name,'1');
+    },
+    ucAct(id, action){
+      // ensure an object key exists
+      if(!this.outcomes) this.outcomes = {};
+      // set different outcomes for each action
+      if(action==='correct'){
+        this.outcomes[id] = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Good choice — this reduces exposure and increases the chance of quick recovery if something goes wrong.</div>';
+      } else if(action==='partial'){
+        this.outcomes[id] = '<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Partially mitigated — some risk remains. Consider additional controls (e.g., use VPN + remote wipe).</div>';
+      } else {
+        this.outcomes[id] = '<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Risky action — likely leads to compromise (device theft, data leak, or malware). Avoid this behavior.</div>';
+      }
+      // persist
+      localStorage.setItem('travel_outcomes', JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('travel_checklist', JSON.stringify(this.checklist));
+      const missing = Object.entries(this.checklist).filter(([k,v]) => !v).map(([k]) => {
+        const map = {
+          carryDevices:'Carry devices on person',
+          vpn:'Use VPN on public Wi-Fi',
+          privacyScreen:'Use privacy screens',
+          secureDocs:'Secure physical documents',
+          remoteWipe:'Enable remote wipe & tracking',
+          backups:'Maintain secure backups'
+        };
+        return map[k]||k;
+      });
+      if(missing.length===0){
+        this.gapResult = '<div class="p-3 rounded bg-green-900 border border-green-500 text-green-200">No gaps detected — good travel hygiene.</div>';
+      } else {
+        this.gapResult = '<div class="p-3 rounded bg-yellow-900 border border-yellow-500 text-yellow-200">Missing practices: ' + missing.join(', ') + '.</div>';
+      }
+    },
+    restart(){
+      // this.sections.forEach(s => { localStorage.removeItem('travel_done_'+s); this.completed[s]=false; });
+      // localStorage.removeItem('travel_last');
+      // localStorage.removeItem('travel_outcomes');
+      // localStorage.removeItem('travel_checklist');
+      // this.outcomes = {};
+      // this.checklist = { carryDevices:false, vpn:false, privacyScreen:false, secureDocs:false, remoteWipe:false, backups:false };
+      // this.gapResult = '';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-2?lecture_uuid=258cd42f-d3be-4cbb-8e71-8eaa2aa5d632#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

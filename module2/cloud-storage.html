@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Cloud Storage & Collaboration Tool Security</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.05); }
+    [x-cloak] { display:none; }
+  </style>
+</head>
+<body class="bg-[#0A0125] text-gray-100 antialiased">
+
+<div class="max-w-5xl mx-auto p-6" x-data="cloudModule()" x-init="init()">
+  <!-- Header -->
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-purple-300">Cloud Storage & Collaboration Tool Security</h1>
+    <p class="text-sm text-gray-400 mt-1">How to securely use Google Drive, OneDrive, Dropbox, Slack, and similar platforms</p>
+
+    <div class="mt-4 card p-4 rounded">
+      <strong class="block text-white mb-2">Learning Objectives</strong>
+      <ul class="list-disc pl-5 space-y-1 text-sm text-gray-300">
+        <li>Understand the risks associated with cloud storage and collaboration tools.</li>
+        <li>Apply best practices to protect company data stored or shared in the cloud.</li>
+        <li>Recognize phishing and social engineering attacks targeting cloud accounts.</li>
+        <li>Use secure authentication methods, such as strong passwords and multi-factor authentication (MFA).</li>
+        <li>Manage permissions and access controls effectively to minimize data exposure.</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="mb-6 flex flex-wrap gap-2">
+    <button @click="go('intro')" :class="btnCls('intro')" class="px-4 py-2 rounded">Intro</button>
+    <button @click="go('usecases')" :class="btnCls('usecases')" class="px-4 py-2 rounded">Use Cases</button>
+    <button @click="go('best')" :class="btnCls('best')" class="px-4 py-2 rounded">Best Practices</button>
+    <button @click="go('checklist')" :class="btnCls('checklist')" class="px-4 py-2 rounded">Checklist</button>
+    <button @click="go('conclusion')" :class="btnCls('conclusion')" class="px-4 py-2 rounded">Conclusion</button>
+  </nav>
+
+  <!-- Intro -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Introduction</h2>
+    <p class="text-gray-300 mb-4">
+      Cloud storage and collaboration tools like Google Drive, Microsoft OneDrive, Dropbox, and Slack have revolutionized the way teams work. They allow employees to store, share, and collaborate on files in real-time. However, improper use of cloud platforms can lead to data breaches, unauthorized access, and regulatory compliance violations.
+    </p>
+
+    <h3 class="text-lg font-semibold text-white mb-2">Why Cloud Security Matters</h3>
+    <ul class="list-disc pl-5 text-gray-300 space-y-2">
+      <li><strong>Unauthorized Access:</strong> Weak passwords or shared accounts can allow attackers to access sensitive files.</li>
+      <li><strong>Misconfigured Permissions:</strong> Publicly shared folders or links can expose confidential information.</li>
+      <li><strong>Phishing Threats:</strong> Attackers may impersonate cloud platforms to steal login credentials.</li>
+      <li><strong>Data Loss or Corruption:</strong> Accidental deletion, malware, or ransomware attacks can compromise stored files.</li>
+    </ul>
+
+    <div class="mt-4 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Next → Use Cases</button>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Use Cases</h2>
+
+    <template x-for="uc in useCases" :key="uc.id">
+      <article class="p-4 border border-gray-700 rounded grid md:grid-cols-5 gap-4 items-start">
+        <div class="md:col-span-1 flex justify-center">
+          <div class="w-20 h-20 bg-gray-900 rounded flex items-center justify-center" x-html="uc.svg"></div>
+        </div>
+        <div class="md:col-span-4">
+          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+          <p class="text-gray-300 text-sm" x-text="uc.desc"></p>
+          <p class="text-green-300 mt-2 text-sm" x-text="uc.lesson"></p>
+        </div>
+      </article>
+    </template>
+
+    <div class="flex justify-end">
+      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next → Best Practices</button>
+    </div>
+  </section>
+
+  <!-- Best Practices -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">🛡 Best Practices for Defence</h2>
+
+    <div class="space-y-3 text-gray-300 text-sm">
+      <p><strong class="text-white">1. Use Strong Authentication</strong><br>
+      Enable multi-factor authentication (MFA) for all cloud accounts. Use strong, unique passwords and avoid sharing credentials.</p>
+
+      <p><strong class="text-white">2. Verify Sharing Settings</strong><br>
+      Limit folder or file access to only those who need it. Avoid using public links for sensitive data.</p>
+
+      <p><strong class="text-white">3. Monitor Account Activity</strong><br>
+      Regularly review login history and access logs. Be alert to unusual or unauthorized access attempts.</p>
+
+      <p><strong class="text-white">4. Employee Awareness & Training</strong><br>
+      Educate staff on phishing and social engineering tactics targeting cloud accounts. Encourage reporting of suspicious emails or activities.</p>
+
+      <p><strong class="text-white">5. Backup & Recovery Measures</strong><br>
+      Enable version control and scheduled backups. Establish a recovery plan in case of accidental deletion, ransomware, or other incidents.</p>
+
+      <p><strong class="text-white">6. Device and Network Security</strong><br>
+      Access cloud platforms only from secure devices and networks. Avoid using public Wi-Fi without VPN when accessing sensitive files.</p>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-gray-400">← Back</button>
+      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Next → Checklist</button>
+    </div>
+  </section>
+
+  <!-- Checklist -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Interactive Checklist</h2>
+    <p class="text-gray-300 text-sm mb-4">Tick the controls your organisation has implemented:</p>
+
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="flex items-center gap-2"><input type="checkbox" x-model="checklist.mfa"> Multi-factor authentication enabled</label>
+      <label class="flex items-center gap-2"><input type="checkbox" x-model="checklist.permissions"> Sharing permissions reviewed</label>
+      <label class="flex items-center gap-2"><input type="checkbox" x-model="checklist.logs"> Login/access logs monitored</label>
+      <label class="flex items-center gap-2"><input type="checkbox" x-model="checklist.training"> Staff trained on phishing</label>
+      <label class="flex items-center gap-2"><input type="checkbox" x-model="checklist.backup"> Backups & version control in place</label>
+      <label class="flex items-center gap-2"><input type="checkbox" x-model="checklist.device"> Devices & networks secured</label>
+    </div>
+
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+    </div>
+    <div class="mt-4" x-html="gapResult"></div>
+
+    <div class="mt-6 flex justify-between">
+      <button @click="go('best')" class="text-gray-400">← Back</button>
+      <button @click="complete('checklist'); go('conclusion')" class="bg-purple-600 px-4 py-2 rounded">Next → Conclusion</button>
+    </div>
+  </section>
+
+  <!-- Conclusion -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Conclusion</h2>
+    <p class="text-gray-300 text-sm">
+      Employees must understand how to securely use cloud services and collaboration platforms to maintain organizational security. Cloud tools are powerful enablers of teamwork but also introduce risks if not properly managed. By enabling MFA, monitoring access, securing devices, and educating staff, organizations can reduce risks of data breaches, unauthorized access, or regulatory non-compliance. Vigilance and secure practices are critical to safeguarding company data in the cloud.
+    </p>
+
+    <div class="mt-4 flex gap-2">
+      <button @click="restart" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+    </div>
+  </section>
+</div>
+
+<script>
+function cloudModule(){
+  return {
+    active:'intro',
+    completed:{},
+    checklist:{mfa:false,permissions:false,logs:false,training:false,backup:false,device:false},
+    gapResult:'',
+    useCases:[
+      {id:1,title:"Misconfigured Shared Folder",desc:"An employee accidentally shares a folder containing confidential client data with 'Anyone with the link.' The link is later accessed by an external party.",lesson:"Lesson: Always verify sharing settings and restrict access to authorized users only.",svg:`<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`},
+      {id:2,title:"Weak Password & Account Compromise",desc:"A cloud storage account uses a simple, reused password. Attackers gain access and steal corporate documents.",lesson:"Lesson: Use strong, unique passwords and enable MFA to secure accounts.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`},
+      {id:3,title:"Phishing Attack on Collaboration Platform",desc:"An employee receives an email claiming to be from the cloud service, requesting login verification. The link directs to a fake login page, capturing credentials.",lesson:"Lesson: Always verify emails and login pages before entering credentials; never enter credentials via email links.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#60a5fa"/></svg>`},
+      {id:4,title:"Data Loss from Accidental Deletion",desc:"A team member accidentally deletes critical project files from the shared cloud folder. Recovery is delayed due to lack of backup.",lesson:"Lesson: Enable version control, backups, and restricted deletion permissions for critical files.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#fbbf24"/></svg>`},
+      {id:5,title:"Insider Misuse",desc:"An employee with authorized access copies confidential files to a personal device and shares them outside the organization.",lesson:"Lesson: Monitor activity, enforce role-based access, and educate employees on data confidentiality policies.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#34d399"/></svg>`}
+    ],
+    init(){
+      this.active=localStorage.getItem('cloud_active')||'intro';
+      this.sections=['intro','usecases','best','checklist','conclusion'];
+      this.sections.forEach(s=>{this.completed[s]=localStorage.getItem('cloud_done_'+s)==='1';});
+      try{this.checklist=JSON.parse(localStorage.getItem('cloud_checklist'))||this.checklist;}catch(e){}
+    },
+    go(s){this.active=s;localStorage.setItem('cloud_active',s);},
+    complete(s){this.completed[s]=true;localStorage.setItem('cloud_done_'+s,'1');},
+    btnCls(s){return this.active===s?'bg-purple-600 text-white':'bg-gray-700 text-gray-300';},
+    analyzeGaps(){
+      localStorage.setItem('cloud_checklist',JSON.stringify(this.checklist));
+      const missing=Object.entries(this.checklist).filter(([k,v])=>!v).map(([k])=>k);
+      if(!missing.length){this.gapResult='<div class="p-3 bg-green-900 border border-green-500 rounded">All key controls are in place.</div>';}
+      else{
+        const labels={mfa:"MFA",permissions:"Sharing settings",logs:"Access logs",training:"Phishing training",backup:"Backups/versioning",device:"Device security"};
+        const list=missing.map(m=>labels[m]||m).join(", ");
+        this.gapResult='<div class="p-3 bg-yellow-900 border border-yellow-500 rounded">Missing controls: '+list+'</div>';
+      }
+    },
+    restart(){
+    //   this.sections.forEach(s=>localStorage.removeItem('cloud_done_'+s));
+    //   localStorage.removeItem('cloud_active');
+    //   localStorage.removeItem('cloud_checklist');
+    //   this.active='intro';
+    //   this.completed={};
+    //   this.checklist={mfa:false,permissions:false,logs:false,training:false,backup:false,device:false};
+    //   this.gapResult='';
+    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-2?lecture_uuid=ae59926d-78da-4c57-ad28-e5bcd134c274#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

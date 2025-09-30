@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Topic 4: Data Encryption & Secure Communication</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.08); }
+    [x-cloak] { display: none; }
+  </style>
+</head>
+<body class="bg-[#0A0125] text-gray-100 antialiased">
+
+<div class="max-w-6xl mx-auto p-6" x-data="encCommModule()" x-init="init()">
+
+  <!-- HEADER -->
+  <header class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-purple-300">Topic 4: Data Encryption & Secure Communication</h1>
+      <p class="text-sm text-gray-400">Protecting data in transit and at rest</p>
+      <div class="mt-3 text-xs text-gray-400">
+        <strong>Learning Objectives:</strong>
+        <ul class="ml-4 list-disc">
+          <li>Understand the importance of encrypting data in transit and at rest.</li>
+          <li>Apply secure communication practices for emails, files, and collaboration platforms.</li>
+          <li>Recognize encryption protocols such as SSL/TLS and VPN.</li>
+          <li>Protect sensitive data against interception, unauthorized access, and tampering.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-right">
+      <div class="text-sm text-gray-300">Progress</div>
+      <div class="mt-1 flex gap-1">
+        <template x-for="(s,i) in sections" :key="i">
+          <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
+        </template>
+      </div>
+      <div class="mt-2 text-xs text-gray-400">Saved locally</div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Use Cases</button>
+    <button @click="go('best')" :class="active==='best' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Checklist</button>
+    <button @click="go('conclusion')" :class="active==='conclusion' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Conclusion</button>
+  </nav>
+
+  <!-- INTRO -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Introduction</h2>
+    <p class="text-gray-300 mb-4">
+      Data encryption converts information into unreadable code that can only be accessed by authorized parties. Secure communication is critical to protecting sensitive data both inside the office and when working remotely. Cybercriminals often target unencrypted data, emails, or files to steal information or disrupt operations.
+    </p>
+
+    <h3 class="text-lg font-semibold text-white mb-2">Why Encryption and Secure Communication Matters</h3>
+    <ul class="list-disc pl-5 text-gray-300 space-y-2">
+      <li><strong>Data Confidentiality:</strong> Ensures sensitive data is readable only by intended recipients.</li>
+      <li><strong>Data Integrity:</strong> Prevents unauthorized alteration of messages or files.</li>
+      <li><strong>Compliance:</strong> Meets regulatory requirements for handling sensitive information.</li>
+      <li><strong>Risk Mitigation:</strong> Reduces the impact of intercepted communications during remote work or travel.</li>
+    </ul>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
+    <template x-for="uc in useCases" :key="uc.id">
+      <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
+        <div class="md:col-span-1 flex justify-center">
+          <div class="w-24 h-24 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
+        </div>
+        <div class="md:col-span-4">
+          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+          <p class="text-gray-300" x-text="uc.desc"></p>
+          <p class="text-sm text-green-300 mt-1" x-text="uc.lesson"></p>
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct action</button>
+            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
+          </div>
+          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+        </div>
+      </article>
+    </template>
+
+    <div class="flex justify-end">
+      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+    </div>
+  </section>
+
+  <!-- BEST PRACTICES -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">🛡 Best Practices for Defence</h2>
+    <div class="mt-3 text-gray-300 space-y-3">
+      <p><strong class="text-white">1. Encrypt Data at Rest and in Transit</strong><br>Use file encryption for sensitive documents on devices and in cloud storage. Enable TLS/SSL for emails and web traffic.</p>
+      <p><strong class="text-white">2. Use VPN for Remote Work</strong><br>Protect data when accessing corporate resources on public or untrusted networks. VPNs encrypt all transmitted traffic, reducing the risk of interception.</p>
+      <p><strong class="text-white">3. Secure Collaboration Tools</strong><br>Use approved platforms with end-to-end encryption for messaging, file sharing, and calls. Restrict access to authorized users only.</p>
+      <p><strong class="text-white">4. Strong Authentication & Access Control</strong><br>Implement MFA on all communication platforms and encrypted storage. Assign permissions based on roles to limit exposure of sensitive data.</p>
+      <p><strong class="text-white">5. Employee Awareness & Training</strong><br>Educate employees on identifying insecure connections and phishing attempts. Train staff to use encryption tools correctly and consistently.</p>
+      <p><strong class="text-white">6. Backup Security</strong><br>Encrypt backup files and store them in secure locations. Test restoration regularly to ensure data integrity and availability.</p>
+    </div>
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-gray-400">Back to Use Cases</button>
+      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Next: Checklist →</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Interactive Checklist</h2>
+    <p class="text-gray-300 text-sm mb-4">Tick the items you practice to improve secure communication:</p>
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3"><input type="checkbox" x-model="checklist.encrypt"> Encrypt sensitive files and emails</label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3"><input type="checkbox" x-model="checklist.vpn"> Use VPN on untrusted networks</label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3"><input type="checkbox" x-model="checklist.mfa"> Enable MFA on communication tools</label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3"><input type="checkbox" x-model="checklist.backup"> Encrypt and test backups</label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3"><input type="checkbox" x-model="checklist.awareness"> Stay aware of phishing & insecure links</label>
+    </div>
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-gray-700 px-4 py-2 rounded">Finish → Conclusion</button>
+    </div>
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Conclusion</h2>
+    <p class="text-gray-300 mb-4">
+      Encryption and secure communication are essential defenses in modern cybersecurity. Protecting data in transit and at rest, using secure messaging platforms, VPNs, and encrypted backups ensures organizational information remains confidential, intact, and accessible only to authorized personnel. Employees are critical in consistently applying these practices to prevent data breaches and cyberattacks.
+    </p>
+    <div class="flex gap-3">
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+    </div>
+  </section>  
+</div>
+
+<script>
+function encCommModule(){
+  return {
+    active:'intro',
+    sections:['intro','usecases','best','checklist','conclusion'],
+    completed:{},
+    outcomes:{},
+    useCases:[
+      {id:'uc1', title:'Unencrypted Email Interception', desc:'An employee sends an unencrypted email containing client financial data. Attackers intercept the email on the network.', lesson:'Lesson: Always use email encryption for sensitive communications.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>'},
+      {id:'uc2', title:'Cloud File Sharing Without Encryption', desc:'A shared folder in the cloud is accessed over an unencrypted connection, exposing company documents.', lesson:'Lesson: Use secure, encrypted cloud platforms and verify HTTPS connections.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>'},
+      {id:'uc3', title:'Public Wi-Fi Eavesdropping', desc:'While on public Wi-Fi, an employee sends sensitive files without using VPN or encryption. Data is intercepted by attackers.', lesson:'Lesson: Encrypt files and use secure networks, VPNs, and secure messaging tools.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 30h32v12H20z" fill="#f59e0b"/></svg>'},
+      {id:'uc4', title:'Collaboration Platform Vulnerability', desc:'Sensitive project data is shared via an unprotected messaging tool. Attackers gain access due to lack of end-to-end encryption.', lesson:'Lesson: Use approved collaboration tools with robust encryption and access controls.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 20h32v32H20z" fill="#10b981"/></svg>'},
+      {id:'uc5', title:'Encrypted Backups', desc:'A ransomware attack targets company files. Because backups are encrypted and stored securely, data is recovered without paying ransom.', lesson:'Lesson: Always encrypt backups and test restoration procedures regularly.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="16" fill="#8b5cf6"/></svg>'}
+    ],
+    checklist:{encrypt:false,vpn:false,mfa:false,backup:false,awareness:false},
+    gapResult:'',
+    init(){
+      this.sections.forEach(s=>this.completed[s]=localStorage.getItem('encComm_done_'+s)==='1');
+      this.active=localStorage.getItem('encComm_last')||'intro';
+      try{this.outcomes=JSON.parse(localStorage.getItem('encComm_outcomes'))||{}}catch(e){}
+      try{this.checklist=JSON.parse(localStorage.getItem('encComm_checklist'))||this.checklist}catch(e){}
+    },
+    go(id){this.active=id;localStorage.setItem('encComm_last',id);},
+    complete(name){this.completed[name]=true;localStorage.setItem('encComm_done_'+name,'1');},
+    ucAct(id,action){
+      if(action==='correct') this.outcomes[id]='<div class="p-3 rounded bg-green-900 border border-green-500 text-green-200">Correct — secure action taken.</div>';
+      if(action==='partial') this.outcomes[id]='<div class="p-3 rounded bg-yellow-900 border border-yellow-500 text-yellow-200">Partially mitigated — some risk remains.</div>';
+      if(action==='bad') this.outcomes[id]='<div class="p-3 rounded bg-red-900 border border-red-500 text-red-200">Risky — communication exposed.</div>';
+      localStorage.setItem('encComm_outcomes',JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('encComm_checklist',JSON.stringify(this.checklist));
+      const missing=Object.entries(this.checklist).filter(([k,v])=>!v).map(([k])=>k);
+      if(missing.length===0) this.gapResult='<div class="p-3 rounded bg-green-900 border border-green-500 text-green-200">No gaps detected — strong encryption practices.</div>';
+      else this.gapResult='<div class="p-3 rounded bg-yellow-900 border border-yellow-500 text-yellow-200">Missing: '+missing.join(', ')+'</div>';
+    },
+    restart(){
+      // this.sections.forEach(s=>{localStorage.removeItem('encComm_done_'+s);this.completed[s]=false;});
+      // localStorage.removeItem('encComm_last');
+      // localStorage.removeItem('encComm_outcomes');
+      // localStorage.removeItem('encComm_checklist');
+      // this.outcomes={};this.checklist={encrypt:false,vpn:false,mfa:false,backup:false,awareness:false};
+      // this.gapResult='';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-3?lecture_uuid=4c59299f-1699-4549-a915-db971ee5b8f0#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Mobile Device Protection</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); }
+    [x-cloak] { display: none; }
+  </style>
+</head>
+<body class="bg-[#0A0125] text-gray-100 antialiased">
+
+<div class="max-w-6xl mx-auto p-6" x-data="mobileModule()" x-init="init()">
+
+  <!-- HEADER -->
+  <header class="flex items-start justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-purple-300">Mobile Device Protection</h1>
+      <p class="text-sm text-gray-400">Protecting smartphones, tablets, and laptops</p>
+
+      <div class="mt-3 text-xs text-gray-400">
+        <strong>Learning Objectives:</strong>
+        <ul class="ml-4 list-disc">
+          <li>Recognize the risks associated with mobile devices used for work purposes.</li>
+          <li>Apply security measures to protect smartphones, tablets, and laptops.</li>
+          <li>Securely store and transmit sensitive company data on mobile devices.</li>
+          <li>Understand the importance of device updates, encryption, and access controls.</li>
+          <li>Respond appropriately to lost, stolen, or compromised devices.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-right">
+      <div class="text-sm text-gray-300">Progress</div>
+      <div class="mt-1 flex gap-1">
+        <template x-for="(s,i) in sections" :key="i">
+          <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
+        </template>
+      </div>
+      <div class="mt-2 text-xs text-gray-400">Saved locally</div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Use Cases</button>
+    <button @click="go('best')" :class="active==='best' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Checklist</button>
+    <button @click="go('conclusion')" :class="active==='conclusion' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded">Conclusion</button>
+  </nav>
+
+  <!-- INTRO -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Introduction</h2>
+    <p class="text-gray-300 mb-4">
+      Mobile devices have become essential tools for productivity, allowing employees to work remotely, access corporate resources, and communicate in real time. However, they also present unique security challenges. Lost or stolen devices, unpatched vulnerabilities, or insecure applications can all lead to unauthorized access to sensitive corporate data.
+    </p>
+
+    <h3 class="text-lg font-semibold text-white mb-2">Why Mobile Device Security Matters</h3>
+    <ul class="list-disc pl-5 text-gray-300 space-y-2">
+      <li><strong>Loss or Theft:</strong> Physical loss of a device can expose company emails, files, and applications.</li>
+      <li><strong>Malware and Spyware:</strong> Mobile devices are targets for malicious apps or phishing attacks.</li>
+      <li><strong>Unsecured Networks:</strong> Devices connecting to public Wi-Fi without proper protections can have data intercepted.</li>
+      <li><strong>Data Leakage:</strong> Sensitive information can be shared unintentionally via apps, messaging, or cloud storage.</li>
+    </ul>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
+    <template x-for="uc in useCases" :key="uc.id">
+      <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
+        <div class="md:col-span-1 flex justify-center">
+          <!-- Inline SVG Placeholder -->
+          <div class="w-28 h-28 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
+        </div>
+        <div class="md:col-span-3">
+          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+          <p class="text-gray-300" x-text="uc.desc"></p>
+          <p class="text-sm text-green-300 mt-1" x-text="uc.lesson"></p>
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct action</button>
+            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
+          </div>
+          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+        </div>
+      </article>
+    </template>
+
+    <div class="flex justify-end">
+      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+    </div>
+  </section>
+
+  <!-- BEST PRACTICES -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">🛡 Best Practices for Defence</h2>
+    <div class="mt-3 text-gray-300 space-y-3">
+      <p><strong class="text-white">1. Device Encryption</strong><br>Enable full-disk encryption on mobile devices to protect data in case of loss or theft. Ensure strong passcodes, biometrics, or PINs are required to unlock devices.</p>
+      <p><strong class="text-white">2. Install Security Updates Promptly</strong><br>Apply operating system and application updates as soon as they are released. Updates often patch security vulnerabilities that attackers exploit.</p>
+      <p><strong class="text-white">3. Use Trusted Apps Only</strong><br>Install applications from official app stores (Google Play, Apple App Store). Review app permissions carefully; avoid granting unnecessary access to sensitive data.</p>
+      <p><strong class="text-white">4. Secure Network Connections</strong><br>Avoid connecting to unsecured Wi-Fi. Use VPNs to encrypt data transmitted over public networks.</p>
+      <p><strong class="text-white">5. Enable Remote Management</strong><br>Activate tracking, remote lock, and wipe features to secure lost or stolen devices. Ensure corporate devices are enrolled in mobile device management (MDM) solutions.</p>
+      <p><strong class="text-white">6. Avoid Data Leakage</strong><br>Limit work-related data storage on personal devices. Use approved secure cloud storage and communication platforms.</p>
+      <p><strong class="text-white">7. Awareness of Phishing and Social Engineering</strong><br>Be cautious of links or attachments received via SMS, email, or messaging apps. Report suspicious activity to IT immediately.</p>
+    </div>
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-gray-400">Back to Use Cases</button>
+      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Next: Checklist →</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Interactive Checklist</h2>
+    <p class="text-gray-300 text-sm mb-4">Tick the items you follow for mobile security:</p>
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.encryption"> Device encryption enabled
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.updates"> Regular updates installed
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.apps"> Only trusted apps installed
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.vpn"> VPN used on public Wi-Fi
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.mdm"> Remote wipe / MDM enabled
+      </label>
+      <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.noLeak"> Avoid storing work data on personal devices
+      </label>
+    </div>
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-gray-700 px-4 py-2 rounded">Finish → Conclusion</button>
+    </div>
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-purple-200">Conclusion</h2>
+    <p class="text-gray-300 mb-4">
+      Mobile devices are critical productivity tools but can pose significant security risks if not properly protected. Encryption, strong passwords, device updates, trusted apps, secure networks, and remote management all contribute to safeguarding corporate and personal data. Employees play a vital role in ensuring mobile devices are a secure extension of the workplace.
+    </p>
+    <div class="flex gap-3">
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+    </div>
+  </section>
+  
+</div>
+
+<script>
+function mobileModule(){
+  return {
+    active:'intro',
+    sections:['intro','usecases','best','checklist','conclusion'],
+    completed:{},
+    outcomes:{},
+    useCases:[
+      {id:'uc1', title:'Lost or Stolen Device', desc:'An employee leaves their smartphone in a taxi. The device contains unencrypted emails, passwords, and corporate documents.', lesson:'Lesson: Always use device encryption, strong passwords, and remote wipe capabilities.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#ef4444"/></svg>'},
+      {id:'uc2', title:'Malicious Applications', desc:'An employee downloads an unofficial app that requests access to contacts, emails, and files. The app contains malware that sends corporate data to attackers.', lesson:'Lesson: Only install applications from trusted sources and review permissions carefully.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#f59e0b"/></svg>'},
+      {id:'uc3', title:'Unsecured Cloud Access', desc:'An employee accesses company files via a public Wi-Fi hotspot without VPN protection. Attackers intercept the data.', lesson:'Lesson: Use secure connections, VPNs, and approved cloud services for remote access.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 40c0-8 8-12 16-12s16 4 16 12" stroke="#3b82f6" stroke-width="3"/></svg>'},
+      {id:'uc4', title:'Outdated Operating System', desc:'A tablet has not been updated for several months. A known vulnerability is exploited by attackers to gain unauthorized access.', lesson:'Lesson: Keep devices and apps updated to patch security vulnerabilities.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="18" y="18" width="36" height="36" fill="#10b981"/></svg>'},
+      {id:'uc5', title:'Lost Device Recovery', desc:'An employee misplaces their laptop but quickly uses a company-provided tracking and remote wipe tool to secure data.', lesson:'Lesson: Prepare devices with remote management solutions to respond quickly to loss or theft.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 30h32v12H20z" fill="#8b5cf6"/></svg>'}
+    ],
+    checklist:{encryption:false,updates:false,apps:false,vpn:false,mdm:false,noLeak:false},
+    gapResult:'',
+    init(){
+      this.sections.forEach(s=>this.completed[s]=localStorage.getItem('mobile_done_'+s)==='1');
+      this.active=localStorage.getItem('mobile_last')||'intro';
+      try{this.outcomes=JSON.parse(localStorage.getItem('mobile_outcomes'))||{}}catch(e){}
+      try{this.checklist=JSON.parse(localStorage.getItem('mobile_checklist'))||this.checklist}catch(e){}
+    },
+    go(id){this.active=id;localStorage.setItem('mobile_last',id);},
+    complete(name){this.completed[name]=true;localStorage.setItem('mobile_done_'+name,'1');},
+    ucAct(id,action){
+      if(action==='correct') this.outcomes[id]='<div class="p-3 rounded bg-green-900 border border-green-500 text-green-200">Correct — strong protection against compromise.</div>';
+      if(action==='partial') this.outcomes[id]='<div class="p-3 rounded bg-yellow-900 border border-yellow-500 text-yellow-200">Partially mitigated — some risk remains.</div>';
+      if(action==='bad') this.outcomes[id]='<div class="p-3 rounded bg-red-900 border border-red-500 text-red-200">Risky — likely to result in compromise.</div>';
+      localStorage.setItem('mobile_outcomes',JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('mobile_checklist',JSON.stringify(this.checklist));
+      const missing=Object.entries(this.checklist).filter(([k,v])=>!v).map(([k])=>k);
+      if(missing.length===0) this.gapResult='<div class="p-3 rounded bg-green-900 border border-green-500 text-green-200">No gaps detected — excellent mobile device security.</div>';
+      else this.gapResult='<div class="p-3 rounded bg-yellow-900 border border-yellow-500 text-yellow-200">Missing: '+missing.join(', ')+'</div>';
+    },
+    restart(){
+      // this.sections.forEach(s=>{localStorage.removeItem('mobile_done_'+s);this.completed[s]=false;});
+      // localStorage.removeItem('mobile_last');
+      // localStorage.removeItem('mobile_outcomes');
+      // localStorage.removeItem('mobile_checklist');
+      // this.outcomes={};this.checklist={encryption:false,updates:false,apps:false,vpn:false,mdm:false,noLeak:false};
+      // this.gapResult='';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-2?lecture_uuid=0334b7dc-f765-49dc-8812-dd281b05825e#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>
