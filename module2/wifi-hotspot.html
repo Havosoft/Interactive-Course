@@ -43,8 +43,7 @@
         <template x-for="(s,i) in sections" :key="i">
           <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
         </template>
-      </div>
-      <div class="mt-2 text-xs text-gray-400">Saved locally (browser)</div>
+      </div>      
     </div>
   </header>
 
@@ -217,8 +216,7 @@
     </p>
 
     <div class="flex gap-3 mt-4">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Restart Module</button>
-      <a href="https://www.cisa.gov/publication/stopthinkconnect" target="_blank" class="bg-gray-700 px-4 py-2 rounded">Further reading</a>
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>      
     </div>
   </section>
 
@@ -385,7 +383,7 @@
         // this.useCases.forEach(u => { this.outcomes[u.id] = ''; });
         // this.gapResult = '';
         // this.go('intro');
-        window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-2?lecture_uuid=99be8e81-ba27-4e86-9e95-412d0141bd2c#Quiz";
+        window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Secure-Mobility-Data-Protection-Module?lecture_uuid=99be8e81-ba27-4e86-9e95-412d0141bd2c#Quiz";
       }
     }
   }

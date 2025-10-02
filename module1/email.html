@@ -85,8 +85,8 @@
 
     <!-- USE CASES -->
     <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
-      <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
-
+      <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and see outcomes</h2>
+      <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
       <template x-for="uc in useCases" :key="uc.id">
         <article class="p-4 rounded border border-gray-700 space-y-3">
           <h3 class="font-semibold text-white" x-text="uc.title"></h3>
@@ -200,7 +200,7 @@ function emailModule(){
     restart(){
       // localStorage.removeItem('em_active'); localStorage.removeItem('em_completed'); localStorage.removeItem('em_outcomes');
       // this.active='intro'; this.completed={}; this.outcomes={}; this.breachResult='';
-      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-1?lecture_uuid=d131f071-59c2-4b69-99f6-344215730ef3#Quiz";
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=d131f071-59c2-4b69-99f6-344215730ef3#Quiz";
     }
   }
 }

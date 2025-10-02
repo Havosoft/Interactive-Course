@@ -41,8 +41,7 @@
         <template x-for="(s,i) in sections" :key="i">
           <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500':'bg-gray-700'"></div>
         </template>
-      </div>
-      <div class="mt-2 text-xs text-gray-500">Saved in browser</div>
+      </div>      
     </div>
   </header>
 
@@ -75,7 +74,8 @@
 
   <!-- USE CASES -->
   <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-    <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
+    <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and see outcomes</h2>
+    <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
     <template x-for="uc in useCases" :key="uc.id">
       <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
         <div class="md:col-span-1 flex justify-center">
@@ -90,7 +90,7 @@
             <button @click="ucAct(uc.id,'partial')" class="bg-yellow-600 px-3 py-2 rounded">Partial</button>
             <button @click="ucAct(uc.id,'bad')" class="bg-red-600 px-3 py-2 rounded">Risky</button>
           </div>
-          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
         </div>
       </article>
     </template>
@@ -187,7 +187,7 @@ function insider(){
       // localStorage.removeItem('insider_last'); localStorage.removeItem('insider_outcomes'); localStorage.removeItem('insider_checklist');
       // this.outcomes={}; this.checklist={access:false,monitoring:false,training:false,data:false,reporting:false,physical:false};
       // this.gapResult=''; this.go('intro');
-      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-4?lecture_uuid=542ae465-9756-491d-9edd-7b5cfdd66779#Quiz";
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Physical-Insider-Security-Module?lecture_uuid=542ae465-9756-491d-9edd-7b5cfdd66779#Quiz";
     }
   }
 }

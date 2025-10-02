@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Workstation Best Practices — Interactive</title>
+  <title>Workstation Best Practices</title>
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -47,8 +47,7 @@
         <template x-for="s in navOrder" :key="s">
           <div :title="labels[s]" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
         </template>
-      </div>
-      <div class="mt-2 text-xs text-gray-400">Progress saved locally</div>
+      </div>      
     </div>
   </header>
 
@@ -299,7 +298,7 @@ function workstationModule(){
     //   this.outcomes = { uc1:'', uc2:'', uc3:'', uc4:'' };
     //   this.checklist = { lock:false, cleanDesk:false, privacy:false, updates:false, usbPolicy:false };
     //   this.gapResult = '';
-    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Medical-Device-Firmware-Security?module-1?lecture_uuid=97333a56-30a7-4aca-80b2-41d4938cf75d#Quiz";
+    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Medical-Device-Firmware-Security?Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=97333a56-30a7-4aca-80b2-41d4938cf75d#Quiz";
     },
 
     exportProgress(){

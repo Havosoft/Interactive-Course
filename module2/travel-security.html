@@ -42,8 +42,7 @@
         <template x-for="(s,i) in sections" :key="i">
           <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
         </template>
-      </div>
-      <div class="mt-2 text-xs text-gray-400">Saved locally (browser)</div>
+      </div>      
     </div>
   </header>
 
@@ -100,7 +99,7 @@
             <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
           </div>
 
-          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
         </div>
 
         <div class="md:col-span-1 text-right">
@@ -339,7 +338,7 @@ function travelModule(){
       // this.checklist = { carryDevices:false, vpn:false, privacyScreen:false, secureDocs:false, remoteWipe:false, backups:false };
       // this.gapResult = '';
       // this.go('intro');
-      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-2?lecture_uuid=258cd42f-d3be-4cbb-8e71-8eaa2aa5d632#Quiz";
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Secure-Mobility-Data-Protection-Module?lecture_uuid=258cd42f-d3be-4cbb-8e71-8eaa2aa5d632#Quiz";
     }
   }
 }

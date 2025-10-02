@@ -51,8 +51,7 @@
         <template x-for="s in navOrder" :key="s">
           <div :title="labels[s]" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
         </template>
-      </div>
-      <div class="mt-2 text-xs text-gray-400">Progress saved locally</div>
+      </div>      
     </div>
   </header>
 
@@ -338,7 +337,7 @@ function passwordModule(){
     //   this.outcomes = { uc1:'', uc2:'', uc3:'', uc4:'', uc5:'' };
     //   this.checklist = { strong:false, manager:false, mfa:false, sharing:false, update:false, training:false, detect:false };
     //   this.gapResult = '';
-    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/module-1?lecture_uuid=a37a1db0-9942-4db2-9120-51b14a6709a3#Quiz";
+    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=a37a1db0-9942-4db2-9120-51b14a6709a3#Quiz";
     },
 
     exportProgress(){
