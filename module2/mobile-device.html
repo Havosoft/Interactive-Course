@@ -20,7 +20,7 @@
 <div class="max-w-6xl mx-auto p-6" x-data="mobileModule()" x-init="init()">
 
   <!-- HEADER -->
-  <header class="flex items-start justify-between gap-4 mb-6">
+  <header class="flex justify-between gap-4 mb-6">
     <div>
       <h1 class="text-3xl font-bold text-purple-300">Mobile Device Protection</h1>
       <p class="text-sm text-gray-400">Protecting smartphones, tablets, and laptops</p>
@@ -36,15 +36,7 @@
         </ul>
       </div>
     </div>
-
-    <div class="text-right">
-      <div class="text-sm text-gray-300">Progress</div>
-      <div class="mt-1 flex gap-1">
-        <template x-for="(s,i) in sections" :key="i">
-          <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
-        </template>
-      </div>      
-    </div>
+    
   </header>
 
   <!-- NAVIGATION -->

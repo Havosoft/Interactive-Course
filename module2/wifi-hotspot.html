@@ -22,7 +22,7 @@
 
 <div class="max-w-5xl mx-auto p-6" x-data="wifiModule()" x-init="init()">
   <!-- Header -->
-  <header class="flex flex-col md:flex-row items-start justify-between gap-4 mb-6">
+  <header class="flex flex-col md:flex-row justify-between gap-4 mb-6">
     <div>
       <h1 class="text-3xl font-bold text-purple-300">Safe Use of Wi-Fi & Hotspots</h1>
       <p class="text-sm text-gray-400 mt-1">Protect company devices and data while working remotely or in public places</p>
@@ -35,16 +35,7 @@
           <li>Protect company devices and data while working remotely or in public spaces.</li>
         </ul>
       </div>
-    </div>
-
-    <div class="text-right w-full md:w-48">
-      <div class="text-sm text-gray-300">Progress</div>
-      <div class="mt-2 flex gap-1">
-        <template x-for="(s,i) in sections" :key="i">
-          <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
-        </template>
-      </div>      
-    </div>
+    </div>  
   </header>
 
   <!-- Player / Nav -->

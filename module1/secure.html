@@ -29,20 +29,12 @@
 
     <!-- Header / Progress -->
     <header class="mb-6">
-      <div class="flex items-start justify-between">
+      <div class="flex justify-between">
         <div>
           <h1 class="text-2xl md:text-3xl font-bold text-white">Secure Document Handling</h1>
           <p class="text-sm text-gray-300 mt-1">Protect physical & digital documents — classify, store, share and dispose safely</p>
         </div>
-
-        <div class="text-right">
-          <div class="text-sm text-gray-400">Progress</div>
-          <div class="mt-2 flex gap-1">
-            <template x-for="s in sections" :key="s">
-              <div :title="s" class="w-12 h-3 rounded" :class="completed[s] ? 'bg-green-500' : 'bg-gray-700'"></div>
-            </template>
-          </div>          
-        </div>
+        
       </div>
     </header>
 
