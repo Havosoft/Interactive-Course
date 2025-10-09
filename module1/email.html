@@ -166,7 +166,7 @@ function emailModule(){
     completed: JSON.parse(localStorage.getItem('em_completed')||'{}'),
     outcomes: JSON.parse(localStorage.getItem('em_outcomes')||'{}'),
     breachResult:'',
-    quizUrl: 'https://lms.collaboratoor.com/student/my-course/Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=d131f071-59c2-4b69-99f6-344215730ef3#Quiz', // replace if needed
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1',title:'Credential Harvesting via Phishing Email',desc:'An employee receives an email appearing to come from IT, asking them to reset their password via a link. The link directs to a fake login page designed to steal credentials.',lesson:'Always verify senders and URLs.'},
       {id:'uc2',title:'Malware-Laden Attachment',desc:'A seemingly legitimate email contains an invoice attachment that, when opened, installs malware on the workstation.',lesson:'Open attachments only from trusted sources.'},
