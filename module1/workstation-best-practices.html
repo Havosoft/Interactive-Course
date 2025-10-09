@@ -170,7 +170,8 @@
       </p>
 
       <div class="mt-6 flex gap-3">
-        <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>       
+        <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>   -->
+        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>     
       </div>      
     </section>
 
@@ -192,6 +193,7 @@ function workstationModule(){
     // state
     active: localStorage.getItem('ws_active') || 'intro',
     completed: JSON.parse(localStorage.getItem('ws_completed') || '{}'),
+    quizUrl: '#Quiz', // replace if needed
     useCases: [
       {
         id: 'uc1',

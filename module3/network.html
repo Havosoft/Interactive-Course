@@ -135,7 +135,8 @@
       Network and endpoint security form the backbone of organizational cybersecurity. Securing devices, networks, and IoT endpoints—alongside employee vigilance—prevents unauthorized access, data breaches, and operational disruptions. Consistent monitoring, policy enforcement, and proactive updates ensure a strong, resilient security posture.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>  
 </div>
@@ -147,6 +148,7 @@ function netEndpointModule(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Unsecured Wi-Fi Network', desc:'An employee connects to an unencrypted Wi-Fi network at a café. Attackers intercept sensitive corporate data.', lesson:'Lesson: Use VPNs and verify network legitimacy before connecting.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>'},
       {id:'uc2', title:'Compromised Laptop Endpoint', desc:'A laptop lacking antivirus updates is infected with malware, spreading to the corporate network.', lesson:'Lesson: Keep all endpoints updated and protected with endpoint security tools.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>'},

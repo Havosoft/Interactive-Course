@@ -149,7 +149,8 @@
       Advanced social engineering and phishing attacks exploit human trust and inattention rather than technical weaknesses. Employees are the first line of defense: awareness, verification, and reporting can prevent financial loss, credential theft, and sensitive data exposure. Vigilance against personalized, targeted attacks is essential in modern cybersecurity.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+       <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>
   
@@ -162,6 +163,7 @@ function advPhishModule(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Spear-Phishing Attack', desc:'An attacker researches an employee’s social media profiles and sends a highly personalized email requesting login credentials.', lesson:'Lesson: Always verify unexpected requests and never share passwords.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#ef4444"/></svg>'},
       {id:'uc2', title:'Business Email Compromise (BEC)', desc:'An attacker impersonates a senior executive and instructs an employee to transfer funds to an “urgent vendor account.”', lesson:'Lesson: Confirm payment requests through a separate communication channel.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#f59e0b"/></svg>'},

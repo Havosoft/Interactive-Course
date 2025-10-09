@@ -134,7 +134,8 @@
       Office surveillance and monitoring are vital for protecting company assets, detecting unauthorized activity, and supporting incident response. When combined with access control and employee vigilance, surveillance creates a proactive security environment that deters threats and ensures rapid mitigation of incidents.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>  
 </div>
@@ -146,6 +147,7 @@ function surveillance(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Detecting Unauthorized Entry', desc:'CCTV footage shows an individual attempting to enter a restricted area without proper credentials. Security intervenes promptly.', lesson:'Lesson: Continuous monitoring prevents potential breaches.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#ef4444"/></svg>'},
       {id:'uc2', title:'Theft Investigation', desc:'A laptop goes missing from a shared workspace. Surveillance footage helps identify the perpetrator and recover the asset.', lesson:'Lesson: Video evidence is crucial for investigations and accountability.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#f59e0b"/></svg>'},

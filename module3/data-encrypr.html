@@ -136,7 +136,8 @@
       Encryption and secure communication are essential defenses in modern cybersecurity. Protecting data in transit and at rest, using secure messaging platforms, VPNs, and encrypted backups ensures organizational information remains confidential, intact, and accessible only to authorized personnel. Employees are critical in consistently applying these practices to prevent data breaches and cyberattacks.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+       <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>  
 </div>
@@ -148,6 +149,7 @@ function encCommModule(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Unencrypted Email Interception', desc:'An employee sends an unencrypted email containing client financial data. Attackers intercept the email on the network.', lesson:'Lesson: Always use email encryption for sensitive communications.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>'},
       {id:'uc2', title:'Cloud File Sharing Without Encryption', desc:'A shared folder in the cloud is accessed over an unencrypted connection, exposing company documents.', lesson:'Lesson: Use secure, encrypted cloud platforms and verify HTTPS connections.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>'},

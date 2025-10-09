@@ -217,8 +217,8 @@
         </p>
 
         <div class="mt-4 flex gap-3">
-          <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
-          
+          <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+          <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
         </div>
       </section>
 
@@ -235,6 +235,7 @@
         active: localStorage.getItem('sd_active') || 'intro',
         completed: JSON.parse(localStorage.getItem('sd_completed')||'{}'),
         // use cases
+        quizUrl: '#Quiz', // replace if needed
         useCases: [
           {id:'uc1', title:'Printed Document Left Unsecured', desc:'Confidential financial reports left on a printer overnight and accessed by unauthorized person.', lesson:'Always store sensitive printed documents in locked cabinets and never leave them unattended.', location:'Printer / Common Area'},
           {id:'uc2', title:'Sensitive Digital File Shared Insecurely', desc:'Employee emails customer spreadsheet to personal address without encryption.', lesson:' Digital documents should only be shared using secure, company-approved channels and encrypted when necessary.', location:'Email / External Share'},

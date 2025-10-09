@@ -137,7 +137,8 @@
       Effective incident response relies on employee vigilance, prompt reporting, and structured protocols. Recognizing threats early and following established procedures limits damage, protects data, and strengthens organizational resilience. Employees’ proactive participation is essential for maintaining a secure environment.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>
   
@@ -150,6 +151,7 @@ function incidentModule(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Malware Infection Detected on Laptop', desc:'An employee notices unusual pop-ups and sluggish performance. They immediately report it to IT, who isolates the device and begins remediation.', lesson:'Lesson: Early detection and reporting prevent network-wide infection.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>'},
       {id:'uc2', title:'Phishing Attempt Received', desc:'An employee receives a suspicious email requesting login credentials. They do not click the link and report the email to security.', lesson:'Lesson: Awareness and prompt reporting can prevent account compromise.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>'},

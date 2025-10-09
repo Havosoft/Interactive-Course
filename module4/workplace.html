@@ -133,7 +133,8 @@
       Workplace access control is a cornerstone of physical security. Properly managed entry systems, monitored access, and employee vigilance prevent unauthorized access, protect company assets, and support incident response. Every employee has a role in maintaining secure environments.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+       <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>  
 </div>
@@ -145,6 +146,7 @@ function accessControl(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Unauthorized Visitor Attempt', desc:'A visitor without clearance tries to enter a restricted area. Security checks their badge and denies access.', lesson:'Lesson: Always verify visitor credentials and enforce strict entry policies.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#ef4444"/></svg>'},
       {id:'uc2', title:'Employee Tailgating', desc:'An employee holds the door for someone who doesn’t have authorized access, allowing them to enter a secure area.', lesson:'Lesson: Avoid letting unauthorized individuals follow you into secure zones; report suspicious behavior.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#f59e0b"/></svg>'},

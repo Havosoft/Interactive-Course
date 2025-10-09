@@ -207,7 +207,8 @@
     </p>
 
     <div class="flex gap-3 mt-4">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>      
+      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>  
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>    
     </div>
   </section>
 
@@ -220,6 +221,7 @@
       active: 'intro',
       sections: ['intro','usecases','best','checklist','takeaway'],
       completed: {},
+      quizUrl: '#Quiz', // replace if needed
       useCases: [
         {
           id:'uc1',

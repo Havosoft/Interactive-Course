@@ -153,7 +153,8 @@
       Mobile devices are critical productivity tools but can pose significant security risks if not properly protected. Encryption, strong passwords, device updates, trusted apps, secure networks, and remote management all contribute to safeguarding corporate and personal data. Employees play a vital role in ensuring mobile devices are a secure extension of the workplace.
     </p>
     <div class="flex gap-3">
-      <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>
   
@@ -166,6 +167,7 @@ function mobileModule(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:'uc1', title:'Lost or Stolen Device', desc:'An employee leaves their smartphone in a taxi. The device contains unencrypted emails, passwords, and corporate documents.', lesson:'Lesson: Always use device encryption, strong passwords, and remote wipe capabilities.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#ef4444"/></svg>'},
       {id:'uc2', title:'Malicious Applications', desc:'An employee downloads an unofficial app that requests access to contacts, emails, and files. The app contains malware that sends corporate data to attackers.', lesson:'Lesson: Only install applications from trusted sources and review permissions carefully.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#f59e0b"/></svg>'},

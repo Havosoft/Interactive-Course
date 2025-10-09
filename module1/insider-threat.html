@@ -195,7 +195,8 @@
       <p class="text-gray-300 mb-3">Insider threats are a people + process + technology challenge. Enforce least-privilege access, monitor activity, train staff, provide safe reporting, and vet personnel to reduce risks.</p>
 
       <div class="flex gap-3">
-        <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>        
+        <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>  -->
+        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>       
       </div>
     </section>    
   </div>
@@ -206,6 +207,7 @@
         active: localStorage.getItem('insider_active') || 'intro',
         sections: ['intro','usecases','best','checklist','takeaway'],
         completed: {},
+        quizUrl: '#Quiz', // replace if needed
         useCases: [
           { id: 'u1', title: 'Malicious Insider Theft', desc: 'An employee copies customer data to a personal device to sell it.', location: 'Offboarding / Data Access', svgInline: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="4" fill="#111827"/><path d="M7 12h10" stroke="#FBBF24" stroke-width="1.6" stroke-linecap="round"/><path d="M7 8h6" stroke="#FBBF24" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="17" r="2" fill="#34D399"/></svg>` },
           { id: 'u2', title: 'Accidental Data Exposure', desc: 'A staff member emails a confidential report to the wrong recipient.', location: 'Email / DLP', svgInline: `<svg width="64" height="64" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#111827"/><path d="M6 8h12v8H6z" stroke="#60A5FA" stroke-width="1.6"/><path d="M8 10h8" stroke="#60A5FA" stroke-width="1.6"/></svg>` },

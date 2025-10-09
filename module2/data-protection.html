@@ -153,6 +153,7 @@
 
     <div class="mt-4 flex gap-2">
       <button @click="restart" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>
 </div>
@@ -164,6 +165,7 @@ function responsibilityModule(){
     completed:{},
     checklist:{passwords:false,devices:false,sharing:false,updates:false,reporting:false,training:false},
     gapResult:'',
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:1,title:"Weak Password Practices",desc:"An employee uses the same password for personal and company accounts, which is later leaked in a breach. Attackers gain access to corporate systems.",lesson:"Lesson: Use strong, unique passwords and enable MFA to reduce risk.",svg:`<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`},
       {id:2,title:"Unsecured Device Handling",desc:"A company laptop is left unattended in a café, exposing sensitive files to anyone passing by.",lesson:"Lesson: Always secure devices physically and digitally, using locks, encryption, and password protection.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`},
