@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Referral Incentive Program Training</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>
+    body {
+      background-color: #F9F3EA; /* matches LMS beige tone */
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="text-gray-800 font-sans antialiased">
+
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-4">
+
+    <!-- Header -->
+    <h1 class="text-3xl font-bold text-orange-600 mb-6">
+      Client Referral Incentive Program Training
+    </h1>
+
+    <!-- Purpose -->
+    <div x-data="{ open: true }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Purpose
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700">
+        <p>
+          To encourage employee participation in Havosoft International Limited’s business development efforts by recognizing and rewarding successful client referrals, thereby supporting the company’s growth and outreach.
+        </p>
+      </div>
+    </div>
+
+    <!-- Scope -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Scope
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700">
+        <p>
+          This policy applies to all full-time and part-time employees of Havosoft International Limited, except those whose roles already include commission-based incentives (e.g., Sales team members or others with client acquisition bonuses).
+        </p>
+      </div>
+    </div>
+
+    <!-- Participation Eligibility -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Participation Eligibility
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700 space-y-2">
+        <p>All employees are eligible to participate except:</p>
+        <ul class="list-disc list-inside ml-2">
+          <li>Sales team members</li>
+          <li>Employees whose compensation includes client acquisition commissions or bonuses</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Qualifying Referrals -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Qualifying Referrals
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700 space-y-2">
+        <ul class="list-disc list-inside ml-2">
+          <li>The referred client must be new to Havosoft.</li>
+          <li>Employee must submit a Client Referral Form to Sales for approval.</li>
+          <li>Introduction can be made via email, memo, or in-person.</li>
+          <li>Referral must be logged and acknowledged before any engagement begins.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Incentive Payment -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Incentive Payment
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700 space-y-2">
+        <p>If a referred client signs an agreement and makes full payment:</p>
+        <ul class="list-disc list-inside ml-2">
+          <li>Referring employee receives a one-time 5% commission of the net deal value.</li>
+          <li>Payment is made through payroll within 7–14 business days after full payment.</li>
+          <li>All payments are subject to tax and statutory deductions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Conditions and Compliance -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Conditions and Compliance
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700 space-y-2">
+        <ul class="list-disc list-inside ml-2">
+          <li>Incentives issued only after client agreement and full payment.</li>
+          <li>Management resolves multiple claims based on evidence and timing.</li>
+          <li>Employees must disclose any personal/financial connections.</li>
+          <li>Client consent required for data sharing (NDPR, GDPR).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Confidentiality -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Confidentiality
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700">
+        <p>
+          All referral documentation and related communications will be handled with appropriate confidentiality. Information will only be shared with relevant internal parties for validation and processing, or as required by law.
+        </p>
+      </div>
+    </div>
+
+    <!-- No Retaliation -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        No Retaliation
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700">
+        <p>
+          Employees who submit referrals in good faith are protected from retaliation. No employee will face adverse consequences for participating in the referral program, even if a referral is not approved or does not result in a deal.
+        </p>
+      </div>
+    </div>
+
+    <!-- Dispute Resolution -->
+    <div x-data="{ open: false }" x-intersect="$el.classList.add('visible')" class="fade-in bg-white/50 rounded-lg shadow p-4">
+      <button @click="open = !open" class="w-full flex justify-between items-center text-left text-xl font-semibold text-orange-600">
+        Dispute Resolution
+        <svg :class="{'rotate-180': open}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div x-show="open" x-collapse class="mt-2 text-gray-700">
+        <p>
+          Disputes related to referral ownership or commission entitlement will be reviewed by a designated panel comprising members of HR, Sales, and Legal. The decision of Management is final and binding.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Fade-in observer for smooth entrance
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
