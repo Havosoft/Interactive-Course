@@ -177,7 +177,20 @@ function emailModule(){
 
     init(){ this.useCases.forEach(u=>{ if(!(u.id in this.outcomes)) this.outcomes[u.id]=''; }); },
 
-    go(s){ this.active=s; localStorage.setItem('em_active',s); },
+    go(s) {
+    this.active = s;
+    localStorage.setItem('em_active', s);
+
+    // scroll to top of interactive content
+    const container = document.getElementById('lesson-content');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 10,
+        behavior: 'smooth'
+      });
+    }
+  }
+  ,
     complete(s){ this.completed[s]=true; localStorage.setItem('em_completed',JSON.stringify(this.completed)); },
 
     ucAct(id,action){
