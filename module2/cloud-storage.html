@@ -149,7 +149,8 @@
     </p>
 
     <div class="mt-4 flex gap-2">
-      <button @click="restart" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>
+      <!-- <button @click="restart" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
     </div>
   </section>
 </div>
@@ -161,6 +162,7 @@ function cloudModule(){
     completed:{},
     checklist:{mfa:false,permissions:false,logs:false,training:false,backup:false,device:false},
     gapResult:'',
+    quizUrl: '#Quiz', // replace if needed
     useCases:[
       {id:1,title:"Misconfigured Shared Folder",desc:"An employee accidentally shares a folder containing confidential client data with 'Anyone with the link.' The link is later accessed by an external party.",lesson:"Lesson: Always verify sharing settings and restrict access to authorized users only.",svg:`<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`},
       {id:2,title:"Weak Password & Account Compromise",desc:"A cloud storage account uses a simple, reused password. Attackers gain access and steal corporate documents.",lesson:"Lesson: Use strong, unique passwords and enable MFA to secure accounts.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`},
