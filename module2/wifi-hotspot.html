@@ -39,7 +39,7 @@
   </header>
 
   <!-- Player / Nav -->
-  <nav class="mb-6 flex gap-2 flex-wrap">
+  <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
     <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Intro</button>
     <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Use Cases</button>
     <button @click="go('best')" :class="active==='best' ? 'bg-purple-600' : 'bg-gray-700'" class="btn">Best Practices</button>
@@ -310,6 +310,14 @@
       go(id){
         this.active = id;
         localStorage.setItem('lastSection', id);
+        // scroll to top of interactive content
+        const container = document.getElementById('module-nav');
+        if (container) {
+          window.scrollTo({
+            top: container.offsetTop - 30,
+            behavior: 'smooth'
+          });
+        }
       },
       complete(name){
         this.completed[name] = true;

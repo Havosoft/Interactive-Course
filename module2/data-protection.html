@@ -36,7 +36,7 @@
   </header>
 
   <!-- Navigation -->
-  <nav class="mb-6 flex flex-wrap gap-2">
+  <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
     <button @click="go('intro')" :class="btnCls('intro')" class="px-4 py-2 rounded">Intro</button>
     <button @click="go('usecases')" :class="btnCls('usecases')" class="px-4 py-2 rounded">Use Cases</button>
     <button @click="go('best')" :class="btnCls('best')" class="px-4 py-2 rounded">Best Practices</button>
@@ -179,7 +179,16 @@ function responsibilityModule(){
       this.sections.forEach(s=>{this.completed[s]=localStorage.getItem('resp_done_'+s)==='1';});
       try{this.checklist=JSON.parse(localStorage.getItem('resp_checklist'))||this.checklist;}catch(e){}
     },
-    go(s){this.active=s;localStorage.setItem('resp_active',s);},
+    go(s){this.active=s;localStorage.setItem('resp_active',s);
+      // scroll to top of interactive content
+    const container = document.getElementById('module-nav');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 30,
+        behavior: 'smooth'
+      });
+    }
+    },
     complete(s){this.completed[s]=true;localStorage.setItem('resp_done_'+s,'1');},
     btnCls(s){return this.active===s?'bg-purple-600 text-white':'bg-gray-700 text-gray-300';},
     analyzeGaps(){

@@ -38,7 +38,7 @@
   </header>
 
   <!-- NAV -->
-  <nav class="mb-6 flex gap-2 flex-wrap">
+  <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
     <button @click="go('intro')" :class="active==='intro'?'bg-purple-600':'bg-gray-700'" class="px-4 py-2 rounded">Intro</button>
     <button @click="go('usecases')" :class="active==='usecases'?'bg-purple-600':'bg-gray-700'" class="px-4 py-2 rounded">Use Cases</button>
     <button @click="go('best')" :class="active==='best'?'bg-purple-600':'bg-gray-700'" class="px-4 py-2 rounded">Best Practices</button>
@@ -162,7 +162,16 @@ function insider(){
       try{this.outcomes=JSON.parse(localStorage.getItem('insider_outcomes'))||{}}catch(e){}
       try{this.checklist=JSON.parse(localStorage.getItem('insider_checklist'))||this.checklist}catch(e){}
     },
-    go(id){this.active=id;localStorage.setItem('insider_last',id);},
+    go(id){this.active=id;localStorage.setItem('insider_last',id);
+      // scroll to top of interactive content
+    const container = document.getElementById('module-nav');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 30,
+        behavior: 'smooth'
+      });
+    }
+    },
     complete(s){this.completed[s]=true;localStorage.setItem('insider_done_'+s,'1');},
     ucAct(id,a){
       if(a==='correct') this.outcomes[id]='<div class="p-3 bg-green-900 border border-green-500 rounded">Correct — mitigated effectively.</div>';

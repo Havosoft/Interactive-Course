@@ -39,7 +39,7 @@
     </header>
 
     <!-- Navigation -->
-    <nav class="mb-6 flex flex-wrap gap-2">
+    <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
       <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Intro</button>
       <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Use Cases</button>
       <button @click="go('best')" :class="active==='best' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Best Practices</button>
@@ -261,6 +261,15 @@
         go(id){
           this.active = id;
           localStorage.setItem('sd_active', id);
+
+          // scroll to top of interactive content
+          const container = document.getElementById('module-nav');
+          if (container) {
+            window.scrollTo({
+              top: container.offsetTop - 30,
+              behavior: 'smooth'
+            });
+          }
         },
         complete(section){
           this.completed[section] = true;

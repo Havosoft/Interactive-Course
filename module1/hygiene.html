@@ -47,7 +47,7 @@
   </header>
 
   <!-- Navigation -->
-  <nav class="mb-6 flex flex-wrap gap-2">
+  <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
     <template x-for="s in navOrder" :key="s">
       <button @click="go(s)"
               :class="active===s ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-200'"
@@ -280,6 +280,15 @@ function passwordModule(){
     go(section){
       this.active = section;
       localStorage.setItem('pwd_active', section);
+
+      // scroll to top of interactive content
+    const container = document.getElementById('module-nav');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 30,
+        behavior: 'smooth'
+      });
+    }
     },
 
     complete(section){
