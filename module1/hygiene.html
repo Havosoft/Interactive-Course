@@ -5,34 +5,29 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Password Hygiene</title>
 
-  <!-- Tailwind CDN -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Alpine.js -->
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
-    html,body { height:100%; background: #0A0125; }
-    body { color: #E5E7EB; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.04);
-    }
+    html,body { height:100%; background:#0A0125; }
+    body { color:#E5E7EB; }
+    .card { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); }
+    [x-cloak]{display:none!important;}
     .svg-box { width:64px; height:64px; }
-    /* hide sections while Alpine is initializing */
-    [x-cloak] { display: none !important; }
   </style>
 </head>
 <body>
 
 <div class="max-w-6xl mx-auto p-6">
 
-  <!-- Header -->
+  <!-- HEADER -->
   <header class="mb-6 flex justify-between gap-4">
     <div>
       <h1 class="text-3xl font-bold text-white">Password Hygiene</h1>
       <p class="text-sm text-gray-300 mt-1">The cornerstone of organizational cybersecurity</p>
 
-      <!-- Learning Objectives -->
       <div class="mt-4 text-sm text-gray-300 card p-4 rounded">
         <strong class="block text-white mb-2">Learning Objectives</strong>
         <ul class="list-disc pl-5 space-y-1">
@@ -46,7 +41,7 @@
     </div>    
   </header>
 
-  <!-- Navigation -->
+  <!-- NAV -->
   <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
     <template x-for="s in navOrder" :key="s">
       <button @click="go(s)"
@@ -57,7 +52,7 @@
     </template>
   </nav>
 
-  <!-- Main Cards -->
+  <!-- MAIN -->
   <main class="space-y-6">
 
     <!-- INTRO -->
@@ -65,97 +60,93 @@
       <h2 class="text-2xl font-semibold text-purple-200">Introduction</h2>
       <p class="mt-3 text-gray-300">
         Passwords remain the first line of defense against cyberattacks, yet they are often one of the weakest points in organizational security.
-        Attackers exploit weak, predictable, or reused passwords to gain unauthorized access to sensitive systems, customer data, and intellectual property.
       </p>
 
       <h3 class="mt-4 text-lg font-semibold text-white">Why Password Hygiene Matters</h3>
       <ul class="list-disc pl-5 mt-2 text-gray-300 space-y-1">
-        <li><strong>Data Breaches:</strong> Weak passwords are a leading cause of data breaches. One compromised password can give attackers access to multiple systems if reused.</li>
-        <li><strong>Credential Stuffing:</strong> Attackers use stolen passwords from one site to access other accounts, including corporate networks.</li>
-        <li><strong>Insider Threats:</strong> Shared or poorly managed passwords can make it easy for malicious insiders to access sensitive information.</li>
-        <li><strong>Regulatory Compliance:</strong> Many industries require strict password policies to meet cybersecurity standards.</li>
+        <li><strong>Data Breaches:</strong> Weak passwords are a leading cause of data breaches.</li>
+        <li><strong>Credential Stuffing:</strong> Stolen passwords are reused across systems.</li>
+        <li><strong>Insider Threats:</strong> Shared or poorly managed passwords are dangerous.</li>
+        <li><strong>Regulatory Compliance:</strong> Many industries require strict password policies.</li>
       </ul>
 
       <h3 class="mt-4 text-lg font-semibold text-white">Common Password Risks</h3>
       <ul class="list-disc pl-5 mt-2 text-gray-300 space-y-1">
-        <li><strong>Weak Passwords:</strong> Simple or guessable passwords (e.g., "123456", "password").</li>
-        <li><strong>Reused Passwords:</strong> Same password across personal and work accounts.</li>
-        <li><strong>Shared Passwords:</strong> Writing passwords on sticky notes or sharing via email/chat.</li>
-        <li><strong>Lack of Updates:</strong> Not changing passwords after potential compromise.</li>
+        <li>Weak passwords (e.g., “123456”).</li>
+        <li>Reused passwords across accounts.</li>
+        <li>Sharing or writing passwords down.</li>
+        <li>Not changing passwords after compromise.</li>
       </ul>
 
       <div class="mt-6 flex justify-end">
-        <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+        <button @click="go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
       </div>
     </section>
 
     <!-- USE CASES -->
     <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
       <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and view outcomes</h2>
-      <p class="text-gray-300">Click a button for each scenario to see the likely outcome and recommended lesson.</p>
+      <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
 
-      <template x-for="uc in useCases" :key="uc.id">
-        <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
-          <!-- inline SVG illustration placeholder -->
-          <div class="md:col-span-1 flex justify-center">
-            <div class="p-2 bg-gray-900 rounded">
-              <!-- Simple inline SVG icon (you can replace this SVG block with full SVG markup) -->
-              <svg class="svg-box text-purple-300" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.02)"/>
-                <path d="M16 28h32M16 36h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </div>
-          </div>
+      <!-- Replace your old outcome buttons section in the USE CASES template with this -->
+    <template x-for="uc in useCases" :key="uc.id">
+    <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
+        <div class="md:col-span-1 flex justify-center">
+        <div class="p-2 bg-gray-900 rounded">
+            <svg class="svg-box text-purple-300" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.02)"/>
+            <path d="M16 28h32M16 36h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+        </div>
 
-          <!-- content -->
-          <div class="md:col-span-3">
-            <h3 class="font-semibold text-white" x-text="uc.title"></h3>
-            <p class="text-gray-300 mt-1" x-text="uc.desc"></p>
+        <div class="md:col-span-3">
+        <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+        <p class="text-gray-300 mt-1" x-text="uc.desc"></p>
 
-            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct</button>
-              <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
-              <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
-            </div>
+        <!-- 👇 Scenario-specific buttons -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(uc.id,'good')" class="px-3 py-2 rounded bg-green-600" x-text="uc.buttons.good"></button>
+            <button @click="ucAct(uc.id,'medium')" class="px-3 py-2 rounded bg-yellow-600" x-text="uc.buttons.medium"></button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600" x-text="uc.buttons.bad"></button>
+        </div>
 
-            <div class="mt-3" x-html="outcomes[uc.id]"></div>
-          </div>
+        <div class="mt-3" x-html="outcomes[uc.id]"></div>
+        </div>
 
-          <div class="md:col-span-1 text-right text-xs text-gray-400">
-            <div x-text="uc.context"></div>
-          </div>
-        </article>
-      </template>
+        <div class="md:col-span-1 text-right text-xs text-gray-400">
+        <div x-text="uc.context"></div>
+        </div>
+    </article>
+    </template>
+
 
       <div class="flex justify-end">
-        <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+        <button @click="go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
       </div>
     </section>
 
     <!-- BEST PRACTICES -->
     <section x-show="active==='best'" x-cloak class="card p-6 rounded">
       <h2 class="text-2xl font-semibold text-purple-200">Best Practices for Defence</h2>
-
       <ul class="list-disc pl-5 mt-3 text-gray-300 space-y-2">
-        <li><strong>Create Strong, Unique Passwords:</strong> Use at least 12–16 characters combining uppercase, lowercase, numbers, and symbols. Prefer passphrases.</li>
-        <li><strong>Use a Password Manager:</strong> Store credentials securely and generate unique passwords for each account.</li>
-        <li><strong>Enable Multi-Factor Authentication (MFA):</strong> Adds a critical step to protect accounts even if passwords are stolen.</li>
-        <li><strong>Avoid Sharing Passwords:</strong> Assign unique accounts rather than shared logins.</li>
-        <li><strong>Update Passwords Regularly:</strong> Change immediately after suspected compromise; consider periodic rotation for critical systems.</li>
-        <li><strong>Detect & Respond:</strong> Monitor alerts, investigate suspicious logins, and revoke credentials as needed.</li>
-        <li><strong>Educate Staff:</strong> Train employees to recognise phishing and password risks.</li>
-        <li><strong>Protect Secrets:</strong> Never paste secrets into public tools; use secure vaults for API keys and service credentials.</li>
+        <li>Use long, strong passwords or passphrases.</li>
+        <li>Use a password manager for unique credentials.</li>
+        <li>Enable Multi-Factor Authentication (MFA).</li>
+        <li>Never share passwords.</li>
+        <li>Update after any suspected compromise.</li>
+        <li>Monitor alerts and respond quickly.</li>
       </ul>
 
       <div class="mt-6 flex justify-end">
-        <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Continue → Checklist</button>
+        <button @click="go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Continue → Checklist</button>
       </div>
     </section>
 
     <!-- CHECKLIST -->
     <section x-show="active==='checklist'" x-cloak class="card p-6 rounded">
       <h2 class="text-2xl font-semibold text-purple-200">Interactive Checklist</h2>
-      <p class="text-gray-300 mt-2">Tick what your team currently does — then analyze gaps.</p>
+      <p class="text-gray-300 mt-2">Tick what your team currently does and analyze any gaps.</p>
 
       <div class="grid md:grid-cols-2 gap-3 mt-4">
         <template x-for="(label,key) in checklistLabels" :key="key">
@@ -174,7 +165,7 @@
       <div class="mt-4" x-html="gapResult"></div>
 
       <div class="mt-6 flex justify-end">
-        <button @click="complete('checklist'); go('conclusion')" class="bg-purple-600 px-4 py-2 rounded">Finish → Conclusion</button>
+        <button @click="go('conclusion')" class="bg-purple-600 px-4 py-2 rounded">Finish → Conclusion</button>
       </div>
     </section>
 
@@ -182,172 +173,145 @@
     <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded">
       <h2 class="text-2xl font-semibold text-purple-200">Conclusion</h2>
       <p class="text-gray-300 mt-3">
-        Password hygiene is foundational to cybersecurity. Strong, unique passwords, a password manager, MFA, and user awareness greatly reduce the chances
-        of unauthorized access and costly breaches. Each employee has a role to play — treat passwords as sensitive assets.
+        Strong password hygiene reduces the risk of compromise. Combining secure passwords with MFA and good practices creates a strong defense against credential-based attacks.
       </p>
 
       <div class="mt-6 flex gap-3">
-        <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
-        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>    
+        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
       </div>
-
-      
     </section>
 
   </main>
 </div>
 
-<!-- Alpine Module -->
 <script>
 function passwordModule(){
   return {
-    // nav order & labels (keeps same behaviour as other modules)
-    navOrder: ['intro','usecases','best','checklist','conclusion'],
-    labels: {
-      intro: 'Intro',
-      usecases: 'Use Cases',
-      best: 'Best Practices',
-      checklist: 'Checklist',
-      conclusion: 'Conclusion'
-    },
-
-    // state
+    navOrder:['intro','usecases','best','checklist','conclusion'],
+    labels:{intro:'Intro',usecases:'Use Cases',best:'Best Practices',checklist:'Checklist',conclusion:'Conclusion'},
     active: localStorage.getItem('pwd_active') || 'intro',
-    completed: JSON.parse(localStorage.getItem('pwd_completed') || '{}'),
-    quizUrl: '#Quiz', // replace if needed
-    useCases: [
-      {
-        id: 'uc1',
-        title: 'Weak Password Exploitation',
-        desc: 'An employee sets a corporate password like "Welcome123". Automated tools guess it and attackers gain access to the account.',
-        context: 'Corporate Email'
-      },
-      {
-        id: 'uc2',
-        title: 'Reused Password Breach',
-        desc: 'A staff member reuses a personal password. A third-party breach exposes the password and attackers access corporate services.',
-        context: 'Work Account'
-      },
-      {
-        id: 'uc3',
-        title: 'Password Sharing',
-        desc: 'For convenience a worker shares credentials with a colleague. The colleague’s device is later infected and credentials leak.',
-        context: 'Shared Credentials'
-      },
-      {
-        id: 'uc4',
-        title: 'Lack of Multi-Factor Authentication (MFA)',
-        desc: 'An attacker obtains a password from phishing. With MFA disabled, they access email, cloud storage, and sensitive systems.',
-        context: 'Cloud Systems'
-      },
-      {
-        id: 'uc5',
-        title: 'Compromised Password Detection Ignored',
-        desc: 'An employee ignores alerts that their password may be leaked. The compromised account is later used for fraud.',
-        context: 'Alerts / Monitoring'
-      }
-    ],
-    // outcomes initialized to avoid "undefined"
-    outcomes: JSON.parse(localStorage.getItem('pwd_outcomes') || JSON.stringify({
-      uc1:'', uc2:'', uc3:'', uc4:'', uc5:''
-    })),
+    outcomes: JSON.parse(localStorage.getItem('pwd_outcomes') || '{}'),
+    whyOpen:{},
+    quizUrl:'#Quiz',
 
-    checklist: JSON.parse(localStorage.getItem('pwd_checklist') || JSON.stringify({
-      strong:false, manager:false, mfa:false, sharing:false, update:false, training:false, detect:false
-    })),
-
-    checklistLabels: {
-      strong: 'Strong unique passwords (12–16+ chars)',
-      manager: 'Password manager deployed',
-      mfa: 'MFA enabled for critical accounts',
-      sharing: 'No password sharing / unique accounts',
-      update: 'Passwords updated after suspicion',
-      training: 'Regular user training',
-      detect: 'Monitoring & alerts configured'
-    },
-
-    gapResult: '',
+   useCases: [
+  {
+    id: 'uc1',
+    title: 'Weak Password Exploitation',
+    desc: 'An employee sets a corporate password like "Welcome123". Automated tools guess it and attackers gain access to the account.',
+    context: 'Corporate Email',
+    buttons: {
+      good: 'Use Strong Password',
+      medium: 'Use Slightly Better Password',
+      bad: 'Keep Weak Password'
+    }
+  },
+  {
+    id: 'uc2',
+    title: 'Reused Password Breach',
+    desc: 'A staff member reuses a personal password. A third-party breach exposes the password and attackers access corporate services.',
+    context: 'Work Account',
+    buttons: {
+      good: 'Use Unique Password',
+      medium: 'Change After Breach',
+      bad: 'Reuse Password'
+    }
+  },
+  {
+    id: 'uc3',
+    title: 'Password Sharing',
+    desc: 'For convenience a worker shares credentials with a colleague. The colleague’s device is later infected and credentials leak.',
+    context: 'Shared Credentials',
+    buttons: {
+      good: 'Don’t Share Password',
+      medium: 'Share in Controlled Way',
+      bad: 'Share Freely'
+    }
+  },
+  {
+    id: 'uc4',
+    title: 'Lack of Multi-Factor Authentication (MFA)',
+    desc: 'An attacker obtains a password from phishing. With MFA disabled, they access email, cloud storage, and sensitive systems.',
+    context: 'Cloud Systems',
+    buttons: {
+      good: 'Enable MFA',
+      medium: 'Use Weak MFA (SMS)',
+      bad: 'No MFA'
+    }
+  },
+  {
+    id: 'uc5',
+    title: 'Compromised Password Detection Ignored',
+    desc: 'An employee ignores alerts that their password may be leaked. The compromised account is later used for fraud.',
+    context: 'Alerts / Monitoring',
+    buttons: {
+      good: 'Act Immediately',
+      medium: 'Delay Response',
+      bad: 'Ignore Alert'
+    }
+  }
+],
 
     init(){
-      // ensure outcomes has all keys (safety)
-      this.useCases.forEach(u => { if(!(u.id in this.outcomes)) this.outcomes[u.id]='';});
-      // restore completed object if missing keys
-      let stored = JSON.parse(localStorage.getItem('pwd_completed') || '{}');
-      this.completed = Object.assign({}, stored);
-      // restore checklist & outcomes already above
+      this.useCases.forEach(u=>{
+        if(!(u.id in this.outcomes)) this.outcomes[u.id]='';
+      });
     },
 
     go(section){
       this.active = section;
       localStorage.setItem('pwd_active', section);
-
-      // scroll to top of interactive content
-    const container = document.getElementById('module-nav');
-    if (container) {
-      window.scrollTo({
-        top: container.offsetTop - 30,
-        behavior: 'smooth'
-      });
-    }
-    },
-
-    complete(section){
-      this.completed[section] = true;
-      localStorage.setItem('pwd_completed', JSON.stringify(this.completed));
+      const nav=document.getElementById('module-nav');
+      if(nav){
+        window.scrollTo({ top: nav.offsetTop - 30, behavior: 'smooth' });
+      }
     },
 
     ucAct(id, action){
-      // set outcome content consistently
-      if(action === 'correct'){
-        this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Good choice — this reduces risk and aligns with password hygiene best practice.</div>`;
-      } else if(action === 'partial'){
-        this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Partially mitigated — some controls are in place, but additional measures are recommended.</div>`;
-      } else {
-        this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Risky action — this exposes accounts and increases chances of compromise.</div>`;
-      }
-      // persist outcomes
-      localStorage.setItem('pwd_outcomes', JSON.stringify(this.outcomes));
+  if(action === 'good'){
+    this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">✅ Excellent — this action follows strong password hygiene principles.</div>`;
+  } else if(action === 'medium'){
+    this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">⚠️ Better but not ideal — some risk remains, additional controls are advised.</div>`;
+  } else {
+    this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">❌ High risk — this behaviour exposes the organization to compromise.</div>`;
+  }
+  localStorage.setItem('pwd_outcomes', JSON.stringify(this.outcomes));
+},
+
+    toggleWhy(id){
+      this.whyOpen[id]=!this.whyOpen[id];
     },
 
+    checklist: JSON.parse(localStorage.getItem('pwd_checklist') || JSON.stringify({
+      strong:false, manager:false, mfa:false, sharing:false, update:false, training:false, detect:false
+    })),
+
+    checklistLabels:{
+      strong:'Strong unique passwords (12–16+ chars)',
+      manager:'Password manager deployed',
+      mfa:'MFA enabled for critical accounts',
+      sharing:'No password sharing / unique accounts',
+      update:'Passwords updated after suspicion',
+      training:'Regular user training',
+      detect:'Monitoring & alerts configured'
+    },
+
+    gapResult:'',
+
     analyzeGaps(){
-      const missing = Object.keys(this.checklist).filter(k => !this.checklist[k]);
-      if(missing.length === 0){
-        this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">No major gaps — good baseline.</div>`;
+      const missing=Object.keys(this.checklist).filter(k=>!this.checklist[k]);
+      if(missing.length===0){
+        this.gapResult=`<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">No major gaps — good baseline.</div>`;
       } else {
-        const names = missing.map(m => this.checklistLabels[m] || m);
-        this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Missing: ${names.join(', ')}</div>`;
+        const names=missing.map(m=>this.checklistLabels[m]||m);
+        this.gapResult=`<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Missing controls: ${names.join(', ')}</div>`;
       }
-      // persist checklist/gap
       localStorage.setItem('pwd_checklist', JSON.stringify(this.checklist));
     },
 
     saveChecklist(){
       localStorage.setItem('pwd_checklist', JSON.stringify(this.checklist));
-      this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Checklist saved.</div>`;
-    },
-
-    restart(){
-      // clear local storage keys for this module
-    //   localStorage.removeItem('pwd_active');
-    //   localStorage.removeItem('pwd_completed');
-    //   localStorage.removeItem('pwd_outcomes');
-    //   localStorage.removeItem('pwd_checklist');
-      // reset state
-    //   this.active = 'intro';
-    //   this.completed = {};
-    //   this.outcomes = { uc1:'', uc2:'', uc3:'', uc4:'', uc5:'' };
-    //   this.checklist = { strong:false, manager:false, mfa:false, sharing:false, update:false, training:false, detect:false };
-    //   this.gapResult = '';
-    window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=a37a1db0-9942-4db2-9120-51b14a6709a3#Quiz";
-    },
-
-    exportProgress(){
-      const data = { completed:this.completed, outcomes:this.outcomes, checklist:this.checklist };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'password-module-progress.json'; document.body.appendChild(a); a.click();
-      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+      this.gapResult=`<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Checklist saved.</div>`;
     }
   }
 }

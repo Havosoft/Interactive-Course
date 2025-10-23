@@ -11,40 +11,39 @@
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
-    /* small custom */
     :root { --page-bg: #0A0125; }
     body { background: var(--page-bg); }
-    /* card look */
     .card {
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       border: 1px solid rgba(255,255,255,0.04);
     }
-    /* ensure images/svg placeholders don't overflow */
     .svg-placeholder { width:5.5rem; height:5.5rem; }
   </style>
 </head>
 <body class="text-gray-200">
 
-  <div class="max-w-6xl mx-auto p-6" >
+  <div class="max-w-6xl mx-auto p-6">
 
-    <!-- Header / Progress -->
+    <!-- Header -->
     <header class="mb-6">
       <div class="flex justify-between">
         <div>
           <h1 class="text-2xl md:text-3xl font-bold text-white">Secure Document Handling</h1>
           <p class="text-sm text-gray-300 mt-1">Protect physical & digital documents — classify, store, share and dispose safely</p>
         </div>
-        
       </div>
     </header>
 
     <!-- Navigation -->
     <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
-      <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Intro</button>
-      <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Use Cases</button>
-      <button @click="go('best')" :class="active==='best' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Best Practices</button>
-      <button @click="go('checklist')" :class="active==='checklist' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Checklist</button>
-      <button @click="go('conclusion')" :class="active==='conclusion' ? 'bg-purple-600' : 'bg-gray-700'" class="px-4 py-2 rounded font-medium">Conclusion</button>
+      <template x-for="section in sections" :key="section">
+        <button 
+          @click="go(section)" 
+          :class="active===section ? 'bg-purple-600' : 'bg-gray-700'"
+          class="px-4 py-2 rounded font-medium capitalize"
+          x-text="navLabels[section]">
+        </button>
+      </template>
     </nav>
 
     <!-- CONTENT PANELS -->
@@ -64,13 +63,12 @@
             <p><strong>Why it matters:</strong></p>
             <ul class="list-disc ml-5">
               <li>Data Exposure: Sensitive documents left in public areas can be viewed or taken by unauthorized individuals.</li>
-              <li>Regulatory Compliance: Many industries (finance, healthcare, government) require strict document handling procedures.</li>
+              <li>Regulatory Compliance: Many industries require strict document handling procedures.</li>
               <li>Cybersecurity Risk: Digital documents shared insecurely can be intercepted or accessed by attackers.</li>
               <li>Insider Threats: Employees with improper access or malicious intent may misuse sensitive documents.</li>
             </ul>
           </div>
           <div class="p-4 rounded border border-gray-700">
-            <!-- SVG placeholder (replace with inline SVG if desired) -->
             <div class="bg-gray-900 p-4 rounded">
               <svg class="svg-placeholder text-purple-300 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
                 <rect x="3" y="4" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
@@ -89,56 +87,88 @@
 
       <!-- USE CASES -->
       <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-        <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and see outcomes</h2>
-        <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
-        <template x-for="uc in useCases" :key="uc.id">
-          <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
-            <!-- SVG placeholder column -->
-            <div class="md:col-span-1 flex justify-center">
-              <!-- Inline SVG placeholder - replace with your SVG -->
-              <div class="p-2 bg-gray-900 rounded">
-                <svg class="svg-placeholder text-purple-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                  <rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
-                  <path d="M7 9h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                  <path d="M7 12h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                </svg>
-              </div>
+      <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and see outcomes</h2>
+      <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
+          <!-- SVG / icon placeholder -->
+          <div class="md:col-span-1 flex justify-center">
+            <div class="p-2 bg-gray-900 rounded">
+              <svg class="svg-placeholder text-purple-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                <rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M7 9h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M7 12h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Text -->
+          <div class="md:col-span-3">
+            <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+            <p class="text-gray-300 mt-1" x-text="uc.desc"></p>
+
+            <!-- Reusable dynamic buttons -->
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <template x-for="(label, key) in uc.buttons" :key="key">
+                <button
+                  @click="ucAct(uc.id, key)"
+                  :class="{
+                    'bg-green-600': key === 'good',
+                    'bg-yellow-600': key === 'medium',
+                    'bg-red-600': key === 'bad'
+                  }"
+                  class="px-3 py-2 rounded"
+                  x-text="label"></button>
+              </template>
             </div>
 
-            <!-- Content -->
-            <div class="md:col-span-3">
-              <h3 class="font-semibold text-white" x-text="uc.title"></h3>
-              <p class="text-gray-300 mt-1" x-text="uc.desc"></p>
+            <div class="mt-3" x-html="outcomes[uc.id]"></div>
+            <p class="mt-2 text-sm text-gray-400 italic" x-text="uc.lesson"></p>
+          </div>
 
-              <!-- Action buttons (normal cases) -->
-              <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2" x-show="uc.id !== 'uc5'">
-                <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct</button>
-                <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / Mitigated</button>
-                <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / Ignore</button>
-              </div>
+          <div class="md:col-span-1 text-right">
+            <div class="text-xs text-gray-400">Scenario</div>
+            <div class="text-sm text-gray-200" x-text="uc.location"></div>
+          </div>
+        </article>
+      </template>
 
-              <!-- Special case: Misclassified / Disposal etc. (still normal) -->
-              <!-- Outcome -->
-              <div class="mt-3" x-html="outcomes[uc.id]"></div>
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('interactives')" class="bg-purple-600 px-4 py-2 rounded">Next: Interactive →</button>
+      </div>
+    </section>
 
-              <!-- For the printed/doc disposal case we may show an image placeholder when action chosen -->
-              <div class="mt-3" x-show="imageShown[uc.id]">
-                <div class="w-full h-44 rounded border border-gray-700 bg-gray-900 flex items-center justify-center text-gray-300">
-                  <span x-text="imageLabel[uc.id]"></span>
-                </div>
-              </div>
-              <p class="mt-2 text-sm text-gray-400 italic" x-text="uc.lesson"></p>
-            </div>
 
-            <div class="md:col-span-1 text-right">
-              <div class="text-xs text-gray-400">Scenario</div>
-              <div class="text-sm text-gray-200" x-text="uc.location"></div>
-            </div>
-          </article>
-        </template>
+      <!-- INTERACTIVE SECTION -->
+      <section x-show="active==='interactives'" x-cloak class="card p-6 rounded-lg space-y-6">
+        <h2 class="text-2xl font-semibold text-purple-200">🧪 Interactive Exercise</h2>
+
+        <!-- Classification -->
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-2">1. Classify this document:</h3>
+          <p class="text-gray-300 mb-2">“Employee Salary Records — Q4 2025”</p>
+          <div class="flex gap-2 flex-wrap">
+            <button @click="classify('Confidential')" class="bg-gray-700 hover:bg-purple-600 px-3 py-2 rounded">Confidential</button>
+            <button @click="classify('Internal')" class="bg-gray-700 hover:bg-purple-600 px-3 py-2 rounded">Internal</button>
+            <button @click="classify('Public')" class="bg-gray-700 hover:bg-purple-600 px-3 py-2 rounded">Public</button>
+          </div>
+          <div class="mt-3" x-html="classifyFeedback"></div>
+        </div>
+
+        <!-- Disposal -->
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-2">2. Choose the proper disposal method for a printed confidential document:</h3>
+          <div class="flex gap-2 flex-wrap">
+            <button @click="dispose('shred')" class="bg-gray-700 hover:bg-green-600 px-3 py-2 rounded">Shred</button>
+            <button @click="dispose('trash')" class="bg-gray-700 hover:bg-red-600 px-3 py-2 rounded">Throw in Trash</button>
+            <button @click="dispose('leave')" class="bg-gray-700 hover:bg-red-600 px-3 py-2 rounded">Leave on Desk</button>
+          </div>
+          <div class="mt-3" x-html="disposeFeedback"></div>
+        </div>
 
         <div class="flex justify-end">
-          <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
+          <button @click="complete('interactives'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
         </div>
       </section>
 
@@ -146,14 +176,13 @@
       <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
         <h2 class="text-2xl font-semibold text-purple-200">Best Practices for Defence</h2>
         <ul class="mt-4 space-y-2 list-disc list-inside text-gray-300">
-          <li><strong>Document Classification:</strong> Label documents (Confidential / Internal / Public) and treat them accordingly.</li>
-          <li><strong>Secure Storage:</strong> Lock physical documents and use access-controlled digital storage.</li>
-          <li><strong>Controlled Sharing:</strong> Use approved encrypted channels and restrict recipients.</li>
-          <li><strong>Safe Disposal:</strong> Shred printed material and securely erase digital media.</li>
-          <li><strong>Monitor & Limit Access:</strong> Apply least-privilege and audit access logs regularly.</li>
-          <li><strong>Training:</strong> Ensure employees know classification and handling rules.</li>
+          <li>Classify and label documents properly.</li>
+          <li>Lock printed docs and secure digital storage.</li>
+          <li>Encrypt sensitive files before sharing.</li>
+          <li>Shred and wipe before disposal.</li>
+          <li>Limit access to what’s required only.</li>
+          <li>Regularly train employees on handling rules.</li>
         </ul>
-
         <div class="mt-6 flex justify-end">
           <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Continue → Checklist</button>
         </div>
@@ -165,40 +194,16 @@
         <p class="text-gray-300 mt-2">Check the controls your organisation has in place and run a quick analysis.</p>
 
         <div class="grid md:grid-cols-2 gap-3 mt-4">
-          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
-            <input type="checkbox" x-model="checklist.classify" class="h-4 w-4"/>
-            Document classification & labeling
-          </label>
-
-          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
-            <input type="checkbox" x-model="checklist.storage" class="h-4 w-4"/>
-            Secure storage (locked cabinets / secure drives)
-          </label>
-
-          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
-            <input type="checkbox" x-model="checklist.sharing" class="h-4 w-4"/>
-            Encrypted / approved sharing channels
-          </label>
-
-          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
-            <input type="checkbox" x-model="checklist.disposal" class="h-4 w-4"/>
-            Secure disposal (shredding / wipe)
-          </label>
-
-          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
-            <input type="checkbox" x-model="checklist.access" class="h-4 w-4"/>
-            Least-privilege access & regular reviews
-          </label>
-
-          <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
-            <input type="checkbox" x-model="checklist.training" class="h-4 w-4"/>
-            Employee training and awareness exercises
-          </label>
+          <template x-for="(label,key) in checklistLabels" :key="key">
+            <label class="p-3 rounded border border-gray-700 flex items-center gap-3">
+              <input type="checkbox" x-model="checklist[key]" class="h-4 w-4"/>
+              <span x-text="label"></span>
+            </label>
+          </template>
         </div>
 
         <div class="mt-4">
           <button @click="analyzeGaps()" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
-          <button @click="saveChecklist()" class="ml-2 bg-gray-700 px-4 py-2 rounded">Save</button>
         </div>
 
         <div class="mt-4" x-html="gapResult"></div>
@@ -217,124 +222,147 @@
         </p>
 
         <div class="mt-4 flex gap-3">
-          <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
           <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
         </div>
       </section>
 
     </main>
-    
   </div>
 
-  <!-- Alpine module script -->
   <script>
     function secureDocsModule(){
       return {
-        // navigation sections
-        sections: ['intro','usecases','best','checklist','conclusion'],
+        sections: ['intro','usecases','interactives','best','checklist','conclusion'],
+        navLabels: {intro:'Intro',usecases:'Use Cases',interactives:'Interactive',best:'Best Practices',checklist:'Checklist',conclusion:'Conclusion'},
         active: localStorage.getItem('sd_active') || 'intro',
-        completed: JSON.parse(localStorage.getItem('sd_completed')||'{}'),
-        // use cases
-        quizUrl: '#Quiz', // replace if needed
+        completed: {},
+        quizUrl: '#Quiz',
         useCases: [
-          {id:'uc1', title:'Printed Document Left Unsecured', desc:'Confidential financial reports left on a printer overnight and accessed by unauthorized person.', lesson:'Always store sensitive printed documents in locked cabinets and never leave them unattended.', location:'Printer / Common Area'},
-          {id:'uc2', title:'Sensitive Digital File Shared Insecurely', desc:'Employee emails customer spreadsheet to personal address without encryption.', lesson:' Digital documents should only be shared using secure, company-approved channels and encrypted when necessary.', location:'Email / External Share'},
-          {id:'uc3', title:'Failure to Dispose of Sensitive Documents', desc:'Old reports thrown in trash without shredding and later recovered.', lesson:'Shred sensitive documents before disposal to prevent data leakage.',  location:'Waste / Disposal'},
-          {id:'uc4', title:'Misclassified Documents', desc:'Internal document mislabelled as “General” and widely shared outside need-to-know.', lesson:'Properly classify documents according to sensitivity and handle accordingly.', location:'File Share / Folder'},
-          {id:'uc5', title:'Insider Threat Exploitation', desc:'Employee copies sensitive customer data to external storage for personal gain.', lesson:'Limit access to sensitive documents and monitor activity for suspicious behavior.', location:'Endpoint / USB / Cloud'}
-        ],
-        // outcomes and UI state
-        outcomes: JSON.parse(localStorage.getItem('sd_outcomes')||'{}'),
-        imageShown: JSON.parse(localStorage.getItem('sd_imageShown')||'{}'),
-        imageLabel: JSON.parse(localStorage.getItem('sd_imageLabel')||'{}'),
-        checklist: JSON.parse(localStorage.getItem('sd_checklist')||JSON.stringify({
-          classify:false, storage:false, sharing:false, disposal:false, access:false, training:false
-        })),
-        gapResult: '',
+        {
+          id: 'uc1',
+          title: 'Printed Document Left Unsecured',
+          desc: 'Confidential reports left on a printer overnight.',
+          lesson: 'Always store sensitive printed documents in locked cabinets.',
+          location: 'Printer / Common Area',
+          buttons: {
+            good: '🔒 Lock it away immediately',
+            medium: '🕒 Pick it up later',
+            bad: '⚠️ Leave it unattended'
+          }
+        },
+        {
+          id: 'uc2',
+          title: 'Sensitive Digital File Shared Insecurely',
+          desc: 'Spreadsheet sent to personal email without encryption.',
+          lesson: 'Use secure, approved channels.',
+          location: 'Email',
+          buttons: {
+            good: '📤 Use secure channel',
+            medium: '📎 Forward internally (unencrypted)',
+            bad: '❌ Send to personal email'
+          }
+        },
+        {
+          id: 'uc3',
+          title: 'Failure to Dispose',
+          desc: 'Old reports thrown in trash.',
+          lesson: 'Shred sensitive documents before disposal.',
+          location: 'Waste Bin',
+          buttons: {
+            good: '🗑️ Shred before disposal',
+            medium: '📄 Tear but not shred',
+            bad: '🚯 Trash without protection'
+          }
+        },
+        {
+          id: 'uc4',
+          title: 'Misclassified Documents',
+          desc: 'Internal file marked “Public”.',
+          lesson: 'Classify accurately based on sensitivity.',
+          location: 'File Share',
+          buttons: {
+            good: '🏷️ Label as Confidential',
+            medium: '🏷️ Mark Internal Only',
+            bad: '🌍 Mark Public'
+          }
+        },
+        {
+          id: 'uc5',
+          title: 'Insider Threat Exploitation',
+          desc: 'Employee copies data externally.',
+          lesson: 'Limit access & monitor usage.',
+          location: 'Endpoint / Cloud',
+          buttons: {
+            good: '🔐 Restrict access & monitor',
+            medium: '🕵️ Ignore suspicious activity',
+            bad: '❌ Give broad access'
+          }
+        }
+      ],
+
+        outcomes:{},
+        imageShown:{},
+        imageLabel:{},
+        classifyFeedback:'',
+        disposeFeedback:'',
+        checklist: {classify:false, storage:false, sharing:false, disposal:false, access:false, training:false},
+        checklistLabels: {
+          classify:'Document classification & labeling',
+          storage:'Secure storage (locked cabinets / drives)',
+          sharing:'Encrypted / approved sharing',
+          disposal:'Secure disposal (shred/wipe)',
+          access:'Least-privilege access & reviews',
+          training:'Employee training & awareness'
+        },
+        gapResult:'',
         init(){
-          // ensure outcomes exist for each uc
-          this.useCases.forEach(u => { if(!(u.id in this.outcomes)) this.outcomes[u.id] = ''; if(!(u.id in this.imageShown)) this.imageShown[u.id]=false; if(!(u.id in this.imageLabel)) this.imageLabel[u.id]=''; });
-          // restore progress
-          try { this.completed = JSON.parse(localStorage.getItem('sd_completed')||'{}'); } catch(e){}
-          this.saveState();
+          this.useCases.forEach(u=>{
+            if(!(u.id in this.outcomes)) this.outcomes[u.id]='';
+            if(!(u.id in this.imageShown)) this.imageShown[u.id]=false;
+            if(!(u.id in this.imageLabel)) this.imageLabel[u.id]='';
+          });
         },
         go(id){
-          this.active = id;
+          this.active=id;
           localStorage.setItem('sd_active', id);
+          const container=document.getElementById('module-nav');
+          if(container){
+            window.scrollTo({top: container.offsetTop - 30, behavior:'smooth'});
+          }
+        },
+        complete(s){ this.completed[s]=true; },
+        ucAct(id, action) {
+          const messages = {
+            good: `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">✅ Excellent — this is secure document handling.</div>`,
+            medium: `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">⚠️ Partial protection — better practices exist.</div>`,
+            bad: `<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">❌ Risky handling — this exposes sensitive data.</div>`
+          };
 
-          // scroll to top of interactive content
-          const container = document.getElementById('module-nav');
-          if (container) {
-            window.scrollTo({
-              top: container.offsetTop - 30,
-              behavior: 'smooth'
-            });
-          }
+          this.outcomes[id] = messages[action] || '';
+          localStorage.setItem('sd_outcomes', JSON.stringify(this.outcomes));
         },
-        complete(section){
-          this.completed[section] = true;
-          localStorage.setItem('sd_completed', JSON.stringify(this.completed));
-        },
-        ucAct(id, action){
-          // clear previous image
-          this.imageShown[id] = false;
-          this.imageLabel[id] = '';
-          if(action==='correct'){
-            this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Good choice — this reduces risk: follow policy and report suspicious events.</div>`;
-          } else if(action==='partial'){
-            this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Partially mitigated — additional controls recommended (e.g., encryption, access reviews).</div>`;
-            // show a small illustrative placeholder
-            this.imageLabel[id] = 'Partial mitigation illustration';
-            this.imageShown[id] = true;
+        classify(choice){
+          if(choice==='Confidential'){
+            this.classifyFeedback=`<div class="p-3 bg-green-900 border border-green-600 rounded">✅ Correct — salary records should be classified as <strong>Confidential</strong>.</div>`;
           } else {
-            this.outcomes[id] = `<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Risky action — vulnerability exposed. Take corrective steps immediately.</div>`;
-            this.imageLabel[id] = 'Risky outcome illustration';
-            this.imageShown[id] = true;
+            this.classifyFeedback=`<div class="p-3 bg-red-900 border border-red-600 rounded">❌ Incorrect — this document is too sensitive to be marked ${choice}.</div>`;
           }
-          this.saveState();
+        },
+        dispose(method){
+          if(method==='shred'){
+            this.disposeFeedback=`<div class="p-3 bg-green-900 border border-green-600 rounded">✅ Correct — shredding is the proper disposal method.</div>`;
+          } else {
+            this.disposeFeedback=`<div class="p-3 bg-red-900 border border-red-600 rounded">❌ Incorrect — throwing it away or leaving it out puts data at risk.</div>`;
+          }
         },
         analyzeGaps(){
-          localStorage.setItem('sd_checklist', JSON.stringify(this.checklist));
-          const keys = Object.keys(this.checklist);
-          const missing = keys.filter(k => !this.checklist[k]);
+          const missing = Object.keys(this.checklist).filter(k=>!this.checklist[k]);
           if(missing.length===0){
-            this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">No major gaps identified — good baseline.</div>`;
+            this.gapResult=`<div class="p-3 rounded bg-green-900 border border-green-600 text-green-300">All controls in place — great work!</div>`;
           } else {
-            // friendly names
-            const friendly = missing.map(m => {
-              return {
-                classify: 'Document Classification',
-                storage: 'Secure Storage',
-                sharing: 'Controlled Sharing',
-                disposal: 'Safe Disposal',
-                access: 'Access Controls',
-                training: 'Training & Awareness'
-              }[m] || m;
-            });
-            this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Missing controls: ${friendly.join(', ')}</div>`;
+            const friendly = missing.map(m=>this.checklistLabels[m]);
+            this.gapResult=`<div class="p-3 rounded bg-yellow-900 border border-yellow-600 text-yellow-300">Missing controls: ${friendly.join(', ')}</div>`;
           }
-        },
-        saveChecklist(){
-          localStorage.setItem('sd_checklist', JSON.stringify(this.checklist));
-          this.gapResult = `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Checklist saved.</div>`;
-        },
-        saveState(){
-          localStorage.setItem('sd_outcomes', JSON.stringify(this.outcomes));
-          localStorage.setItem('sd_imageShown', JSON.stringify(this.imageShown));
-          localStorage.setItem('sd_imageLabel', JSON.stringify(this.imageLabel));
-          localStorage.setItem('sd_completed', JSON.stringify(this.completed));
-        },
-        restart(){
-          // reset everything
-        //   this.useCases.forEach(u => { this.outcomes[u.id]=''; this.imageShown[u.id]=false; this.imageLabel[u.id]=''; });
-        //   this.checklist = {classify:false, storage:false, sharing:false, disposal:false, access:false, training:false};
-        //   this.gapResult = '';
-        //   this.completed = {};
-        //   this.active = 'intro';
-        //   this.saveState();
-        //   localStorage.removeItem('sd_checklist');
-        //   localStorage.removeItem('sd_active');
-        window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=ce3c56d6-95e2-473b-874b-067280dec434#Quiz";
         }
       }
     }

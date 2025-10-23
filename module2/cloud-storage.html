@@ -66,16 +66,37 @@
 
   <!-- Use Cases -->
   <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Use Cases</h2>
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Use Cases — Choose Actions and See Outcomes</h2>
+    <p class="text-gray-300 text-sm mb-4">Select what you would do in each case and learn the outcome.</p>
 
     <template x-for="uc in useCases" :key="uc.id">
       <article class="p-4 border border-gray-700 rounded grid md:grid-cols-5 gap-4 items-start">
         <div class="md:col-span-1 flex justify-center">
           <div class="w-20 h-20 bg-gray-900 rounded flex items-center justify-center" x-html="uc.svg"></div>
         </div>
+
         <div class="md:col-span-4">
           <h3 class="font-semibold text-white" x-text="uc.title"></h3>
-          <p class="text-gray-300 text-sm" x-text="uc.desc"></p>
+          <p class="text-gray-300 text-sm mt-1" x-text="uc.desc"></p>
+
+          <!-- Dynamic buttons per scenario -->
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <template x-for="(label, key) in uc.buttons" :key="key">
+              <button
+                @click="ucAct(uc.id, key)"
+                :class="{
+                  'bg-green-600': key === 'good',
+                  'bg-yellow-600': key === 'medium',
+                  'bg-red-600': key === 'bad'
+                }"
+                class="px-3 py-2 rounded text-sm font-medium"
+                x-text="label"></button>
+            </template>
+          </div>
+
+          <!-- Outcome feedback -->
+          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+
           <p class="text-green-300 mt-2 text-sm" x-text="uc.lesson"></p>
         </div>
       </article>
@@ -85,6 +106,7 @@
       <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next → Best Practices</button>
     </div>
   </section>
+
 
   <!-- Best Practices -->
   <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
@@ -163,13 +185,70 @@ function cloudModule(){
     checklist:{mfa:false,permissions:false,logs:false,training:false,backup:false,device:false},
     gapResult:'',
     quizUrl: '#Quiz', // replace if needed
-    useCases:[
-      {id:1,title:"Misconfigured Shared Folder",desc:"An employee accidentally shares a folder containing confidential client data with 'Anyone with the link.' The link is later accessed by an external party.",lesson:"Lesson: Always verify sharing settings and restrict access to authorized users only.",svg:`<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`},
-      {id:2,title:"Weak Password & Account Compromise",desc:"A cloud storage account uses a simple, reused password. Attackers gain access and steal corporate documents.",lesson:"Lesson: Use strong, unique passwords and enable MFA to secure accounts.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`},
-      {id:3,title:"Phishing Attack on Collaboration Platform",desc:"An employee receives an email claiming to be from the cloud service, requesting login verification. The link directs to a fake login page, capturing credentials.",lesson:"Lesson: Always verify emails and login pages before entering credentials; never enter credentials via email links.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#60a5fa"/></svg>`},
-      {id:4,title:"Data Loss from Accidental Deletion",desc:"A team member accidentally deletes critical project files from the shared cloud folder. Recovery is delayed due to lack of backup.",lesson:"Lesson: Enable version control, backups, and restricted deletion permissions for critical files.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#fbbf24"/></svg>`},
-      {id:5,title:"Insider Misuse",desc:"An employee with authorized access copies confidential files to a personal device and shares them outside the organization.",lesson:"Lesson: Monitor activity, enforce role-based access, and educate employees on data confidentiality policies.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#34d399"/></svg>`}
+    outcomes: {},
+    useCases: [
+      {
+        id: 1,
+        title: "Misconfigured Shared Folder",
+        desc: "An employee accidentally shares a folder containing confidential client data with 'Anyone with the link.' The link is later accessed by an external party.",
+        lesson: "Always verify sharing settings and restrict access to authorized users only.",
+        svg: `<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`,
+        buttons: {
+          good: "🔒 Restrict to authorized users",
+          medium: "⚙️ Keep link but disable editing",
+          bad: "🌍 Leave link open to anyone"
+        }
+      },
+      {
+        id: 2,
+        title: "Weak Password & Account Compromise",
+        desc: "A cloud storage account uses a simple, reused password. Attackers gain access and steal corporate documents.",
+        lesson: "Use strong, unique passwords and enable MFA to secure accounts.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`,
+        buttons: {
+          good: "🛡️ Use strong password + MFA",
+          medium: "🔑 Change password after incident",
+          bad: "❌ Reuse same weak password"
+        }
+      },
+      {
+        id: 3,
+        title: "Phishing Attack on Collaboration Platform",
+        desc: "An employee receives an email claiming to be from the cloud service, requesting login verification. The link directs to a fake login page, capturing credentials.",
+        lesson: "Always verify emails and login pages before entering credentials; never enter credentials via email links.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#60a5fa"/></svg>`,
+        buttons: {
+          good: "📧 Verify sender before login",
+          medium: "🔍 Report email but click link later",
+          bad: "⚠️ Enter credentials from email link"
+        }
+      },
+      {
+        id: 4,
+        title: "Data Loss from Accidental Deletion",
+        desc: "A team member accidentally deletes critical project files from the shared cloud folder. Recovery is delayed due to lack of backup.",
+        lesson: "Enable version control, backups, and restricted deletion permissions for critical files.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#fbbf24"/></svg>`,
+        buttons: {
+          good: "💾 Enable backups/versioning",
+          medium: "🕒 Manually restore when needed",
+          bad: "🚯 Delete files without backup"
+        }
+      },
+      {
+        id: 5,
+        title: "Insider Misuse",
+        desc: "An employee with authorized access copies confidential files to a personal device and shares them outside the organization.",
+        lesson: "Monitor activity, enforce role-based access, and educate employees on data confidentiality policies.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#34d399"/></svg>`,
+        buttons: {
+          good: "🔐 Restrict and monitor access",
+          medium: "🕵️ Review after incident occurs",
+          bad: "📂 Allow personal copies"
+        }
+      }
     ],
+
     init(){
       this.active=localStorage.getItem('cloud_active')||'intro';
       this.sections=['intro','usecases','best','checklist','conclusion'];
@@ -187,6 +266,16 @@ function cloudModule(){
     }
     },
     complete(s){this.completed[s]=true;localStorage.setItem('cloud_done_'+s,'1');},
+    ucAct(id, action) {
+      const messages = {
+        good: `<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">✅ Excellent — your response prevents or minimizes risk.</div>`,
+        medium: `<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">⚠️ Some protection — but improvements are needed to reduce risk.</div>`,
+        bad: `<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">❌ Risky choice — this exposes sensitive data or violates policy.</div>`
+      };
+
+      this.outcomes[id] = messages[action] || '';
+      localStorage.setItem('cloud_outcomes', JSON.stringify(this.outcomes)); // rename key if needed
+    },
     btnCls(s){return this.active===s?'bg-purple-600 text-white':'bg-gray-700 text-gray-300';},
     analyzeGaps(){
       localStorage.setItem('cloud_checklist',JSON.stringify(this.checklist));
