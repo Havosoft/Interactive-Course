@@ -66,23 +66,54 @@
 
   <!-- Use Cases -->
   <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Use Cases</h2>
+    <h2 class="text-2xl font-semibold text-purple-200 mb-3">Use Cases — Choose Your Action</h2>
+    <p class="text-gray-300 text-sm mb-4">
+      Select the most appropriate action for each situation to learn the best security response.
+    </p>
 
     <template x-for="uc in useCases" :key="uc.id">
       <article class="p-4 border border-gray-700 rounded grid md:grid-cols-5 gap-4 items-start">
+        <!-- Icon -->
         <div class="md:col-span-1 flex justify-center">
           <div class="w-20 h-20 bg-gray-900 rounded flex items-center justify-center" x-html="uc.svg"></div>
         </div>
+
+        <!-- Content -->
         <div class="md:col-span-4">
           <h3 class="font-semibold text-white" x-text="uc.title"></h3>
-          <p class="text-gray-300 text-sm" x-text="uc.desc"></p>
-          <p class="text-green-300 mt-2 text-sm" x-text="uc.lesson"></p>
+          <p class="text-gray-300 text-sm mt-1" x-text="uc.desc"></p>
+
+          <!-- 👇 Scenario-specific action buttons -->
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <template x-for="(label, key) in uc.buttons" :key="key">
+              <button
+                @click="ucAct(uc.id, key)"
+                :class="{
+                  'bg-green-600': key==='good',
+                  'bg-yellow-600': key==='medium',
+                  'bg-red-600': key==='bad',
+                  'ring-2 ring-offset-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                  'ring-2 ring-offset-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                  'ring-2 ring-offset-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+                }"
+                class="px-3 py-2 rounded text-white font-medium transition"
+                x-text="label"></button>
+            </template>
+          </div>
+
+          <!-- 👇 Outcome feedback -->
+          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+
+          <!-- Lesson -->
+          <p class="text-sm text-gray-400 italic mt-2" x-text="uc.lesson"></p>
         </div>
       </article>
     </template>
 
     <div class="flex justify-end">
-      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next → Best Practices</button>
+      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">
+        Next → Best Practices
+      </button>
     </div>
   </section>
 
@@ -166,13 +197,88 @@ function responsibilityModule(){
     checklist:{passwords:false,devices:false,sharing:false,updates:false,reporting:false,training:false},
     gapResult:'',
     quizUrl: '#Quiz', // replace if needed
-    useCases:[
-      {id:1,title:"Weak Password Practices",desc:"An employee uses the same password for personal and company accounts, which is later leaked in a breach. Attackers gain access to corporate systems.",lesson:"Lesson: Use strong, unique passwords and enable MFA to reduce risk.",svg:`<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`},
-      {id:2,title:"Unsecured Device Handling",desc:"A company laptop is left unattended in a café, exposing sensitive files to anyone passing by.",lesson:"Lesson: Always secure devices physically and digitally, using locks, encryption, and password protection.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`},
-      {id:3,title:"Improper Email Practices",desc:"Employees share confidential client information via unsecured personal email accounts.",lesson:"Lesson: Use only company-approved platforms and encrypted communication channels for sensitive data.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#60a5fa"/></svg>`},
-      {id:4,title:"Neglecting Software Updates",desc:"An employee ignores system and app updates, leaving vulnerabilities exposed to attackers.",lesson:"Lesson: Keep devices, apps, and security software up to date to prevent breaches.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#fbbf24"/></svg>`},
-      {id:5,title:"Reporting Suspicious Activity",desc:"An employee notices unusual access patterns to shared cloud files and reports it to IT immediately.",lesson:"Lesson: Prompt reporting allows quick action to mitigate potential data loss or compromise.",svg:`<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#34d399"/></svg>`}
+    outcomes: {},
+      useCases: [
+      {
+        id: 1,
+        title: "Weak Password Practices",
+        desc: "An employee uses the same password for personal and company accounts, which is later leaked in a breach.",
+        lesson: "Use strong, unique passwords and enable MFA to reduce risk.",
+        svg: `<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`,
+        buttons: {
+          good: "Use Strong, Unique Password",
+          medium: "Change Password After Breach",
+          bad: "Keep Reusing Same Password"
+        }
+      },
+      {
+        id: 2,
+        title: "Unsecured Device Handling",
+        desc: "A company laptop is left unattended in a café, exposing sensitive files to anyone passing by.",
+        lesson: "Always secure devices physically and digitally.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`,
+        buttons: {
+          good: "Lock and Encrypt the Device",
+          medium: "Hide Laptop Under Table",
+          bad: "Leave It Unattended"
+        }
+      },
+      {
+        id: 3,
+        title: "Improper Email Practices",
+        desc: "Employees share confidential client information via unsecured personal email accounts.",
+        lesson: "Use company-approved encrypted channels.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#60a5fa"/></svg>`,
+        buttons: {
+          good: "Use Company Email with Encryption",
+          medium: "Forward Later from Work Account",
+          bad: "Send via Personal Email"
+        }
+      },
+      {
+        id: 4,
+        title: "Neglecting Software Updates",
+        desc: "An employee ignores system and app updates, leaving vulnerabilities exposed to attackers.",
+        lesson: "Keep all systems up to date to prevent exploits.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#fbbf24"/></svg>`,
+        buttons: {
+          good: "Enable Automatic Updates",
+          medium: "Delay Updates Occasionally",
+          bad: "Ignore Update Prompts"
+        }
+      },
+      {
+        id: 5,
+        title: "Reporting Suspicious Activity",
+        desc: "An employee notices unusual access patterns to shared files and reports it to IT immediately.",
+        lesson: "Prompt reporting allows rapid incident response.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#34d399"/></svg>`,
+        buttons: {
+          good: "Report to IT Security Immediately",
+          medium: "Ask a Colleague First",
+          bad: "Ignore It — Probably Nothing"
+        }
+      }
     ],
+     activeChoice: {},
+
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+
+      const messages = {
+        good: `<div class='p-3 rounded bg-gray-900 border border-green-600 text-green-300'>
+          ✅ Excellent — this is a secure and recommended action.
+        </div>`,
+        medium: `<div class='p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300'>
+          ⚠️ Some protection — but consider stronger measures.
+        </div>`,
+        bad: `<div class='p-3 rounded bg-gray-900 border border-red-600 text-red-300'>
+          ❌ Risky choice — this can lead to data compromise.
+        </div>`
+      };
+
+      this.outcomes[id] = messages[action] || '';
+    },
     init(){
       this.active=localStorage.getItem('resp_active')||'intro';
       this.sections=['intro','usecases','best','checklist','conclusion'];

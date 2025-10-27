@@ -68,32 +68,51 @@
   </section>
 
   <!-- USE CASES -->
-  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-    <h2 class="text-2xl font-semibold text-purple-200">Use Cases — choose actions and see outcomes</h2>
-    <p class="text-gray-300">Pick the best action for each scenario and get immediate feedback.</p>
-    <template x-for="uc in useCases" :key="uc.id">
-      <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
-        <div class="md:col-span-1 flex justify-center">
-          <div class="w-24 h-24 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
-        </div>
-        <div class="md:col-span-4">
-          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
-          <p class="text-gray-300" x-text="uc.desc"></p>
-          <p class="text-sm text-green-300 mt-1" x-text="uc.lesson"></p>
-          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct action</button>
-            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
-            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
-          </div>
-          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
-        </div>
-      </article>
-    </template>
+<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+  <h2 class="text-2xl font-semibold text-purple-200">Use Cases — Choose Your Response and See the Outcome</h2>
+  <p class="text-gray-300 mb-3 text-sm">Select how you would respond to each security incident and view the result.</p>
 
-    <div class="flex justify-end">
-      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
-    </div>
-  </section>
+  <template x-for="uc in useCases" :key="uc.id">
+    <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-start">
+      <div class="md:col-span-1 flex justify-center">
+        <div class="w-24 h-24 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
+      </div>
+
+      <div class="md:col-span-4">
+        <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+        <p class="text-gray-300 text-sm mt-1" x-text="uc.desc"></p>
+
+        <!-- Contextual buttons -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <template x-for="(label, key) in uc.buttons" :key="key">
+            <button
+              @click="ucAct(uc.id, key)"
+              :class="{
+                'bg-green-600': key==='good',
+                'bg-yellow-600': key==='medium',
+                'bg-red-600': key==='bad',
+                'ring-2 ring-offset-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                'ring-2 ring-offset-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                'ring-2 ring-offset-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+              }"
+              class="px-3 py-2 rounded text-white font-medium transition"
+              x-text="label">
+            </button>
+          </template>
+        </div>
+
+        <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+        <p class="text-sm text-gray-400 italic mt-2" x-text="uc.lesson"></p>
+      </div>
+    </article>
+  </template>
+
+  <div class="flex justify-end">
+    <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">
+      Next: Best Practices →
+    </button>
+  </div>
+</section>
 
   <!-- BEST PRACTICES -->
   <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
@@ -151,13 +170,69 @@ function incidentModule(){
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
+    activeChoice: {},
     quizUrl: '#Quiz', // replace if needed
-    useCases:[
-      {id:'uc1', title:'Malware Infection Detected on Laptop', desc:'An employee notices unusual pop-ups and sluggish performance. They immediately report it to IT, who isolates the device and begins remediation.', lesson:'Lesson: Early detection and reporting prevent network-wide infection.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>'},
-      {id:'uc2', title:'Phishing Attempt Received', desc:'An employee receives a suspicious email requesting login credentials. They do not click the link and report the email to security.', lesson:'Lesson: Awareness and prompt reporting can prevent account compromise.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>'},
-      {id:'uc3', title:'Lost Company Device', desc:'A corporate laptop is lost during travel. The employee reports it immediately, triggering remote wipe and account lockout procedures.', lesson:'Lesson: Following reporting protocols reduces data exposure.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 30h32v12H20z" fill="#f59e0b"/></svg>'},
-      {id:'uc4', title:'Unauthorized Access Detected', desc:'IT identifies multiple failed login attempts on an employee account. The affected user reports additional unusual behavior.', lesson:'Lesson: Prompt communication helps IT secure accounts and prevent breaches.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 20h32v32H20z" fill="#10b981"/></svg>'},
-      {id:'uc5', title:'Insider Threat Identification', desc:'Suspicious activity indicates an employee may be attempting unauthorized access to sensitive files. Security is alerted and investigates.', lesson:'Lesson: Timely reporting ensures potential insider threats are addressed before harm occurs.', svg:'<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="16" fill="#8b5cf6"/></svg>'}
+    useCases: [
+      {
+        id: 'uc1',
+        title: 'Malware Infection Detected on Laptop',
+        desc: 'An employee notices unusual pop-ups and sluggish performance. They immediately report it to IT.',
+        lesson: 'Early reporting and isolation reduce malware spread.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>`,
+        buttons: {
+          good: 'Report Immediately to IT',
+          medium: 'Restart Device, Then Report Later',
+          bad: 'Ignore the Signs'
+        }
+      },
+      {
+        id: 'uc2',
+        title: 'Phishing Attempt Received',
+        desc: 'An employee receives an email asking for credentials but suspects it might be a phishing attempt.',
+        lesson: 'Avoid clicking suspicious links and report them right away.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>`,
+        buttons: {
+          good: 'Report the Email to Security',
+          medium: 'Delete Without Reporting',
+          bad: 'Click the Link to Check It Out'
+        }
+      },
+      {
+        id: 'uc3',
+        title: 'Lost Company Device',
+        desc: 'An employee misplaces a company laptop while traveling. Sensitive data may be at risk.',
+        lesson: 'Immediate reporting allows IT to trigger remote wipe and lockout protocols.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 30h32v12H20z" fill="#f59e0b"/></svg>`,
+        buttons: {
+          good: 'Report Loss Immediately to IT',
+          medium: 'Look for It First, Report Later',
+          bad: 'Do Nothing and Hope It’s Found'
+        }
+      },
+      {
+        id: 'uc4',
+        title: 'Unauthorized Access Detected',
+        desc: 'Multiple failed login attempts occur on an employee’s account. IT notifies the user.',
+        lesson: 'Cooperation and quick response help prevent further breach attempts.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 20h32v32H20z" fill="#10b981"/></svg>`,
+        buttons: {
+          good: 'Contact IT and Reset Password',
+          medium: 'Wait to See If It Stops',
+          bad: 'Ignore the Notification'
+        }
+      },
+      {
+        id: 'uc5',
+        title: 'Insider Threat Identification',
+        desc: 'Unusual activity suggests a colleague may be accessing sensitive data without authorization.',
+        lesson: 'Responsible reporting helps prevent internal misuse or data theft.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="16" fill="#8b5cf6"/></svg>`,
+        buttons: {
+          good: 'Report to Security Immediately',
+          medium: 'Ask the Colleague About It',
+          bad: 'Ignore the Suspicion'
+        }
+      }
     ],
     checklist:{detect:false,contain:false,report:false,cooperate:false,review:false},
     gapResult:'',
@@ -178,11 +253,21 @@ function incidentModule(){
     }
     },
     complete(name){this.completed[name]=true;localStorage.setItem('incident_done_'+name,'1');},
-    ucAct(id,action){
-      if(action==='correct') this.outcomes[id]='<div class="p-3 rounded bg-green-900 border border-green-500 text-green-200">Correct — secure action taken.</div>';
-      if(action==='partial') this.outcomes[id]='<div class="p-3 rounded bg-yellow-900 border border-yellow-500 text-yellow-200">Partially mitigated — some risk remains.</div>';
-      if(action==='bad') this.outcomes[id]='<div class="p-3 rounded bg-red-900 border border-red-500 text-red-200">Risky — action ignored or mishandled.</div>';
-      localStorage.setItem('incident_outcomes',JSON.stringify(this.outcomes));
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+      const messages = {
+        good: `<div class='p-3 rounded bg-gray-900 border border-green-600 text-green-300'>
+          ✅ Excellent — this prompt action ensures quick containment and reduces organizational risk.
+        </div>`,
+        medium: `<div class='p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300'>
+          ⚠️ Some action taken, but delay or hesitation could increase exposure.
+        </div>`,
+        bad: `<div class='p-3 rounded bg-gray-900 border border-red-600 text-red-300'>
+          ❌ Risky — ignoring or delaying response could lead to widespread compromise.
+        </div>`
+      };
+      this.outcomes[id] = messages[action] || '';
+      localStorage.setItem('incident_outcomes', JSON.stringify(this.outcomes));
     },
     analyzeGaps(){
       localStorage.setItem('incident_checklist',JSON.stringify(this.checklist));

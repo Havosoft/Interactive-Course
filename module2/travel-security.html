@@ -68,42 +68,61 @@
   </section>
 
   <!-- USE CASES -->
-  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-    <h2 class="text-2xl font-semibold text-purple-200">Use Cases</h2>
-    <p class="text-gray-300 mb-3">Choose an action for each scenario and see the likely outcome.</p>
+<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+  <h2 class="text-2xl font-semibold text-purple-200">Use Cases — Choose the Best Response</h2>
+  <p class="text-gray-300 mb-3 text-sm">Select what you’d do in each scenario to see the security impact of your choice.</p>
 
-    <template x-for="uc in useCases" :key="uc.id">
-      <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-center">
-        <div class="md:col-span-1 flex justify-center">
-          <!-- inline SVG placeholder — replace with actual SVG markup -->
-          <div class="w-28 h-28 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
+  <template x-for="uc in useCases" :key="uc.id">
+    <article class="p-4 rounded border border-gray-700 grid md:grid-cols-5 gap-4 items-start">
+      <!-- SVG -->
+      <div class="md:col-span-1 flex justify-center">
+        <div class="w-28 h-28 flex items-center justify-center bg-gray-900 rounded" x-html="uc.svg"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="md:col-span-3">
+        <h3 class="font-semibold text-white" x-text="uc.title"></h3>
+        <p class="text-gray-300 text-sm mt-1" x-text="uc.desc"></p>
+
+        <!-- 👇 Scenario-specific buttons -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <template x-for="(label, key) in uc.buttons" :key="key">
+            <button
+              @click="ucAct(uc.id, key)"
+              :class="{
+                'bg-green-600': key==='good',
+                'bg-yellow-600': key==='medium',
+                'bg-red-600': key==='bad',
+                'ring-2 ring-offset-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                'ring-2 ring-offset-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                'ring-2 ring-offset-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+              }"
+              class="px-3 py-2 rounded text-white font-medium transition"
+              x-text="label">
+            </button>
+          </template>
         </div>
 
-        <div class="md:col-span-3">
-          <h3 class="font-semibold text-white" x-text="uc.title"></h3>
-          <p class="text-gray-300" x-text="uc.desc"></p>          
+        <!-- Outcome -->
+        <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
 
-          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600">Correct action</button>
-            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-600">Partial / mitigated</button>
-            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600">Risky / ignore</button>
-          </div>
+        <p class="text-sm text-gray-400 italic mt-2" x-text="uc.lesson"></p>
+      </div>
 
-          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
-          <p class="text-sm text-green-300 mt-1" x-text="uc.lesson"></p>
-        </div>
+      <!-- Context -->
+      <div class="md:col-span-1 text-right">
+        <div class="text-xs text-gray-400">Context</div>
+        <div class="text-sm text-gray-200" x-text="uc.location"></div>
+      </div>
+    </article>
+  </template>
 
-        <div class="md:col-span-1 text-right">
-          <div class="text-xs text-gray-400">Context</div>
-          <div class="text-sm text-gray-200" x-text="uc.location"></div>
-        </div>
-      </article>
-    </template>
-
-    <div class="flex justify-end">
-      <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">Next: Best Practices →</button>
-    </div>
-  </section>
+  <div class="flex justify-end">
+    <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">
+      Next: Best Practices →
+    </button>
+  </div>
+</section>
 
   <!-- BEST PRACTICES -->
   <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
@@ -190,79 +209,73 @@ function travelModule(){
     active: 'intro',
     sections: ['intro','usecases','best','checklist','conclusion'],
     completed: {},
+    activeChoice: {},
     quizUrl: '#Quiz', // replace if needed
     useCases: [
       {
-        id:'uc1',
-        title:'Airport Public Charging Station Risk',
-        desc:'An employee plugs their laptop into a public USB charging station. Malware is injected via a compromised port.',
-        lesson:'Lesson: Use your own power sources or USB data blockers; avoid public charging ports.',
-        location:'Airport — charging area',
-        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <rect width="72" height="72" rx="12" fill="#111827" />
-                <g transform="translate(12,12)">
-                  <rect x="6" y="6" width="36" height="36" rx="6" fill="#0ea5a0"/>
-                  <path d="M12 18h12v4H12z" fill="#062e2c" opacity="0.9"/>
-                  <circle cx="30" cy="30" r="3" fill="#062e2c"/>
-                </g>
-              </svg>`
+        id: 'uc1',
+        title: 'Airport Public Charging Station Risk',
+        desc: 'An employee plugs their laptop into a public USB charging station. Malware is injected via a compromised port.',
+        lesson: 'Use personal chargers or USB data blockers to prevent malicious connections.',
+        location: 'Airport — charging area',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><circle cx="36" cy="36" r="18" fill="#0ea5a0"/></svg>`,
+        buttons: {
+          good: 'Use Your Own Charger / USB Blocker',
+          medium: 'Check Port Before Plugging In',
+          bad: 'Plug Directly into Public USB Port'
+        }
       },
       {
-        id:'uc2',
-        title:'Hotel Room Security Breach',
-        desc:'A laptop containing sensitive company documents is left unattended in a hotel room. Cleaning staff or unauthorized visitors access the device.',
-        lesson:'Lesson: Secure devices in locked drawers or safes; never leave them unattended.',
-        location:'Hotel room',
-        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-                <rect width="72" height="72" rx="12" fill="#111827"/>
-                <g transform="translate(10,10)">
-                  <rect x="4" y="6" width="40" height="28" rx="4" fill="#f59e0b"/>
-                  <rect x="10" y="12" width="28" height="16" rx="2" fill="#0b1220"/>
-                </g>
-              </svg>`
+        id: 'uc2',
+        title: 'Hotel Room Security Breach',
+        desc: 'A laptop with confidential files is left unattended in a hotel room. Unauthorized staff access it.',
+        lesson: 'Always secure devices in safes or lockable bags when leaving them unattended.',
+        location: 'Hotel room',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="16" y="16" width="40" height="28" fill="#f59e0b"/></svg>`,
+        buttons: {
+          good: 'Lock Device in Safe or Drawer',
+          medium: 'Log Out but Leave Device Visible',
+          bad: 'Leave Device Unattended on Desk'
+        }
       },
       {
-        id:'uc3',
-        title:'Co-Working Space Wi-Fi Vulnerability',
-        desc:'An employee connects to an unsecured Wi-Fi network at a co-working space. Attackers on the same network intercept confidential communications.',
-        lesson:'Lesson: Always use a VPN and verify the legitimacy of public networks.',
-        location:'Co-working space — shared Wi-Fi',
-        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-                <rect width="72" height="72" rx="12" fill="#111827"/>
-                <g transform="translate(14,14)">
-                  <path d="M10 28a8 8 0 0112 0" stroke="#60a5fa" stroke-width="2" fill="none"/>
-                  <path d="M7 22a15 15 0 0118 0" stroke="#3b82f6" stroke-width="2" fill="none"/>
-                  <circle cx="19" cy="30" r="2" fill="#060b17"/>
-                </g>
-              </svg>`
+        id: 'uc3',
+        title: 'Co-Working Space Wi-Fi Vulnerability',
+        desc: 'An employee connects to an unsecured Wi-Fi network where attackers can intercept data.',
+        lesson: 'Always connect through a secure VPN or verified corporate network.',
+        location: 'Co-working space — shared Wi-Fi',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><path d="M20 40c0-8 8-12 16-12s16 4 16 12" stroke="#3b82f6" stroke-width="3"/></svg>`,
+        buttons: {
+          good: 'Use VPN / Verified Network',
+          medium: 'Use Mobile Hotspot',
+          bad: 'Join Public Wi-Fi Without Protection'
+        }
       },
       {
-        id:'uc4',
-        title:'Theft of Luggage Containing Devices',
-        desc:'A briefcase with a company laptop and sensitive documents is stolen at an airport.',
-        lesson:'Lesson: Keep devices on your person, use anti-theft bags, and enable remote wipe capabilities.',
-        location:'Airport — baggage area',
-        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-                <rect width="72" height="72" rx="12" fill="#111827"/>
-                <g transform="translate(12,12)">
-                  <rect x="6" y="10" width="36" height="22" rx="3" fill="#ef4444"/>
-                  <rect x="12" y="14" width="24" height="14" rx="2" fill="#0b1220"/>
-                </g>
-              </svg>`
+        id: 'uc4',
+        title: 'Theft of Luggage Containing Devices',
+        desc: 'A briefcase with a company laptop is stolen at the airport.',
+        lesson: 'Keep devices on you and enable remote wipe or tracking features.',
+        location: 'Airport — baggage area',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="18" y="18" width="36" height="28" fill="#ef4444"/></svg>`,
+        buttons: {
+          good: 'Keep Devices with You / Enable Tracking',
+          medium: 'Use Regular Lock on Bag',
+          bad: 'Check In Device with Luggage'
+        }
       },
       {
-        id:'uc5',
-        title:'Shoulder Surfing',
-        desc:"While working in a public lounge, an employee’s screen displaying sensitive client data is visible to strangers nearby.",
-        lesson:'Lesson: Use privacy screens, position screens away from public view, and be aware of surroundings.',
-        location:'Public lounge / waiting area',
-        svg: `<svg width="72" height="72" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-                <rect width="72" height="72" rx="12" fill="#111827"/>
-                <g transform="translate(12,12)">
-                  <rect x="6" y="8" width="36" height="24" rx="4" fill="#10b981"/>
-                  <rect x="10" y="12" width="28" height="16" rx="2" fill="#06121a"/>
-                </g>
-              </svg>`
+        id: 'uc5',
+        title: 'Shoulder Surfing',
+        desc: 'While working in a public lounge, others can see sensitive data on an employee’s screen.',
+        lesson: 'Use a privacy filter and position screen away from public view.',
+        location: 'Public lounge / waiting area',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#111827"/><rect x="16" y="16" width="36" height="24" fill="#10b981"/></svg>`,
+        buttons: {
+          good: 'Use Privacy Filter / Change Screen Angle',
+          medium: 'Cover Screen When Possible',
+          bad: 'Work Freely in Public View'
+        }
       }
     ],
     outcomes: {},
@@ -297,18 +310,22 @@ function travelModule(){
       this.completed[name] = true;
       localStorage.setItem('travel_done_'+name,'1');
     },
-    ucAct(id, action){
-      // ensure an object key exists
-      if(!this.outcomes) this.outcomes = {};
-      // set different outcomes for each action
-      if(action==='correct'){
-        this.outcomes[id] = '<div class="p-3 rounded bg-gray-900 border border-green-600 text-green-300">Good choice — this reduces exposure and increases the chance of quick recovery if something goes wrong.</div>';
-      } else if(action==='partial'){
-        this.outcomes[id] = '<div class="p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300">Partially mitigated — some risk remains. Consider additional controls (e.g., use VPN + remote wipe).</div>';
-      } else {
-        this.outcomes[id] = '<div class="p-3 rounded bg-gray-900 border border-red-600 text-red-300">Risky action — likely leads to compromise (device theft, data leak, or malware). Avoid this behavior.</div>';
-      }
-      // persist
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+
+      const messages = {
+        good: `<div class='p-3 rounded bg-gray-900 border border-green-600 text-green-300'>
+          ✅ Excellent — safe and preventive action taken.
+        </div>`,
+        medium: `<div class='p-3 rounded bg-gray-900 border border-yellow-600 text-yellow-300'>
+          ⚠️ Some protection — consider stronger measures next time.
+        </div>`,
+        bad: `<div class='p-3 rounded bg-gray-900 border border-red-600 text-red-300'>
+          ❌ Risky — this action exposes sensitive data or devices to attack.
+        </div>`
+      };
+
+      this.outcomes[id] = messages[action] || '';
       localStorage.setItem('travel_outcomes', JSON.stringify(this.outcomes));
     },
     analyzeGaps(){
