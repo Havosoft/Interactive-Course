@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Development Mastery Course</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: fit-content;
+        }
+
+        .lesson-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lesson-item:hover {
+            background: #f0f0f0;
+        }
+
+        .lesson-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .lesson-item.completed {
+            background: #4caf50;
+            color: white;
+        }
+
+        .main-content {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .question {
+            margin: 20px 0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .achievement {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.5s;
+            z-index: 1000;
+        }
+
+        .achievement.show {
+            transform: translateX(0);
+        }
+
+        .achievement i {
+            font-size: 3em;
+            color: #ffd700;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> Web Development Mastery Course</h1>
+            <p>Learn HTML, CSS, and JavaScript through interactive lessons and quizzes</p>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3 id="points">0</h3>
+                    <p>Points</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h3 id="achievements">0</h3>
+                    <p>Achievements</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3 id="completed">0/6</h3>
+                    <p>Lessons</p>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%">0%</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="sidebar">
+                <h2>Course Modules</h2>
+                <div id="lesson-list"></div>
+            </div>
+
+            <div class="main-content">
+                <div id="lesson-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievement" id="achievement-popup">
+        <i class="fas fa-trophy"></i>
+        <h3 id="achievement-title"></h3>
+        <p id="achievement-desc"></p>
+    </div>
+
+    <script>
+        const lessons = [
+            {
+                id: 1,
+                title: "Introduction to HTML",
+                content: `
+                    <h2>Welcome to HTML!</h2>
+                    <p>HTML (HyperText Markup Language) is the foundation of web development. It structures the content on web pages.</p>
+                    
+                    <h3>What You'll Learn:</h3>
+                    <p>HTML uses tags to define elements. Tags are enclosed in angle brackets like this: <code>&lt;tag&gt;</code></p>
+                    
+                    <h3>Basic HTML Structure:</h3>
+                    <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My First Page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello World!&lt;/h1&gt;
+    &lt;p&gt;This is a paragraph.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+                    
+                    <h3>Common HTML Elements:</h3>
+                    <ul>
+                        <li><code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> - Headings</li>
+                        <li><code>&lt;p&gt;</code> - Paragraphs</li>
+                        <li><code>&lt;a&gt;</code> - Links</li>
+                        <li><code>&lt;img&gt;</code> - Images</li>
+                        <li><code>&lt;div&gt;</code> - Container</li>
+                    </ul>
+                `,
+                quiz: {
+                    question: "What does HTML stand for?",
+                    options: [
+                        "Hyper Text Markup Language",
+                        "High Tech Modern Language",
+                        "Home Tool Markup Language",
+                        "Hyperlinks and Text Markup Language"
+                    ],
+                    correct: 0
+                }
+            },
+            {
+                id: 2,
+                title: "CSS Fundamentals",
+                content: `
+                    <h2>Styling with CSS</h2>
+                    <p>CSS (Cascading Style Sheets) makes your HTML look beautiful by controlling colors, fonts, layouts, and more.</p>
+                    
+                    <h3>CSS Syntax:</h3>
+                    <pre>selector {
+  property: value;
+}</pre>
+                    
+                    <h3>Example:</h3>
+                    <pre>h1 {
+  color: blue;
+  font-size: 24px;
+  text-align: center;
+}</pre>
+                    
+                    <h3>Three Ways to Add CSS:</h3>
+                    <ul>
+                        <li><strong>Inline:</strong> <code>&lt;p style="color: red;"&gt;</code></li>
+                        <li><strong>Internal:</strong> <code>&lt;style&gt;</code> tag in HTML</li>
+                        <li><strong>External:</strong> Separate .css file</li>
+                    </ul>
+                    
+                    <h3>Common Properties:</h3>
+                    <p><code>color</code>, <code>background-color</code>, <code>font-size</code>, <code>margin</code>, <code>padding</code>, <code>border</code></p>
+                `,
+                quiz: {
+                    question: "Which CSS property changes text color?",
+                    options: [
+                        "text-color",
+                        "font-color",
+                        "color",
+                        "text-style"
+                    ],
+                    correct: 2
+                }
+            },
+            {
+                id: 3,
+                title: "JavaScript Basics",
+                content: `
+                    <h2>Making Pages Interactive</h2>
+                    <p>JavaScript brings your website to life with interactivity, animations, and dynamic content.</p>
+                    
+                    <h3>Variables:</h3>
+                    <pre>let name = "John";
+const age = 25;
+var city = "New York";</pre>
+                    
+                    <h3>Functions:</h3>
+                    <pre>function greet(name) {
+  return "Hello, " + name + "!";
+}
+
+console.log(greet("Alice"));</pre>
+                    
+                    <h3>DOM Manipulation:</h3>
+                    <pre>// Get element
+let element = document.getElementById("myId");
+
+// Change content
+element.innerHTML = "New content!";
+
+// Add event listener
+element.addEventListener("click", function() {
+  alert("Clicked!");
+});</pre>
+                `,
+                quiz: {
+                    question: "Which keyword declares a constant variable in JavaScript?",
+                    options: [
+                        "var",
+                        "let",
+                        "const",
+                        "constant"
+                    ],
+                    correct: 2
+                }
+            },
+            {
+                id: 4,
+                title: "Responsive Design",
+                content: `
+                    <h2>Building Mobile-Friendly Websites</h2>
+                    <p>Responsive design ensures your website looks great on all devices - phones, tablets, and desktops.</p>
+                    
+                    <h3>Viewport Meta Tag:</h3>
+                    <pre>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</pre>
+                    
+                    <h3>Media Queries:</h3>
+                    <pre>/* Mobile First */
+.container {
+  width: 100%;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .container {
+    width: 1000px;
+  }
+}</pre>
+                    
+                    <h3>Flexbox Layout:</h3>
+                    <pre>.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}</pre>
+                `,
+                quiz: {
+                    question: "What is the purpose of media queries?",
+                    options: [
+                        "To play media files",
+                        "To apply different styles for different screen sizes",
+                        "To query databases",
+                        "To optimize images"
+                    ],
+                    correct: 1
+                }
+            },
+            {
+                id: 5,
+                title: "Web Forms",
+                content: `
+                    <h2>Creating Interactive Forms</h2>
+                    <p>Forms allow users to input data and interact with your website.</p>
+                    
+                    <h3>Basic Form Structure:</h3>
+                    <pre>&lt;form&gt;
+  &lt;label for="name"&gt;Name:&lt;/label&gt;
+  &lt;input type="text" id="name" name="name"&gt;
+  
+  &lt;label for="email"&gt;Email:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email"&gt;
+  
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</pre>
+                    
+                    <h3>Input Types:</h3>
+                    <ul>
+                        <li><code>text</code> - Text input</li>
+                        <li><code>email</code> - Email validation</li>
+                        <li><code>password</code> - Hidden text</li>
+                        <li><code>checkbox</code> - Multiple selections</li>
+                        <li><code>radio</code> - Single selection</li>
+                        <li><code>date</code> - Date picker</li>
+                    </ul>
+                    
+                    <h3>Form Validation:</h3>
+                    <pre>&lt;input type="email" required&gt;
+&lt;input type="text" minlength="3" maxlength="20"&gt;</pre>
+                `,
+                quiz: {
+                    question: "Which input type is used for password fields?",
+                    options: [
+                        "text",
+                        "hidden",
+                        "password",
+                        "secure"
+                    ],
+                    correct: 2
+                }
+            },
+            {
+                id: 6,
+                title: "Best Practices",
+                content: `
+                    <h2>Professional Web Development</h2>
+                    <p>Follow these best practices to write clean, maintainable code.</p>
+                    
+                    <h3>Code Organization:</h3>
+                    <ul>
+                        <li>Use semantic HTML tags (<code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>)</li>
+                        <li>Keep CSS organized in separate files</li>
+                        <li>Use meaningful class and ID names</li>
+                        <li>Comment your code</li>
+                    </ul>
+                    
+                    <h3>Performance:</h3>
+                    <ul>
+                        <li>Minimize HTTP requests</li>
+                        <li>Optimize images</li>
+                        <li>Use CSS sprites when appropriate</li>
+                        <li>Minify CSS and JavaScript</li>
+                    </ul>
+                    
+                    <h3>Accessibility:</h3>
+                    <ul>
+                        <li>Use alt text for images</li>
+                        <li>Proper heading hierarchy</li>
+                        <li>Keyboard navigation support</li>
+                        <li>Sufficient color contrast</li>
+                    </ul>
+                    
+                    <h3>SEO Basics:</h3>
+                    <ul>
+                        <li>Descriptive title tags</li>
+                        <li>Meta descriptions</li>
+                        <li>Semantic HTML structure</li>
+                        <li>Mobile-friendly design</li>
+                    </ul>
+                `,
+                quiz: {
+                    question: "What does SEO stand for?",
+                    options: [
+                        "Simple Engine Optimization",
+                        "Search Engine Optimization",
+                        "Secure Email Operation",
+                        "Site Enhancement Option"
+                    ],
+                    correct: 1
+                }
+            }
+        ];
+
+        let currentLesson = 0;
+        let points = 0;
+        let completedLessons = new Set();
+        let achievementCount = 0;
+
+        function renderLessons() {
+            const list = document.getElementById('lesson-list');
+            list.innerHTML = lessons.map((lesson, idx) => `
+                <div class="lesson-item ${idx === currentLesson ? 'active' : ''} ${completedLessons.has(lesson.id) ? 'completed' : ''}" 
+                     onclick="loadLesson(${idx})">
+                    <i class="fas ${completedLessons.has(lesson.id) ? 'fa-check-circle' : 'fa-circle'}"></i>
+                    <span>${lesson.title}</span>
+                </div>
+            `).join('');
+        }
+
+        function loadLesson(idx) {
+            currentLesson = idx;
+            const lesson = lessons[idx];
+            const container = document.getElementById('lesson-container');
+            
+            container.innerHTML = `
+                <div class="lesson-content active">
+                    ${lesson.content}
+                    
+                    <div class="quiz">
+                        <h3><i class="fas fa-question-circle"></i> Quiz Time!</h3>
+                        <div class="question">
+                            <p><strong>${lesson.quiz.question}</strong></p>
+                            <div class="options" id="quiz-options">
+                                ${lesson.quiz.options.map((opt, i) => `
+                                    <div class="option" onclick="selectOption(${i})" data-index="${i}">
+                                        ${opt}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <button class="btn" onclick="checkAnswer()" id="check-btn">Check Answer</button>
+                        <button class="btn" onclick="nextLesson()" id="next-btn" style="display: none;">Next Lesson</button>
+                    </div>
+                </div>
+            `;
+            
+            renderLessons();
+        }
+
+        let selectedAnswer = null;
+
+        function selectOption(idx) {
+            selectedAnswer = idx;
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === idx) opt.classList.add('selected');
+            });
+        }
+
+        function checkAnswer() {
+            if (selectedAnswer === null) {
+                alert('Please select an answer!');
+                return;
+            }
+            
+            const lesson = lessons[currentLesson];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, i) => {
+                opt.onclick = null;
+                if (i === lesson.quiz.correct) {
+                    opt.classList.add('correct');
+                } else if (i === selectedAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            if (selectedAnswer === lesson.quiz.correct) {
+                if (!completedLessons.has(lesson.id)) {
+                    points += 100;
+                    completedLessons.add(lesson.id);
+                    updateStats();
+                    showAchievement('Correct!', '+100 Points');
+                    
+                    if (completedLessons.size === 3) {
+                        achievementCount++;
+                        showAchievement('Achievement Unlocked!', 'Halfway There');
+                    }
+                    if (completedLessons.size === lessons.length) {
+                        achievementCount++;
+                        showAchievement('Course Complete!', 'Web Dev Master');
+                    }
+                }
+            }
+            
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextLesson() {
+            if (currentLesson < lessons.length - 1) {
+                loadLesson(currentLesson + 1);
+            } else {
+                alert('Congratulations! You\'ve completed the course!');
+            }
+            selectedAnswer = null;
+        }
+
+        function updateStats() {
+            document.getElementById('points').textContent = points;
+            document.getElementById('achievements').textContent = achievementCount;
+            document.getElementById('completed').textContent = `${completedLessons.size}/${lessons.length}`;
+            
+            const progress = (completedLessons.size / lessons.length) * 100;
+            const progressBar = document.getElementById('progress');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function showAchievement(title, desc) {
+            const popup = document.getElementById('achievement-popup');
+            document.getElementById('achievement-title').textContent = title;
+            document.getElementById('achievement-desc').textContent = desc;
+            
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+
+        loadLesson(0);
+    </script>
+</body>
+</html>
