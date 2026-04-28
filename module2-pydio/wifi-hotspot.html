@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-50 text-slate-900 antialiased">
 
-<div class="max-w-5xl mx-auto p-6" x-data="wifiModule()" x-init="init()">
+<div class="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-6" x-data="wifiModule()" x-init="init()">
   <!-- Header -->
   <header class="flex flex-col md:flex-row justify-between gap-4 mb-6">
     <div>
@@ -82,44 +82,72 @@
       </div>
     </div>
 
-    <div class="mt-6 flex justify-end">
-      <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+      </div>
     </div>
   </section>
 
   <!-- Use cases -->
-  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-    <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
+      </div>
+      <div class="text-sm text-slate-500">
+        <span x-text="`Scenario ${useCaseIndex + 1} of ${useCases.length}`"></span>
+      </div>
+    </div>
 
-    <template x-for="uc in useCases" :key="uc.id">
-      <article class="p-4 rounded border border-slate-200 bg-white shadow-sm grid md:grid-cols-5 gap-4 items-center">
-        <div class="md:col-span-1 flex justify-center">
-          <!-- render inline svg markup so you can paste SVGs directly in the data -->
-          <div class="w-28 h-28 flex items-center justify-center" x-html="uc.svg"></div>
+    <article class="mt-5 p-4 rounded border border-slate-200 bg-white shadow-sm grid md:grid-cols-5 gap-4 items-center" x-show="currentUseCase" x-cloak>
+      <div class="md:col-span-1 flex justify-center">
+        <div class="w-28 h-28 flex items-center justify-center" x-html="currentUseCase.svg"></div>
+      </div>
+
+      <div class="md:col-span-3">
+        <h3 class="font-semibold text-slate-900" x-text="currentUseCase.title"></h3>
+        <p class="text-slate-700" x-text="currentUseCase.desc"></p>
+
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button @click="ucAct(currentUseCase.id,'correct')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors">Correct action</button>
+          <button @click="ucAct(currentUseCase.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">Partial / mitigated</button>
+          <button @click="ucAct(currentUseCase.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors">Risky / ignore</button>
         </div>
 
-        <div class="md:col-span-3">
-          <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
-          <p class="text-slate-700" x-text="uc.desc"></p>
+        <div class="mt-3" x-html="outcomes[currentUseCase.id]"></div>
+      </div>
 
-          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors">Correct action</button>
-            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">Partial / mitigated</button>
-            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors">Risky / ignore</button>
-          </div>
+      <div class="md:col-span-1 text-right">
+        <div class="text-xs text-slate-500">Scenario</div>
+        <div class="text-sm text-slate-700" x-text="currentUseCase.location"></div>
+      </div>
+    </article>
 
-          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex flex-wrap gap-2">
+          <button
+            @click="ucPrev()"
+            :disabled="!hasPrevUseCase"
+            :class="hasPrevUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+            class="px-4 py-2 rounded font-medium transition-colors">
+            ← Prev Scenario
+          </button>
+          <button
+            @click="ucNext()"
+            :disabled="!hasNextUseCase"
+            :class="hasNextUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+            class="px-4 py-2 rounded font-medium transition-colors">
+            Next Scenario →
+          </button>
         </div>
 
-        <div class="md:col-span-1 text-right">
-          <div class="text-xs text-slate-500">Scenario</div>
-          <div class="text-sm text-slate-700" x-text="uc.location"></div>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <button @click="go('intro')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+          <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
         </div>
-      </article>
-    </template>
-
-    <div class="flex justify-end">
-      <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+      </div>
     </div>
   </section>
 
@@ -159,9 +187,11 @@
       </div>
     </div>
 
-    <div class="mt-4 flex justify-between">
-      <button @click="go('usecases')" class="text-slate-500">Back</button>
-      <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Checklist →</button>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex justify-between gap-3">
+        <button @click="go('usecases')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Checklist →</button>
+      </div>
     </div>
   </section>
 
@@ -191,12 +221,16 @@
       </label>
     </div>
 
-    <div class="mt-4">
-      <button @click="analyzeGaps" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
-      <button @click="complete('checklist'); go('takeaway')" class="ml-2 bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded transition-colors">Finish → Takeaway</button>
-    </div>
-
     <div class="mt-4" x-html="gapResult"></div>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <button @click="go('best')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <button @click="analyzeGaps" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+          <button @click="complete('checklist'); go('takeaway')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded transition-colors">Finish → Takeaway</button>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Takeaway / Conclusion -->
@@ -206,9 +240,11 @@
       Public Wi-Fi is convenient but inherently risky. Cyber attackers can intercept communications, trick users into connecting to fake networks, or exploit vulnerabilities on connected devices. By using VPNs, verifying network authenticity, enabling HTTPS, and following device security best practices, employees can safely access corporate resources outside the office. Vigilance is essential to maintain data security in public spaces.
     </p>
 
-    <div class="flex gap-3 mt-4">
-      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>   -->
-      <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>    
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex justify-between gap-3 flex-wrap">
+        <button @click="go('checklist')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+      </div>
     </div>
   </section>
  
@@ -218,6 +254,7 @@
   function wifiModule(){
     return {
       active: 'intro',
+      useCaseIndex: 0,
       sections: ['intro','usecases','best','checklist','takeaway'],
       completed: {},
       quizUrl: '#Quiz', // replace if needed
@@ -306,6 +343,8 @@
         } catch(e){}
         // ensure no undefined
         localStorage.setItem('wifi_outcomes', JSON.stringify(this.outcomes));
+        const savedIndex = parseInt(localStorage.getItem('wifi_usecase_index') || '0', 10);
+        if (!Number.isNaN(savedIndex)) this.useCaseIndex = Math.min(Math.max(savedIndex, 0), this.useCases.length - 1);
       },
       go(id){
         this.active = id;
@@ -322,6 +361,28 @@
       complete(name){
         this.completed[name] = true;
         localStorage.setItem('done_'+name,'1');
+      },
+      get currentUseCase(){
+        return this.useCases[this.useCaseIndex] || this.useCases[0];
+      },
+      get hasPrevUseCase(){
+        return this.useCaseIndex > 0;
+      },
+      get hasNextUseCase(){
+        return this.useCaseIndex < this.useCases.length - 1;
+      },
+      setUseCaseIndex(index){
+        const nextIndex = Math.min(Math.max(index, 0), this.useCases.length - 1);
+        this.useCaseIndex = nextIndex;
+        localStorage.setItem('wifi_usecase_index', String(nextIndex));
+      },
+      ucPrev(){
+        if(!this.hasPrevUseCase) return;
+        this.setUseCaseIndex(this.useCaseIndex - 1);
+      },
+      ucNext(){
+        if(!this.hasNextUseCase) return;
+        this.setUseCaseIndex(this.useCaseIndex + 1);
       },
       ucAct(id, action){
         // generate outcomes for each use case

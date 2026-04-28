@@ -17,7 +17,7 @@
 </head>
 <body class="bg-gray-50 text-slate-900 antialiased">
 
-<div class="max-w-6xl mx-auto p-6" x-data="surveillance()" x-init="init()">
+<div class="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-6" x-data="surveillance()" x-init="init()">
 
   <!-- HEADER -->
   <header class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
@@ -59,58 +59,81 @@
       <li><strong>Evidence Collection:</strong> Provides footage for investigations and regulatory compliance.</li>
       <li><strong>Support for Insider Threat Management:</strong> Helps identify suspicious employee activity.</li>
     </ul>
-    <div class="mt-6 flex justify-end">
-      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Start Use Cases →</button>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded text-white">Start Use Cases →</button>
+      </div>
     </div>
   </section>
 
   <!-- USE CASES -->
-<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-  <h2 class="text-2xl font-semibold text-slate-900">Use Cases — Insider Threat Scenarios</h2>
-  <p class="text-slate-700 text-sm mb-3">Choose the best action for each insider scenario and review the security outcome.</p>
+<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg">
+  <div class="flex items-start justify-between gap-4 flex-wrap">
+    <div>
+      <h2 class="text-2xl font-semibold text-slate-900">Use Cases — Insider Threat Scenarios</h2>
+      <p class="text-slate-700 text-sm mt-2">Choose the best action for each insider scenario and review the security outcome.</p>
+    </div>
+    <div class="text-sm text-slate-500">
+      <span x-text="`Scenario ${useCaseIndex + 1} of ${useCases.length}`"></span>
+    </div>
+  </div>
 
-  <template x-for="uc in useCases" :key="uc.id">
-    <article class="p-4 rounded border border-slate-300 grid md:grid-cols-5 gap-4 items-start">
-      <!-- SVG Icon -->
-      <div class="md:col-span-1 flex justify-center">
-        <div class="w-20 h-20 bg-slate-100 rounded flex items-center justify-center" x-html="uc.svg"></div>
+  <article class="mt-5 p-4 rounded border border-slate-300 grid md:grid-cols-5 gap-4 items-start" x-show="currentUseCase" x-cloak>
+    <div class="md:col-span-1 flex justify-center">
+      <div class="w-20 h-20 bg-slate-100 rounded flex items-center justify-center" x-html="currentUseCase.svg"></div>
+    </div>
+
+    <div class="md:col-span-4">
+      <h3 class="font-semibold text-slate-900" x-text="currentUseCase.title"></h3>
+      <p class="text-slate-700 text-sm mt-1" x-text="currentUseCase.desc"></p>
+
+      <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <template x-for="(label, key) in currentUseCase.buttons" :key="key">
+          <button
+            @click="ucAct(currentUseCase.id, key)"
+            :class="{
+              'bg-green-600': key==='good',
+              'bg-yellow-600': key==='medium',
+              'bg-red-600': key==='bad',
+              'ring-2 ring-green-400': activeChoice[currentUseCase.id]===key && key==='good',
+              'ring-2 ring-yellow-400': activeChoice[currentUseCase.id]===key && key==='medium',
+              'ring-2 ring-red-400': activeChoice[currentUseCase.id]===key && key==='bad'
+            }"
+            class="px-3 py-2 rounded text-white transition font-medium"
+            x-text="label">
+          </button>
+        </template>
       </div>
 
-      <!-- Content -->
-      <div class="md:col-span-4">
-        <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
-        <p class="text-slate-700 text-sm mt-1" x-text="uc.desc"></p>
+      <div class="mt-3" x-show="outcomes[currentUseCase.id]" x-transition.opacity x-html="outcomes[currentUseCase.id]"></div>
+      <p class="text-sm text-slate-500 italic mt-1" x-text="currentUseCase.lesson"></p>
+    </div>
+  </article>
 
-        <!-- Action Buttons -->
-        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <template x-for="(label, key) in uc.buttons" :key="key">
-            <button
-              @click="ucAct(uc.id, key)"
-              :class="{
-                'bg-green-600': key==='good',
-                'bg-yellow-600': key==='medium',
-                'bg-red-600': key==='bad',
-                'ring-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
-                'ring-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
-                'ring-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
-              }"
-              class="px-3 py-2 rounded text-white transition font-medium"
-              x-text="label">
-            </button>
-          </template>
-        </div>
-
-        <!-- Feedback -->
-        <div class="mt-3" x-show="outcomes[uc.id]" x-transition.opacity x-html="outcomes[uc.id]"></div>
-        <p class="text-sm text-slate-500 italic mt-1" x-text="uc.lesson"></p>
+  <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="flex flex-wrap gap-2">
+        <button
+          @click="ucPrev()"
+          :disabled="!hasPrevUseCase"
+          :class="hasPrevUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+          class="px-4 py-2 rounded font-medium transition-colors">
+          ← Prev Scenario
+        </button>
+        <button
+          @click="ucNext()"
+          :disabled="!hasNextUseCase"
+          :class="hasNextUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+          class="px-4 py-2 rounded font-medium transition-colors">
+          Next Scenario →
+        </button>
       </div>
-    </article>
-  </template>
 
-  <div class="flex justify-end">
-    <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">
-      Next → Best Practices
-    </button>
+      <div class="flex flex-wrap gap-2 sm:justify-end">
+        <button @click="go('intro')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded text-white">Next → Best Practices</button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -125,9 +148,11 @@
       <p><strong class="text-slate-900">5. Regular Review & Maintenance</strong><br>Periodically check cameras and recording systems for functionality. Archive footage according to company and legal policies.</p>
       <p><strong class="text-slate-900">6. Employee Awareness</strong><br>Train staff on the purpose of surveillance and their role in reporting incidents. Encourage vigilance while respecting privacy standards.</p>
     </div>
-    <div class="mt-4 flex justify-between">
-      <button @click="go('usecases')" class="text-slate-500">← Back to Use Cases</button>
-      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Next: Checklist →</button>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex justify-between gap-3">
+        <button @click="go('usecases')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded text-white">Next: Checklist →</button>
+      </div>
     </div>
   </section>
 
@@ -143,11 +168,16 @@
       <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.review"> Regular maintenance & archiving</label>
       <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.awareness"> Employee awareness training</label>
     </div>
-    <div class="mt-4">
-      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
-      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-slate-200 text-slate-700 px-4 py-2 rounded">Finish → Conclusion</button>
-    </div>
     <div class="mt-4" x-html="gapResult"></div>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <button @click="go('best')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded text-white">Analyze Gaps</button>
+          <button @click="complete('checklist'); go('conclusion')" class="bg-slate-200 text-slate-700 px-4 py-2 rounded">Finish → Conclusion</button>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- CONCLUSION -->
@@ -156,9 +186,11 @@
     <p class="text-slate-700 mb-4">
       Office surveillance and monitoring are vital for protecting company assets, detecting unauthorized activity, and supporting incident response. When combined with access control and employee vigilance, surveillance creates a proactive security environment that deters threats and ensures rapid mitigation of incidents.
     </p>
-    <div class="flex gap-3">
-      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
-      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+    <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+      <div class="flex justify-between gap-3 flex-wrap">
+        <button @click="go('checklist')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+      </div>
     </div>
   </section>  
 </div>
@@ -167,6 +199,7 @@
 function surveillance(){
   return {
     active:'intro',
+    useCaseIndex: 0,
     sections:['intro','usecases','best','checklist','conclusion'],
     completed:{},
     outcomes:{},
@@ -241,6 +274,8 @@ function surveillance(){
       this.active=localStorage.getItem('surv_last')||'intro';
       try{this.outcomes=JSON.parse(localStorage.getItem('surv_outcomes'))||{}}catch(e){}
       try{this.checklist=JSON.parse(localStorage.getItem('surv_checklist'))||this.checklist}catch(e){}
+      const savedIndex = parseInt(localStorage.getItem('surv_usecase_index') || '0', 10);
+      if (!Number.isNaN(savedIndex)) this.useCaseIndex = Math.min(Math.max(savedIndex, 0), this.useCases.length - 1);
     },
     go(id){this.active=id;localStorage.setItem('surv_last',id);
       // scroll to top of interactive content
@@ -253,6 +288,28 @@ function surveillance(){
     }
     },
     complete(name){this.completed[name]=true;localStorage.setItem('surv_done_'+name,'1');},
+    get currentUseCase(){
+      return this.useCases[this.useCaseIndex] || this.useCases[0];
+    },
+    get hasPrevUseCase(){
+      return this.useCaseIndex > 0;
+    },
+    get hasNextUseCase(){
+      return this.useCaseIndex < this.useCases.length - 1;
+    },
+    setUseCaseIndex(index){
+      const nextIndex = Math.min(Math.max(index, 0), this.useCases.length - 1);
+      this.useCaseIndex = nextIndex;
+      localStorage.setItem('surv_usecase_index', String(nextIndex));
+    },
+    ucPrev(){
+      if(!this.hasPrevUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex - 1);
+    },
+    ucNext(){
+      if(!this.hasNextUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex + 1);
+    },
     ucAct(id, action) {
       this.activeChoice[id] = action;
       const feedback = {
@@ -267,7 +324,7 @@ function surveillance(){
         </div>`
       };
       this.outcomes[id] = feedback[action] || '';
-      localStorage.setItem('insider_outcomes', JSON.stringify(this.outcomes));
+      localStorage.setItem('surv_outcomes', JSON.stringify(this.outcomes));
     },
     analyzeGaps(){
       localStorage.setItem('surv_checklist',JSON.stringify(this.checklist));

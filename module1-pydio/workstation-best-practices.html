@@ -23,7 +23,7 @@
 </head>
 <body class="bg-gray-50 text-slate-900 antialiased">
 
-<div class="max-w-6xl mx-auto p-6">
+<div class="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-6">
 
   <!-- Header -->
   <header class="mb-6 flex justify-between gap-4">
@@ -70,57 +70,83 @@
         <li>Use of unapproved applications or USB devices.</li>
       </ul>
 
-      <div class="mt-6 flex justify-end">
-        <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex justify-end">
+          <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+        </div>
       </div>
     </section>
 
     <!-- USE CASES -->
-    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
-      <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
-      <p class="text-slate-700">Pick the best action for each scenario and get immediate feedback.</p>
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
+          <p class="text-slate-700 mt-2">Pick the best action for each scenario and get immediate feedback.</p>
+        </div>
+        <div class="text-sm text-slate-500">
+          <span x-text="`Scenario ${useCaseIndex + 1} of ${useCases.length}`"></span>
+        </div>
+      </div>
 
-      <template x-for="uc in useCases" :key="uc.id">
-        <article class="p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm">
-          <div class="md:col-span-1 flex justify-center">
-            <div class="p-2 bg-slate-100 rounded">
-              <svg class="svg-box text-violet-600" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="#FFFFFF"/>
-                <circle cx="18" cy="26" r="4" fill="currentColor" />
-                <path d="M30 28h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M30 36h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </div>
+      <article class="mt-5 p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm" x-show="currentUseCase" x-cloak>
+        <div class="md:col-span-1 flex justify-center">
+          <div class="p-2 bg-slate-100 rounded">
+            <svg class="svg-box text-violet-600" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="#FFFFFF"/>
+              <circle cx="18" cy="26" r="4" fill="currentColor" />
+              <path d="M30 28h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M30 36h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="md:col-span-3">
+          <h3 class="font-semibold text-slate-900" x-text="currentUseCase.title"></h3>
+          <p class="text-slate-700 mt-1" x-text="currentUseCase.desc"></p>
+
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(currentUseCase.id,'correct')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors">Correct action</button>
+            <button @click="ucAct(currentUseCase.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">Partial / mitigated</button>
+            <button @click="ucAct(currentUseCase.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors">Risky / ignore</button>
           </div>
 
-          <div class="md:col-span-3">
-            <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
-            <p class="text-slate-700 mt-1" x-text="uc.desc"></p>
+          <div class="mt-3" x-html="outcomes[currentUseCase.id]" x-transition></div>
 
-            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors">Correct action</button>
-              <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">Partial / mitigated</button>
-              <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors">Risky / ignore</button>
-            </div>
+          <div class="mt-3 p-3 bg-red-50 border border-red-200 text-red-800 rounded" x-show="ucResult[currentUseCase.id]==='breach'" x-transition>
+            🚨 <strong>Incident:</strong> This risky action led to a simulated security breach. Unauthorized access was recorded, and an incident was escalated.
+          </div>
+        </div>
 
-            <!-- Feedback Box -->
-            <div class="mt-3" x-html="outcomes[uc.id]" x-transition></div>
+        <div class="md:col-span-1 text-right text-xs text-slate-500">
+          <div x-text="currentUseCase.context"></div>
+        </div>
+      </article>
 
-            <!-- Incident Simulation for 'bad' actions -->
-            <div class="mt-3 p-3 bg-red-50 border border-red-200 text-red-800 rounded" x-show="ucResult[uc.id]==='breach'" x-transition>
-              🚨 <strong>Incident:</strong> This risky action led to a simulated security breach. Unauthorized access was recorded, and an incident was escalated.
-            </div>
-
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex flex-wrap gap-2">
+            <button
+              @click="ucPrev()"
+              :disabled="!hasPrevUseCase"
+              :class="hasPrevUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+              ← Prev Scenario
+            </button>
+            <button
+              @click="ucNext()"
+              :disabled="!hasNextUseCase"
+              :class="hasNextUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+              Next Scenario →
+            </button>
           </div>
 
-          <div class="md:col-span-1 text-right text-xs text-slate-500">
-            <div x-text="uc.context"></div>
+          <div class="flex flex-wrap gap-2 sm:justify-end">
+            <button @click="go('intro')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+            <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
           </div>
-        </article>
-      </template>
-
-      <div class="flex justify-end">
-        <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+        </div>
       </div>
     </section>
 
@@ -134,8 +160,11 @@
         <li><strong>Software Updates:</strong> Apply patches promptly.</li>
         <li><strong>USB Security:</strong> Avoid unapproved USB devices and follow IT policies.</li>
       </ul>
-      <div class="mt-6 flex justify-end">
-        <button @click="complete('best'); go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex justify-between gap-3">
+          <button @click="go('usecases')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+          <button @click="complete('best'); go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+        </div>
       </div>
     </section>
 
@@ -146,9 +175,12 @@
         Workstation security prevents unauthorized access and protects sensitive company information. By locking devices, organizing desks, updating software, and following IT policies, employees reduce the risk of data breaches and maintain a secure work environment.
       </p>
 
-      <div class="mt-6 flex gap-3">
-        <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>     
-      </div>      
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex justify-between gap-3 flex-wrap">
+          <button @click="go('best')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+          <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+        </div>
+      </div>
     </section>
   </main>
 </div>
@@ -160,6 +192,7 @@ function workstationModule(){
     labels:{ intro:'Intro', usecases:'Use Cases', best:'Best Practices', conclusion:'Conclusion' },
     active: localStorage.getItem('ws_active') || 'intro',
     outcomes: JSON.parse(localStorage.getItem('ws_outcomes') || '{}'),
+    useCaseIndex: 0,
     ucResult:{}, // track bad action scenarios
     quizUrl:'#Quiz',
 
@@ -218,11 +251,36 @@ function workstationModule(){
       }
     ],
 
+    get currentUseCase(){
+      return this.useCases[this.useCaseIndex] || this.useCases[0];
+    },
+    get hasPrevUseCase(){
+      return this.useCaseIndex > 0;
+    },
+    get hasNextUseCase(){
+      return this.useCaseIndex < this.useCases.length - 1;
+    },
+    setUseCaseIndex(index){
+      const nextIndex = Math.min(Math.max(index, 0), this.useCases.length - 1);
+      this.useCaseIndex = nextIndex;
+      localStorage.setItem('ws_usecase_index', String(nextIndex));
+    },
+    ucPrev(){
+      if(!this.hasPrevUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex - 1);
+    },
+    ucNext(){
+      if(!this.hasNextUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex + 1);
+    },
+
     init(){
       this.useCases.forEach(u => {
         if(!(u.id in this.outcomes)) this.outcomes[u.id] = '';
         if(!(u.id in this.ucResult)) this.ucResult[u.id] = '';
       });
+      const savedIndex = parseInt(localStorage.getItem('ws_usecase_index') || '0', 10);
+      if (!Number.isNaN(savedIndex)) this.useCaseIndex = Math.min(Math.max(savedIndex, 0), this.useCases.length - 1);
     },
 
     go(section){

@@ -19,7 +19,7 @@
 </head>
 <body class="bg-gray-50 text-slate-900 antialiased">
 
-<div class="max-w-6xl mx-auto p-6">
+<div class="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-6">
 
   <!-- HEADER -->
   <header class="mb-6 flex justify-between gap-4">
@@ -77,51 +77,77 @@
         <li>Not changing passwords after compromise.</li>
       </ul>
 
-      <div class="mt-6 flex justify-end">
-        <button @click="go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex justify-end">
+          <button @click="go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+        </div>
       </div>
     </section>
 
     <!-- USE CASES -->
-    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
-      <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and view outcomes</h2>
-      <p class="text-slate-700">Pick the best action for each scenario and get immediate feedback.</p>
-
-      <!-- Replace your old outcome buttons section in the USE CASES template with this -->
-    <template x-for="uc in useCases" :key="uc.id">
-    <article class="p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm">
-        <div class="md:col-span-1 flex justify-center">
-        <div class="p-2 bg-slate-100 rounded">
-            <svg class="svg-box text-violet-600" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="#FFFFFF"/>
-            <path d="M16 28h32M16 36h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and view outcomes</h2>
+          <p class="text-slate-700 mt-2">Pick the best action for each scenario and get immediate feedback.</p>
         </div>
+        <div class="text-sm text-slate-500">
+          <span x-text="`Scenario ${useCaseIndex + 1} of ${useCases.length}`"></span>
+        </div>
+      </div>
+
+      <article class="mt-5 p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm" x-show="currentUseCase" x-cloak>
+        <div class="md:col-span-1 flex justify-center">
+          <div class="p-2 bg-slate-100 rounded">
+            <svg class="svg-box text-violet-600" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="#FFFFFF"/>
+              <path d="M16 28h32M16 36h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
         </div>
 
         <div class="md:col-span-3">
-        <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
-        <p class="text-slate-700 mt-1" x-text="uc.desc"></p>
+          <h3 class="font-semibold text-slate-900" x-text="currentUseCase.title"></h3>
+          <p class="text-slate-700 mt-1" x-text="currentUseCase.desc"></p>
 
-        <!-- 👇 Scenario-specific buttons -->
-        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button @click="ucAct(uc.id,'good')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors" x-text="uc.buttons.good"></button>
-            <button @click="ucAct(uc.id,'medium')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors" x-text="uc.buttons.medium"></button>
-            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors" x-text="uc.buttons.bad"></button>
-        </div>
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(currentUseCase.id,'good')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors" x-text="currentUseCase.buttons.good"></button>
+            <button @click="ucAct(currentUseCase.id,'medium')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors" x-text="currentUseCase.buttons.medium"></button>
+            <button @click="ucAct(currentUseCase.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors" x-text="currentUseCase.buttons.bad"></button>
+          </div>
 
-        <div class="mt-3" x-html="outcomes[uc.id]"></div>
+          <div class="mt-3" x-html="outcomes[currentUseCase.id]"></div>
         </div>
 
         <div class="md:col-span-1 text-right text-xs text-slate-500">
-        <div x-text="uc.context"></div>
+          <div x-text="currentUseCase.context"></div>
         </div>
-    </article>
-    </template>
+      </article>
 
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex flex-wrap gap-2">
+            <button
+              @click="ucPrev()"
+              :disabled="!hasPrevUseCase"
+              :class="hasPrevUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+              ← Prev Scenario
+            </button>
+            <button
+              @click="ucNext()"
+              :disabled="!hasNextUseCase"
+              :class="hasNextUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+              Next Scenario →
+            </button>
+          </div>
 
-      <div class="flex justify-end">
-        <button @click="go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+          <div class="flex flex-wrap gap-2 sm:justify-end">
+            <button @click="go('intro')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+            <button @click="go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -137,8 +163,11 @@
         <li>Monitor alerts and respond quickly.</li>
       </ul>
 
-      <div class="mt-6 flex justify-end">
-        <button @click="go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Continue → Checklist</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex justify-between gap-3">
+          <button @click="go('usecases')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+          <button @click="go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Continue → Checklist</button>
+        </div>
       </div>
     </section>
 
@@ -156,15 +185,17 @@
         </template>
       </div>
 
-      <div class="mt-4 flex gap-2">
-        <button @click="analyzeGaps()" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
-        <button @click="saveChecklist()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded transition-colors">Save</button>
-      </div>
-
       <div class="mt-4" x-html="gapResult"></div>
 
-      <div class="mt-6 flex justify-end">
-        <button @click="go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <button @click="go('best')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+          <div class="flex flex-wrap gap-2 sm:justify-end">
+            <button @click="analyzeGaps()" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+            <button @click="saveChecklist()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded transition-colors">Save</button>
+            <button @click="go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -175,8 +206,11 @@
         Strong password hygiene reduces the risk of compromise. Combining secure passwords with MFA and good practices creates a strong defense against credential-based attacks.
       </p>
 
-      <div class="mt-6 flex gap-3">
-        <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b">
+        <div class="flex justify-between gap-3 flex-wrap">
+          <button @click="go('checklist')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+          <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+        </div>
       </div>
     </section>
 
@@ -190,6 +224,7 @@ function passwordModule(){
     labels:{intro:'Intro',usecases:'Use Cases',best:'Best Practices',checklist:'Checklist',conclusion:'Conclusion'},
     active: localStorage.getItem('pwd_active') || 'intro',
     outcomes: JSON.parse(localStorage.getItem('pwd_outcomes') || '{}'),
+    useCaseIndex: 0,
     whyOpen:{},
     quizUrl:'#Quiz',
 
@@ -251,10 +286,35 @@ function passwordModule(){
   }
 ],
 
+    get currentUseCase(){
+      return this.useCases[this.useCaseIndex] || this.useCases[0];
+    },
+    get hasPrevUseCase(){
+      return this.useCaseIndex > 0;
+    },
+    get hasNextUseCase(){
+      return this.useCaseIndex < this.useCases.length - 1;
+    },
+    setUseCaseIndex(index){
+      const nextIndex = Math.min(Math.max(index, 0), this.useCases.length - 1);
+      this.useCaseIndex = nextIndex;
+      localStorage.setItem('pwd_usecase_index', String(nextIndex));
+    },
+    ucPrev(){
+      if(!this.hasPrevUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex - 1);
+    },
+    ucNext(){
+      if(!this.hasNextUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex + 1);
+    },
+
     init(){
       this.useCases.forEach(u=>{
         if(!(u.id in this.outcomes)) this.outcomes[u.id]='';
       });
+      const savedIndex = parseInt(localStorage.getItem('pwd_usecase_index') || '0', 10);
+      if (!Number.isNaN(savedIndex)) this.useCaseIndex = Math.min(Math.max(savedIndex, 0), this.useCases.length - 1);
     },
 
     go(section){

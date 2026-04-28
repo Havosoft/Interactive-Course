@@ -22,7 +22,7 @@
 </head>
 <body class="bg-gray-50 text-slate-900 antialiased">
 
-  <div class="max-w-6xl mx-auto p-6">
+  <div class="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- Header -->
     <header class="mb-6">
@@ -80,19 +80,26 @@
           </div>
         </div>
 
-        <div class="mt-6 flex justify-end">
-          <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+        <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+          <div class="flex justify-end">
+            <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+          </div>
         </div>
       </section>
 
       <!-- USE CASES -->
-      <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
-      <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
-      <p class="text-slate-700">Pick the best action for each scenario and get immediate feedback.</p>
+      <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
+            <p class="text-slate-700 mt-2">Pick the best action for each scenario and get immediate feedback.</p>
+          </div>
+          <div class="text-sm text-slate-500">
+            <span x-text="`Scenario ${useCaseIndex + 1} of ${useCases.length}`"></span>
+          </div>
+        </div>
 
-      <template x-for="uc in useCases" :key="uc.id">
-        <article class="p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm">
-          <!-- SVG / icon placeholder -->
+        <article class="mt-5 p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm" x-show="currentUseCase" x-cloak>
           <div class="md:col-span-1 flex justify-center">
             <div class="p-2 bg-slate-100 rounded">
               <svg class="svg-placeholder text-violet-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -103,16 +110,14 @@
             </div>
           </div>
 
-          <!-- Text -->
           <div class="md:col-span-3">
-            <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
-            <p class="text-slate-700 mt-1" x-text="uc.desc"></p>
+            <h3 class="font-semibold text-slate-900" x-text="currentUseCase.title"></h3>
+            <p class="text-slate-700 mt-1" x-text="currentUseCase.desc"></p>
 
-            <!-- Reusable dynamic buttons -->
             <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <template x-for="(label, key) in uc.buttons" :key="key">
+              <template x-for="(label, key) in currentUseCase.buttons" :key="key">
                 <button
-                  @click="ucAct(uc.id, key)"
+                  @click="ucAct(currentUseCase.id, key)"
                   :class="{
                     'bg-green-600': key === 'good',
                     'bg-yellow-600': key === 'medium',
@@ -123,21 +128,42 @@
               </template>
             </div>
 
-            <div class="mt-3" x-html="outcomes[uc.id]"></div>
-            <p class="mt-2 text-sm text-slate-500 italic" x-text="uc.lesson"></p>
+            <div class="mt-3" x-html="outcomes[currentUseCase.id]"></div>
+            <p class="mt-2 text-sm text-slate-500 italic" x-text="currentUseCase.lesson"></p>
           </div>
 
           <div class="md:col-span-1 text-right">
             <div class="text-xs text-slate-500">Scenario</div>
-            <div class="text-sm text-slate-700" x-text="uc.location"></div>
+            <div class="text-sm text-slate-700" x-text="currentUseCase.location"></div>
           </div>
         </article>
-      </template>
 
-      <div class="flex justify-end">
-        <button @click="complete('usecases'); go('interactives')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Interactive →</button>
-      </div>
-    </section>
+        <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex flex-wrap gap-2">
+              <button
+                @click="ucPrev()"
+                :disabled="!hasPrevUseCase"
+                :class="hasPrevUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+                class="px-4 py-2 rounded font-medium transition-colors">
+                ← Prev Scenario
+              </button>
+              <button
+                @click="ucNext()"
+                :disabled="!hasNextUseCase"
+                :class="hasNextUseCase ? 'bg-slate-200 text-slate-900 hover:bg-slate-300' : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
+                class="px-4 py-2 rounded font-medium transition-colors">
+                Next Scenario →
+              </button>
+            </div>
+
+            <div class="flex flex-wrap gap-2 sm:justify-end">
+              <button @click="go('intro')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+              <button @click="complete('usecases'); go('interactives')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Interactive →</button>
+            </div>
+          </div>
+        </div>
+      </section>
 
 
       <!-- INTERACTIVE SECTION -->
@@ -167,8 +193,11 @@
           <div class="mt-3" x-html="disposeFeedback"></div>
         </div>
 
-        <div class="flex justify-end">
-          <button @click="complete('interactives'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+        <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+          <div class="flex justify-between gap-3">
+            <button @click="go('usecases')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+            <button @click="complete('interactives'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+          </div>
         </div>
       </section>
 
@@ -183,8 +212,11 @@
           <li>Limit access to what’s required only.</li>
           <li>Regularly train employees on handling rules.</li>
         </ul>
-        <div class="mt-6 flex justify-end">
-          <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Continue → Checklist</button>
+        <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+          <div class="flex justify-between gap-3">
+            <button @click="go('interactives')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+            <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Continue → Checklist</button>
+          </div>
         </div>
       </section>
 
@@ -202,14 +234,16 @@
           </template>
         </div>
 
-        <div class="mt-4">
-          <button @click="analyzeGaps()" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
-        </div>
-
         <div class="mt-4" x-html="gapResult"></div>
 
-        <div class="mt-6 flex justify-end">
-          <button @click="complete('checklist'); go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+        <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <button @click="go('best')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+            <div class="flex flex-wrap gap-2 sm:justify-end">
+              <button @click="analyzeGaps()" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+              <button @click="complete('checklist'); go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -221,8 +255,11 @@
           Apply classification, secure storage, controlled sharing, safe disposal and continuous training to reduce risk.
         </p>
 
-        <div class="mt-4 flex gap-3">
-          <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+        <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-slate-200 rounded-b-lg">
+          <div class="flex justify-between gap-3 flex-wrap">
+            <button @click="go('checklist')" class="bg-slate-200 text-slate-900 px-4 py-2 rounded font-medium hover:bg-slate-300 transition-colors">Back</button>
+            <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+          </div>
         </div>
       </section>
 
@@ -235,6 +272,7 @@
         sections: ['intro','usecases','interactives','best','checklist','conclusion'],
         navLabels: {intro:'Intro',usecases:'Use Cases',interactives:'Interactive',best:'Best Practices',checklist:'Checklist',conclusion:'Conclusion'},
         active: localStorage.getItem('sd_active') || 'intro',
+        useCaseIndex: 0,
         completed: {},
         quizUrl: '#Quiz',
         useCases: [
@@ -315,12 +353,36 @@
           training:'Employee training & awareness'
         },
         gapResult:'',
+        get currentUseCase(){
+          return this.useCases[this.useCaseIndex] || this.useCases[0];
+        },
+        get hasPrevUseCase(){
+          return this.useCaseIndex > 0;
+        },
+        get hasNextUseCase(){
+          return this.useCaseIndex < this.useCases.length - 1;
+        },
+        setUseCaseIndex(index){
+          const nextIndex = Math.min(Math.max(index, 0), this.useCases.length - 1);
+          this.useCaseIndex = nextIndex;
+          localStorage.setItem('sd_usecase_index', String(nextIndex));
+        },
+        ucPrev(){
+          if(!this.hasPrevUseCase) return;
+          this.setUseCaseIndex(this.useCaseIndex - 1);
+        },
+        ucNext(){
+          if(!this.hasNextUseCase) return;
+          this.setUseCaseIndex(this.useCaseIndex + 1);
+        },
         init(){
           this.useCases.forEach(u=>{
             if(!(u.id in this.outcomes)) this.outcomes[u.id]='';
             if(!(u.id in this.imageShown)) this.imageShown[u.id]=false;
             if(!(u.id in this.imageLabel)) this.imageLabel[u.id]='';
           });
+          const savedIndex = parseInt(localStorage.getItem('sd_usecase_index') || '0', 10);
+          if (!Number.isNaN(savedIndex)) this.useCaseIndex = Math.min(Math.max(savedIndex, 0), this.useCases.length - 1);
         },
         go(id){
           this.active=id;

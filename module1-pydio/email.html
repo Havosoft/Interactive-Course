@@ -45,7 +45,7 @@
 </head>
 <body>
 
-<div class="max-w-6xl mx-auto p-6">
+<div class="w-full min-h-screen px-4 sm:px-6 lg:px-8 py-6">
   <!-- HEADER -->
   <header class="mb-6 flex justify-between">
     <div>
@@ -95,72 +95,96 @@
       </ul>
       <p>By understanding email threats and practicing vigilance, employees play a key role in protecting organizational data.</p>
 
-      <div class="mt-6 flex justify-end">
-        <button @click="go('usecases')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Start Use Cases →</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-gray-200 rounded-b">
+        <div class="flex justify-end">
+          <button @click="go('usecases')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Start Use Cases →</button>
+        </div>
       </div>
     </section>
 
     <!-- USE CASES -->
-    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
-      <h2 class="text-2xl font-semibold text-purple-700">Use Cases — choose actions and see outcomes</h2>
-      <p class="text-gray-700">Pick the best action for each scenario and get immediate feedback.</p>
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded">
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-2xl font-semibold text-purple-700">Use Cases — choose actions and see outcomes</h2>
+          <p class="text-gray-700 mt-2">Pick the best action for each scenario and get immediate feedback.</p>
+        </div>
+        <div class="text-sm text-gray-500">
+          <span x-text="`Scenario ${useCaseIndex + 1} of ${useCases.length}`"></span>
+        </div>
+      </div>
 
-      <template x-for="uc in useCases" :key="uc.id">
-        <article class="p-4 rounded border border-gray-200 space-y-3 bg-white shadow-sm">
-          <h3 class="font-semibold text-gray-900" x-text="uc.title"></h3>
-          <p class="text-gray-700" x-text="uc.desc"></p>
+      <article class="mt-5 p-4 rounded border border-gray-200 space-y-3 bg-white shadow-sm" x-show="currentUseCase" x-cloak>
+        <h3 class="font-semibold text-gray-900" x-text="currentUseCase.title"></h3>
+        <p class="text-gray-700" x-text="currentUseCase.desc"></p>
 
-          <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2" x-show="uc.id!=='uc5'">
-            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors">Correct action</button>
-            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 transition-colors">Partial / mitigated</button>
-            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors">Risky / ignore</button>
-          </div>
+        <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2" x-show="currentUseCase.id!=='uc5'">
+          <button @click="ucAct(currentUseCase.id,'correct')" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors">Correct action</button>
+          <button @click="ucAct(currentUseCase.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 transition-colors">Partial / mitigated</button>
+          <button @click="ucAct(currentUseCase.id,'bad')" class="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors">Risky / ignore</button>
+        </div>
 
-          <!-- UC5 special (breach check) -->
-          <div class="mt-3 grid grid-cols-2 gap-2" x-show="uc.id==='uc5'">
-            <button @click="breachResult='breached'" class="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors">Breached Email</button>
-            <button @click="breachResult='clean'" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors">Not Breached Email</button>
-          </div>
+        <div class="mt-3 grid grid-cols-2 gap-2" x-show="currentUseCase.id==='uc5'">
+          <button @click="breachResult='breached'" class="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors">Breached Email</button>
+          <button @click="breachResult='clean'" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors">Not Breached Email</button>
+        </div>
 
-          <!-- Outcome box -->
-          <div class="mt-3" x-html="outcomes[uc.id]" x-show="uc.id!=='uc5'" x-transition></div>
+        <div class="mt-3" x-html="outcomes[currentUseCase.id]" x-show="currentUseCase.id!=='uc5'" x-transition></div>
 
-            <!-- Image Placeholder for UC5 -->
-          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='breached'">
-            <div class="p-3 bg-white border border-red-200 text-red-800 rounded">
-              <div class="mt-3 grid grid-cols-2 gap-2" >
-            <img src="Screenshot 2025-09-29 145115.png" alt="">
-            <img src="Screenshot 2025-09-29 145139.png" alt="">
-          </div>
+        <div class="mt-3" x-show="currentUseCase.id==='uc5' && breachResult==='breached'">
+          <div class="p-3 bg-white border border-red-200 text-red-800 rounded">
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <img src="Screenshot 2025-09-29 145115.png" alt="">
+              <img src="Screenshot 2025-09-29 145139.png" alt="">
             </div>
           </div>
-          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='clean'">
-            <div class="p-3 bg-white border border-green-200 text-green-800 rounded">
-              <img src="Screenshot 2025-09-29 145152.png" alt="">
-            </div>
+        </div>
+        <div class="mt-3" x-show="currentUseCase.id==='uc5' && breachResult==='clean'">
+          <div class="p-3 bg-white border border-green-200 text-green-800 rounded">
+            <img src="Screenshot 2025-09-29 145152.png" alt="">
+          </div>
+        </div>
+
+        <div class="mt-3" x-show="currentUseCase.id==='uc5' && breachResult==='breached'" x-transition>
+          <div class="p-3 bg-red-50 border border-red-200 text-red-800 rounded">
+            🚨 This email address appeared in past breaches. Immediate action required: change passwords and enable MFA.
+          </div>
+        </div>
+        <div class="mt-3" x-show="currentUseCase.id==='uc5' && breachResult==='clean'" x-transition>
+          <div class="p-3 bg-green-50 border border-green-200 text-green-800 rounded">
+            ✅ No known breaches found for this email.
+          </div>
+        </div>
+
+        <div class="mt-3 p-3 bg-red-50 border border-red-200 text-red-800 rounded" x-show="ucResult[currentUseCase.id]==='breach' && currentUseCase.id!=='uc5'" x-transition>
+          🚨 <strong>Incident:</strong> A phishing compromise occurred. Credentials or data were exposed.
+        </div>
+      </article>
+
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-gray-200 rounded-b">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex flex-wrap gap-2">
+            <button
+              @click="ucPrev()"
+              :disabled="!hasPrevUseCase"
+              :class="hasPrevUseCase ? 'bg-gray-200 text-gray-900 hover:bg-gray-300' : 'bg-gray-100 text-gray-400 cursor-not-allowed'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+              ← Prev Scenario
+            </button>
+            <button
+              @click="ucNext()"
+              :disabled="!hasNextUseCase"
+              :class="hasNextUseCase ? 'bg-gray-200 text-gray-900 hover:bg-gray-300' : 'bg-gray-100 text-gray-400 cursor-not-allowed'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+              Next Scenario →
+            </button>
           </div>
 
-          <!-- Special breach simulation display -->
-          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='breached'" x-transition>
-            <div class="p-3 bg-red-50 border border-red-200 text-red-800 rounded">
-              🚨 This email address appeared in past breaches. Immediate action required: change passwords and enable MFA.
-            </div>
+          <div class="flex flex-wrap gap-2 sm:justify-end">
+            <button @click="go('intro')" class="bg-gray-200 text-gray-900 px-4 py-2 rounded font-medium hover:bg-gray-300 transition-colors">Back</button>
+            <button @click="go('best')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Next: Best Practices →</button>
           </div>
-          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='clean'" x-transition>
-            <div class="p-3 bg-green-50 border border-green-200 text-green-800 rounded">
-              ✅ No known breaches found for this email.
-            </div>
-          </div>
-
-          <!-- Incident box for bad actions -->
-          <div class="mt-3 p-3 bg-red-50 border border-red-200 text-red-800 rounded" x-show="ucResult[uc.id]==='breach'" x-transition>
-            🚨 <strong>Incident:</strong> A phishing compromise occurred. Credentials or data were exposed.
-          </div>
-        </article>
-      </template>
-
-      <div class="flex justify-end">
-        <button @click="go('best')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Next: Best Practices →</button>
+        </div>
       </div>
     </section>
 
@@ -176,8 +200,11 @@
         <li><strong>Stay Informed:</strong> Regular phishing awareness helps prevent attacks.</li>
       </ul>
 
-      <div class="mt-6 flex justify-end">
-        <button @click="go('conclusion')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Finish → Conclusion</button>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-gray-200 rounded-b">
+        <div class="flex justify-between gap-3">
+          <button @click="go('usecases')" class="bg-gray-200 text-gray-900 px-4 py-2 rounded font-medium hover:bg-gray-300 transition-colors">Back</button>
+          <button @click="go('conclusion')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Finish → Conclusion</button>
+        </div>
       </div>
     </section>
 
@@ -188,8 +215,11 @@
         Phishing and email-based attacks are persistent threats. By verifying senders, avoiding suspicious links, reporting incidents, and proactively checking for compromised emails, employees protect themselves and the organization. Vigilance is key to cybersecurity hygiene.
       </p>
 
-      <div class="mt-6 flex gap-3">
-        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+      <div class="sticky bottom-0 mt-6 -mx-6 -mb-6 px-6 py-4 bg-white border-t border-gray-200 rounded-b">
+        <div class="flex justify-between gap-3 flex-wrap">
+          <button @click="go('best')" class="bg-gray-200 text-gray-900 px-4 py-2 rounded font-medium hover:bg-gray-300 transition-colors">Back</button>
+          <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+        </div>
       </div>
     </section>
 
@@ -203,6 +233,7 @@ function emailModule(){
     labels:{intro:'Intro', usecases:'Use Cases', best:'Best Practices', conclusion:'Conclusion'},
     active: localStorage.getItem('em_active')||'intro',
     outcomes: JSON.parse(localStorage.getItem('em_outcomes')||'{}'),
+    useCaseIndex: 0,
     ucResult:{},
     whyOpen:{},
     breachResult:'',
@@ -270,6 +301,31 @@ function emailModule(){
         if(!(u.id in this.outcomes)) this.outcomes[u.id]='';
         if(!(u.id in this.ucResult)) this.ucResult[u.id]='';
       });
+      const savedIndex = parseInt(localStorage.getItem('em_usecase_index') || '0', 10);
+      if (!Number.isNaN(savedIndex)) this.useCaseIndex = Math.min(Math.max(savedIndex, 0), this.useCases.length - 1);
+    },
+
+    get currentUseCase(){
+      return this.useCases[this.useCaseIndex] || this.useCases[0];
+    },
+    get hasPrevUseCase(){
+      return this.useCaseIndex > 0;
+    },
+    get hasNextUseCase(){
+      return this.useCaseIndex < this.useCases.length - 1;
+    },
+    setUseCaseIndex(index){
+      const nextIndex = Math.min(Math.max(index, 0), this.useCases.length - 1);
+      this.useCaseIndex = nextIndex;
+      localStorage.setItem('em_usecase_index', String(nextIndex));
+    },
+    ucPrev(){
+      if(!this.hasPrevUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex - 1);
+    },
+    ucNext(){
+      if(!this.hasNextUseCase) return;
+      this.setUseCaseIndex(this.useCaseIndex + 1);
     },
 
     go(s){
