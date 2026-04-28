@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Safe Use of Wi-Fi & Hotspots</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    /* small custom */
+    .card { background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1)); border: 1px solid rgba(148,163,184,0.3); box-shadow: 0 12px 30px rgba(148,163,184,0.12); }
+    .btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 500; transition: background-color 150ms, color 150ms, border-color 150ms; }
+    /* hide scrollbar inside iframe-like containers if needed */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+
+<div class="max-w-5xl mx-auto p-6" x-data="wifiModule()" x-init="init()">
+  <!-- Header -->
+  <header class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Safe Use of Wi-Fi & Hotspots</h1>
+      <p class="text-sm text-slate-500 mt-1">Protect company devices and data while working remotely or in public places</p>
+      <div class="mt-3 text-xs text-slate-600">
+        <strong>Learning objectives:</strong>
+        <ul class="ml-4 list-disc mt-2 text-xs">
+          <li>Understand the risks associated with public and unsecured Wi-Fi networks.</li>
+          <li>Recognize potential attacks such as eavesdropping, man-in-the-middle, and rogue hotspots.</li>
+          <li>Apply secure practices when connecting to Wi-Fi outside the office.</li>
+          <li>Protect company devices and data while working remotely or in public spaces.</li>
+        </ul>
+      </div>
+    </div>  
+  </header>
+
+  <!-- Player / Nav -->
+  <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'" class="btn">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'" class="btn">Use Cases</button>
+    <button @click="go('best')" :class="active==='best' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'" class="btn">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'" class="btn">Checklist</button>
+    <button @click="go('takeaway')" :class="active==='takeaway' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'" class="btn">Takeaway</button>
+  </nav>
+
+  <!-- Intro -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Introduction</h2>
+    <p class="text-slate-700 mb-4">
+      With the rise of remote work and mobile computing, employees often rely on Wi-Fi networks in airports, hotels, coffee shops, and other public locations. While convenient, public Wi-Fi can expose sensitive information if not used securely. Attackers can intercept data, impersonate networks, or inject malware.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <h3 class="text-lg font-semibold text-slate-900">Why Safe Wi-Fi Practices Matter</h3>
+        <ul class="list-disc pl-5 mt-3 text-slate-700 space-y-2">
+          <li><strong>Data Interception:</strong> Unencrypted Wi-Fi allows attackers to capture emails, passwords, or business documents.</li>
+          <li><strong>Rogue Hotspots:</strong> Cybercriminals can set up fake networks with names similar to legitimate ones to trick users.</li>
+          <li><strong>Man-in-the-Middle (MITM) Attacks:</strong> Attackers can intercept communication between your device and the network, altering or stealing data.</li>
+          <li><strong>Device Exploitation:</strong> Public networks can be used to scan and compromise connected devices.</li>
+        </ul>
+      </div>
+
+      <div class="p-4 rounded border border-slate-200 bg-white shadow-sm">
+        <!-- inline SVG placeholder - replace with your own SVG markup if you like -->
+        <div class="w-full h-48 flex items-center justify-center bg-slate-100 rounded">
+          <svg width="220" height="120" viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="220" height="120" rx="8" fill="#e2e8f0"/>
+            <g fill="#9f7aea" opacity="0.95">
+              <circle cx="40" cy="60" r="6"/>
+              <circle cx="70" cy="60" r="5"/>
+              <circle cx="100" cy="60" r="4"/>
+            </g>
+            <text x="16" y="98" fill="#475569" font-size="10">Wi-Fi / Hotspot safety (SVG placeholder)</text>
+          </svg>
+        </div>
+        <p class="text-sm text-slate-600 mt-3">Employees must understand the risks and adopt safe practices to protect corporate data outside the office.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
+
+    <template x-for="uc in useCases" :key="uc.id">
+      <article class="p-4 rounded border border-slate-200 bg-white shadow-sm grid md:grid-cols-5 gap-4 items-center">
+        <div class="md:col-span-1 flex justify-center">
+          <!-- render inline svg markup so you can paste SVGs directly in the data -->
+          <div class="w-28 h-28 flex items-center justify-center" x-html="uc.svg"></div>
+        </div>
+
+        <div class="md:col-span-3">
+          <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+          <p class="text-slate-700" x-text="uc.desc"></p>
+
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors">Correct action</button>
+            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">Partial / mitigated</button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors">Risky / ignore</button>
+          </div>
+
+          <div class="mt-3" x-html="outcomes[uc.id]"></div>
+        </div>
+
+        <div class="md:col-span-1 text-right">
+          <div class="text-xs text-slate-500">Scenario</div>
+          <div class="text-sm text-slate-700" x-text="uc.location"></div>
+        </div>
+      </article>
+    </template>
+
+    <div class="flex justify-end">
+      <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+    </div>
+  </section>
+
+  <!-- Best practices -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">🛡 Best Practices for Defence</h2>
+
+    <div class="space-y-3 text-slate-700">
+      <div>
+        <strong class="text-slate-900">1. Use a VPN</strong>
+        <p class="text-sm">Always connect to a secure VPN when accessing corporate networks from public Wi-Fi. VPNs encrypt data, making it unreadable to attackers.</p>
+      </div>
+
+      <div>
+        <strong class="text-slate-900">2. Verify Network Names</strong>
+        <p class="text-sm">Confirm the official Wi-Fi name with staff at hotels, airports, or cafés. Avoid networks with generic or suspicious names.</p>
+      </div>
+
+      <div>
+        <strong class="text-slate-900">3. Enable HTTPS</strong>
+        <p class="text-sm">Ensure websites and applications use HTTPS to encrypt communication. Avoid transmitting sensitive data over unencrypted channels.</p>
+      </div>
+
+      <div>
+        <strong class="text-slate-900">4. Disable Automatic Connections</strong>
+        <p class="text-sm">Turn off settings that automatically connect your device to available Wi-Fi networks.</p>
+      </div>
+
+      <div>
+        <strong class="text-slate-900">5. Device Security</strong>
+        <p class="text-sm">Keep operating systems, browsers, and security software updated. Enable firewalls and disable file sharing when on public networks.</p>
+      </div>
+
+      <div>
+        <strong class="text-slate-900">6. Avoid Sensitive Transactions</strong>
+        <p class="text-sm">Refrain from accessing financial systems, confidential emails, or critical company applications on public Wi-Fi unless connected via VPN.</p>
+      </div>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-slate-500">Back</button>
+      <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Checklist →</button>
+    </div>
+  </section>
+
+  <!-- Checklist -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Interactive Checklist — Assess your organisation</h2>
+    <p class="text-slate-700 mb-3">Check the controls your organisation already has in place and analyze gaps.</p>
+
+    <div class="grid md:grid-cols-2 gap-3">
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.vpn"> Use of enterprise VPN
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.autoConn"> Automatic network connection disabled
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.https"> Enforced HTTPS for services
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.deviceSec"> Endpoint security & firewalls enabled
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.mdm"> Devices enrolled in MDM / management
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.training"> Staff trained on Wi-Fi risks
+      </label>
+    </div>
+
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('takeaway')" class="ml-2 bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded transition-colors">Finish → Takeaway</button>
+    </div>
+
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- Takeaway / Conclusion -->
+  <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Conclusion & Takeaway</h2>
+    <p class="text-slate-700 mt-3">
+      Public Wi-Fi is convenient but inherently risky. Cyber attackers can intercept communications, trick users into connecting to fake networks, or exploit vulnerabilities on connected devices. By using VPNs, verifying network authenticity, enabling HTTPS, and following device security best practices, employees can safely access corporate resources outside the office. Vigilance is essential to maintain data security in public spaces.
+    </p>
+
+    <div class="flex gap-3 mt-4">
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>   -->
+      <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>    
+    </div>
+  </section>
+ 
+</div>
+
+<script>
+  function wifiModule(){
+    return {
+      active: 'intro',
+      sections: ['intro','usecases','best','checklist','takeaway'],
+      completed: {},
+      quizUrl: '#Quiz', // replace if needed
+      useCases: [
+        {
+          id:'uc1',
+          title: 'Unsecured Public Wi-Fi',
+          desc: 'An employee connects to an open Wi-Fi at a café without a VPN. Sensitive company emails and files are intercepted by an attacker.',
+          location: 'Café / Public Wi-Fi',
+          svg: `<svg width="112" height="112" viewBox="0 0 112 112" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                 <rect width="112" height="112" rx="8" fill="#e2e8f0"/>
+                 <g fill="#9f7aea">
+                   <path d="M56 38c-9 0-16 7-16 7l4 4s5-5 12-5 12 5 12 5l4-4s-7-7-16-7z"/>
+                   <circle cx="56" cy="72" r="6" fill="#6ee7b7"/>
+                 </g>
+               </svg>`
+        },
+        {
+          id:'uc2',
+          title: 'Rogue Hotspot Attack',
+          desc: 'A hacker sets up a Wi-Fi hotspot named “Hotel_Guest_WiFi.” An employee connects, thinking it’s legitimate. Malware is injected into the device.',
+          location: 'Hotel lobby / Rogue hotspot',
+          svg: `<svg width="112" height="112" viewBox="0 0 112 112" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                 <rect width="112" height="112" rx="8" fill="#e2e8f0"/>
+                 <g fill="#fbbf24">
+                   <circle cx="56" cy="42" r="8"/>
+                   <path d="M56 56c-8 0-14 6-14 6l4 4s4-4 10-4 10 4 10 4l4-4s-6-6-14-6z"/>
+                 </g>
+               </svg>`
+        },
+        {
+          id:'uc3',
+          title: 'Man-in-the-Middle Attack',
+          desc: 'An attacker intercepts traffic on a public Wi-Fi network, capturing login credentials for cloud services.',
+          location: 'Airport Wi-Fi / MITM',
+          svg: `<svg width="112" height="112" viewBox="0 0 112 112" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                 <rect width="112" height="112" rx="8" fill="#e2e8f0"/>
+                 <g fill="#60a5fa">
+                   <rect x="30" y="44" width="52" height="24" rx="4"/>
+                   <path d="M56 36v-6"/>
+                 </g>
+               </svg>`
+        },
+        {
+          id:'uc4',
+          title: 'Automatic Connection Risks',
+          desc: 'An employee’s device automatically connects to previously used Wi-Fi networks, including insecure ones.',
+          location: 'Mobile device settings / Auto connect',
+          svg: `<svg width="112" height="112" viewBox="0 0 112 112" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                 <rect width="112" height="112" rx="8" fill="#e2e8f0"/>
+                 <g fill="#34d399">
+                   <rect x="36" y="36" width="40" height="40" rx="6"/>
+                   <path d="M44 44l24 24"/>
+                 </g>
+               </svg>`
+        },
+        {
+          id:'uc5',
+          title: 'Corporate Device Exposure',
+          desc: 'An employee uses their company laptop on a shared hotel network. Other devices on the network attempt to access the laptop.',
+          location: 'Shared hotel network / Corporate device',
+          svg: `<svg width="112" height="112" viewBox="0 0 112 112" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                 <rect width="112" height="112" rx="8" fill="#e2e8f0"/>
+                 <g fill="#f472b6">
+                   <rect x="30" y="46" width="52" height="20" rx="3"/>
+                   <circle cx="56" cy="62" r="3"/>
+                 </g>
+               </svg>`
+        }
+      ],
+      outcomes: {},
+
+      // checklist state
+      checklist: {vpn:false, autoConn:false, https:false, deviceSec:false, mdm:false, training:false},
+      gapResult: '',
+      init(){
+        // restore progress and outcomes
+        this.sections.forEach(s => { this.completed[s] = localStorage.getItem('done_'+s) === '1' });
+        this.active = localStorage.getItem('lastSection') || 'intro';
+        // outcomes initialised empty
+        this.useCases.forEach(u => { this.outcomes[u.id] = ''; });
+        // restore checklist if present
+        try {
+          const saved = JSON.parse(localStorage.getItem('wifi_checklist'));
+          if(saved) this.checklist = saved;
+        } catch(e){}
+        // ensure no undefined
+        localStorage.setItem('wifi_outcomes', JSON.stringify(this.outcomes));
+      },
+      go(id){
+        this.active = id;
+        localStorage.setItem('lastSection', id);
+        // scroll to top of interactive content
+        const container = document.getElementById('module-nav');
+        if (container) {
+          window.scrollTo({
+            top: container.offsetTop - 30,
+            behavior: 'smooth'
+          });
+        }
+      },
+      complete(name){
+        this.completed[name] = true;
+        localStorage.setItem('done_'+name,'1');
+      },
+      ucAct(id, action){
+        // generate outcomes for each use case
+        const map = {
+          correct: {
+            cls: 'border-green-600 text-green-700',
+            text: 'Good choice — you followed best practice and reduced exposure.'
+          },
+          partial: {
+            cls: 'border-amber-500 text-amber-700',
+            text: 'Partial mitigation — some risk remains and additional controls are recommended.'
+          },
+          bad: {
+            cls: 'border-red-600 text-red-700',
+            text: 'Risky action — this likely results in compromise or data exposure.'
+          }
+        };
+        const item = map[action] || map.bad;
+        // contextualize message by use case id (kept concise but informative)
+        const uc = this.useCases.find(u => u.id === id);
+        let extra='';
+        if(id==='uc1') extra='<div class="mt-1 text-sm text-slate-600">Tip: Use VPN and avoid logging into cloud services on open Wi-Fi.</div>';
+        if(id==='uc2') extra='<div class="mt-1 text-sm text-slate-600">Tip: Confirm SSID with staff and avoid networks without staff confirmation.</div>';
+        if(id==='uc3') extra='<div class="mt-1 text-sm text-slate-600">Tip: Check TLS/HTTPS and use endpoint protections to reduce MITM impact.</div>';
+        if(id==='uc4') extra='<div class="mt-1 text-sm text-slate-600">Tip: Disable auto-join for networks and forget networks you no longer use.</div>';
+        if(id==='uc5') extra='<div class="mt-1 text-sm text-slate-600">Tip: Enable host-based firewall and disable file sharing on public networks.</div>';
+
+        this.outcomes[id] = `<div class="p-3 rounded bg-slate-50 border ${item.cls}">${item.text}${extra}</div>`;
+        localStorage.setItem('wifi_outcomes', JSON.stringify(this.outcomes));
+      },
+      analyzeGaps(){
+        localStorage.setItem('wifi_checklist', JSON.stringify(this.checklist));
+        const keys = Object.keys(this.checklist);
+        const missing = keys.filter(k => !this.checklist[k]);
+        if(missing.length===0){
+          this.gapResult = '<div class="p-3 rounded bg-green-50 border border-green-200 text-green-800">No major gaps identified — good baseline.</div>';
+        } else {
+          // human-friendly names
+          const names = missing.map(m => {
+            return {
+              vpn: 'VPN',
+              autoConn: 'Automatic connection disabled',
+              https: 'Enforced HTTPS',
+              deviceSec: 'Endpoint security/firewall',
+              mdm: 'MDM / device management',
+              training: 'Staff training'
+            }[m] || m;
+          });
+          this.gapResult = '<div class="p-3 rounded bg-amber-50 border border-amber-200 text-amber-800">Missing controls: ' + names.join(', ') + '</div>';
+        }
+      },
+      restart(){
+        // clear progress
+        // this.sections.forEach(s => { localStorage.removeItem('done_'+s); this.completed[s]=false;});
+        // localStorage.removeItem('lastSection');
+        // localStorage.removeItem('wifi_checklist');
+        // localStorage.removeItem('wifi_outcomes');
+        // this.checklist = {vpn:false, autoConn:false, https:false, deviceSec:false, mdm:false, training:false};
+        // this.useCases.forEach(u => { this.outcomes[u.id] = ''; });
+        // this.gapResult = '';
+        // this.go('intro');
+        window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Secure-Mobility-Data-Protection-Module?lecture_uuid=99be8e81-ba27-4e86-9e95-412d0141bd2c#Quiz";
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

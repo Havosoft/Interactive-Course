@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Insider Threat Awareness</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1)); border: 1px solid rgba(148,163,184,0.3); box-shadow: 0 12px 30px rgba(148,163,184,0.12);}
+    [x-cloak] { display:none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+
+<div class="max-w-6xl mx-auto p-6" x-data="insider()" x-init="init()">
+
+  <!-- HEADER -->
+  <header class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Topic 3: Insider Threat Awareness</h1>
+      <p class="text-sm text-slate-500">Recognizing, reporting, and preventing insider risks</p>
+      <div class="mt-3 text-xs text-slate-500">
+        <strong>Learning Objectives:</strong>
+        <ul class="ml-4 list-disc">
+          <li>Understand the different types of insider threats (malicious, negligent, and compromised).</li>
+          <li>Recognize behaviors and signs that may indicate insider risks.</li>
+          <li>Apply best practices to minimize insider threats.</li>
+          <li>Report suspicious activity to security or HR teams.</li>
+          <li>Support a culture of vigilance and accountability in the workplace.</li>
+        </ul>
+      </div>
+    </div>    
+  </header>
+
+  <!-- NAV -->
+  <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro'?'bg-purple-600 text-white':'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases'?'bg-purple-600 text-white':'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Use Cases</button>
+    <button @click="go('best')" :class="active==='best'?'bg-purple-600 text-white':'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist'?'bg-purple-600 text-white':'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Checklist</button>
+    <button @click="go('conclusion')" :class="active==='conclusion'?'bg-purple-600 text-white':'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Conclusion</button>
+  </nav>
+
+  <!-- INTRO -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Introduction</h2>
+    <p class="text-slate-700 mb-4">
+      Insider threats involve employees, contractors, or trusted partners who misuse access to company resources, either intentionally or accidentally. These threats can result in data breaches, financial loss, reputational damage, or operational disruption. Unlike external attacks, insider threats exploit legitimate access, making them harder to detect.
+    </p>
+    <h3 class="text-xl font-semibold text-slate-900 mb-2">Why Insider Threat Awareness Matters</h3>
+    <ul class="list-disc pl-5 text-slate-700 space-y-2">
+      <li><strong>High Risk:</strong> Insiders already have access to sensitive systems, making attacks more effective.</li>
+      <li><strong>Costly Consequences:</strong> Insider incidents are among the most expensive security breaches.</li>
+      <li><strong>Early Detection:</strong> Awareness helps identify potential risks before damage occurs.</li>
+      <li><strong>Support for Security Culture:</strong> Encourages employees to take shared responsibility for protecting assets.</li>
+    </ul>
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded">Next → Use Cases</button>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+  <h2 class="text-2xl font-semibold text-slate-900">Use Cases — Insider Threat Scenarios</h2>
+  <p class="text-slate-700 text-sm mb-3">Choose the best action for each insider scenario and review the security outcome.</p>
+
+  <template x-for="uc in useCases" :key="uc.id">
+    <article class="p-4 rounded border border-slate-300 grid md:grid-cols-5 gap-4 items-start">
+      <!-- SVG Icon -->
+      <div class="md:col-span-1 flex justify-center">
+        <div class="w-20 h-20 bg-slate-100 rounded flex items-center justify-center" x-html="uc.svg"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="md:col-span-4">
+        <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+        <p class="text-slate-700 text-sm mt-1" x-text="uc.desc"></p>
+
+        <!-- Action Buttons -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <template x-for="(label, key) in uc.buttons" :key="key">
+            <button
+              @click="ucAct(uc.id, key)"
+              :class="{
+                'bg-green-600': key==='good',
+                'bg-yellow-600': key==='medium',
+                'bg-red-600': key==='bad',
+                'ring-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                'ring-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                'ring-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+              }"
+              class="px-3 py-2 rounded text-white transition font-medium"
+              x-text="label">
+            </button>
+          </template>
+        </div>
+
+        <!-- Feedback -->
+        <div class="mt-3" x-show="outcomes[uc.id]" x-transition.opacity x-html="outcomes[uc.id]"></div>
+        <p class="text-sm text-slate-500 italic mt-1" x-text="uc.lesson"></p>
+      </div>
+    </article>
+  </template>
+
+  <div class="flex justify-end">
+    <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded">
+      Next → Best Practices
+    </button>
+  </div>
+</section>
+
+
+  <!-- BEST PRACTICES -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">🛡 Best Practices for Defence</h2>
+    <div class="mt-3 text-slate-700 space-y-3">
+      <p><strong class="text-slate-900">1. Access Management</strong><br>Assign permissions based on roles (least privilege principle). Revoke access immediately when employees leave or change roles.</p>
+      <p><strong class="text-slate-900">2. Continuous Monitoring</strong><br>Track system access and file activity for anomalies. Use logs and alerts to identify unusual behavior.</p>
+      <p><strong class="text-slate-900">3. Employee Training & Awareness</strong><br>Educate staff on phishing, social engineering, and proper data handling. Promote vigilance and encourage reporting of suspicious activities.</p>
+      <p><strong class="text-slate-900">4. Data Handling Policies</strong><br>Clearly define acceptable use of company devices and data. Implement encryption and DLP tools for sensitive information.</p>
+      <p><strong class="text-slate-900">5. Reporting Mechanisms</strong><br>Provide clear channels for reporting suspicious or risky behavior. Encourage anonymity if necessary to ensure comfort in reporting.</p>
+      <p><strong class="text-slate-900">6. Physical Security Integration</strong><br>Monitor insider activity with access control logs and surveillance. Combine physical and digital monitoring to detect irregular behavior.</p>
+    </div>
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-slate-500">← Back</button>
+      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded">Next → Checklist</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Interactive Checklist</h2>
+    <p class="text-slate-700 text-sm mb-4">Tick the items you practice:</p>
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.access"> Access rights regularly reviewed</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.monitoring"> Continuous monitoring in place</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.training"> Employee awareness training</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.data"> Data handling policies followed</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.reporting"> Clear reporting channels available</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.physical"> Physical + digital monitoring integrated</label>
+    </div>
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-slate-200 text-slate-700 px-4 py-2 rounded">Finish → Conclusion</button>
+    </div>
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Conclusion</h2>
+    <p class="text-slate-700 mb-4">
+      Insider threats—whether malicious, negligent, or compromised—pose significant risks to organizations. Awareness, monitoring, access management, and a strong reporting culture are essential to detect, prevent, and mitigate insider-related security incidents. Employees play a crucial role in maintaining a vigilant and secure work environment.
+    </p>
+    <div class="flex gap-3">
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+    </div>
+  </section>  
+</div>
+
+<script>
+function insider(){
+  return {
+    active:'intro',
+    sections:['intro','usecases','best','checklist','conclusion'],
+    completed:{}, outcomes:{},
+    activeChoice: {},
+    quizUrl: '#Quiz', // replace if needed
+    useCases: [
+      {
+        id: 'uc1',
+        title: 'Malicious Insider',
+        desc: 'An employee intentionally copies sensitive client data to sell to competitors.',
+        lesson: 'Lesson: Monitor access, enforce data handling policies, and restrict unnecessary permissions.',
+        svg: `<svg width="64" height="64"><rect width="64" height="64" rx="12" fill="#f1f5f9"/><circle cx="32" cy="32" r="14" fill="#ef4444"/></svg>`,
+        buttons: {
+          good: 'Report and Revoke Access Immediately',
+          medium: 'Monitor Suspicious Behavior Before Acting',
+          bad: 'Ignore Signs of Data Misuse'
+        }
+      },
+      {
+        id: 'uc2',
+        title: 'Negligent Insider',
+        desc: 'An employee accidentally emails confidential information to the wrong recipient.',
+        lesson: 'Lesson: Implement data loss prevention (DLP) tools and provide regular training.',
+        svg: `<svg width="64" height="64"><rect width="64" height="64" rx="12" fill="#f1f5f9"/><rect x="20" y="20" width="24" height="24" fill="#f59e0b"/></svg>`,
+        buttons: {
+          good: 'Notify IT and Recipient Immediately',
+          medium: 'Recall Email but Take No Further Action',
+          bad: 'Ignore Mistake and Hope It Goes Unnoticed'
+        }
+      },
+      {
+        id: 'uc3',
+        title: 'Compromised Insider',
+        desc: 'A phishing attack compromises an employee’s credentials, which are then used to access sensitive systems.',
+        lesson: 'Lesson: Enforce MFA, monitor for unusual access, and educate employees on phishing risks.',
+        svg: `<svg width="64" height="64"><rect width="64" height="64" rx="12" fill="#f1f5f9"/><circle cx="32" cy="32" r="14" fill="#3b82f6"/></svg>`,
+        buttons: {
+          good: 'Reset Credentials and Notify Security Team',
+          medium: 'Change Password Only',
+          bad: 'Do Nothing — Assume It’s Fine'
+        }
+      },
+      {
+        id: 'uc4',
+        title: 'Policy Violation Detection',
+        desc: 'An employee installs unapproved software on a workstation, creating vulnerabilities.',
+        lesson: 'Lesson: Conduct regular audits and enforce endpoint compliance.',
+        svg: `<svg width="64" height="64"><rect width="64" height="64" rx="12" fill="#f1f5f9"/><path d="M20 28h24v8H20z" fill="#10b981"/></svg>`,
+        buttons: {
+          good: 'Uninstall and Report Violation',
+          medium: 'Warn Employee Informally',
+          bad: 'Ignore the Software Installation'
+        }
+      },
+      {
+        id: 'uc5',
+        title: 'Insider-Facilitated Physical Breach',
+        desc: 'An employee grants unauthorized access to a contractor in restricted areas.',
+        lesson: 'Lesson: Combine access control and awareness to prevent misuse.',
+        svg: `<svg width="64" height="64"><rect width="64" height="64" rx="12" fill="#f1f5f9"/><circle cx="32" cy="32" r="14" fill="#8b5cf6"/></svg>`,
+        buttons: {
+          good: 'Challenge and Report the Incident',
+          medium: 'Allow Access and Inform Later',
+          bad: 'Grant Access Without Verification'
+        }
+      }
+    ],
+    checklist:{access:false, monitoring:false, training:false, data:false, reporting:false, physical:false},
+    gapResult:'',
+    init(){
+      this.sections.forEach(s=>this.completed[s]=localStorage.getItem('insider_done_'+s)==='1');
+      this.active=localStorage.getItem('insider_last')||'intro';
+      try{this.outcomes=JSON.parse(localStorage.getItem('insider_outcomes'))||{}}catch(e){}
+      try{this.checklist=JSON.parse(localStorage.getItem('insider_checklist'))||this.checklist}catch(e){}
+    },
+    go(id){this.active=id;localStorage.setItem('insider_last',id);
+      // scroll to top of interactive content
+    const container = document.getElementById('module-nav');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 30,
+        behavior: 'smooth'
+      });
+    }
+    },
+    complete(s){this.completed[s]=true;localStorage.setItem('insider_done_'+s,'1');},
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+      const feedback = {
+        good: `<div class="p-3 rounded bg-slate-50 border border-green-600 text-green-700">
+          ✅ Excellent — swift and responsible response to mitigate insider risk.
+        </div>`,
+        medium: `<div class="p-3 rounded bg-slate-50 border border-amber-500 text-amber-700">
+          ⚠️ Some mitigation, but delay or incomplete action may leave residual risk.
+        </div>`,
+        bad: `<div class="p-3 rounded bg-slate-50 border border-red-600 text-red-700">
+          ❌ High risk — negligence or poor control could lead to major breach.
+        </div>`
+      };
+      this.outcomes[id] = feedback[action] || '';
+      localStorage.setItem('insider_outcomes', JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('insider_checklist',JSON.stringify(this.checklist));
+      const missing=Object.entries(this.checklist).filter(([k,v])=>!v).map(([k])=>k);
+      if(missing.length===0) this.gapResult='<div class="p-3 rounded bg-green-50 border border-green-500 text-green-800">No gaps detected — strong insider threat readiness.</div>';
+      else this.gapResult='<div class="p-3 rounded bg-yellow-50 border border-yellow-500 text-yellow-800">Missing: '+missing.join(', ')+'</div>';
+    },
+    restart(){
+      // this.sections.forEach(s=>{localStorage.removeItem('insider_done_'+s);this.completed[s]=false;});
+      // localStorage.removeItem('insider_last'); localStorage.removeItem('insider_outcomes'); localStorage.removeItem('insider_checklist');
+      // this.outcomes={}; this.checklist={access:false,monitoring:false,training:false,data:false,reporting:false,physical:false};
+      // this.gapResult=''; this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Physical-Insider-Security-Module?lecture_uuid=542ae465-9756-491d-9edd-7b5cfdd66779#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

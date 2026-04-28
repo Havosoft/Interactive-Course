@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" x-data="workstationModule()" x-init="init()" class="antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Workstation Best Practices</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    html, body { height: 100%; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1));
+      border: 1px solid rgba(148,163,184,0.3);
+      box-shadow: 0 12px 30px rgba(148,163,184,0.12);
+    }
+    .svg-box { width:64px; height:64px; }
+    [x-cloak]{display:none!important;}
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+
+<div class="max-w-6xl mx-auto p-6">
+
+  <!-- Header -->
+  <header class="mb-6 flex justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Workstation Best Practices</h1>
+      <p class="text-sm text-slate-500 mt-1">Protect devices and sensitive data by following simple, practical steps</p>
+
+      <div class="mt-4 text-sm text-slate-700 card p-4 rounded">
+        <strong class="block text-slate-900 mb-2">Learning Objectives</strong>
+        <ul class="list-disc pl-5 space-y-1 text-slate-700">
+          <li>Understand the risks of leaving workstations unsecured.</li>
+          <li>Apply practical measures to protect computers and sensitive data.</li>
+          <li>Follow organizational policies for workstation security.</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
+    <template x-for="s in navOrder" :key="s">
+      <button @click="go(s)"
+              :class="active===s ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+        <span x-text="labels[s]"></span>
+      </button>
+    </template>
+  </nav>
+
+  <main class="space-y-6">
+
+    <!-- INTRO -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-slate-900">Introduction</h2>
+      <p class="mt-3 text-slate-700">
+        Workstations are a common entry point for unauthorized access in an office. Unattended or improperly secured devices can allow attackers — or curious visitors — to access sensitive information.
+      </p>
+
+      <h3 class="mt-4 text-lg font-semibold text-slate-900">Common risks include</h3>
+      <ul class="list-disc pl-5 mt-2 text-slate-700 space-y-1">
+        <li>Unlocked computers left unattended.</li>
+        <li>Visible confidential documents or screens.</li>
+        <li>Outdated software and unpatched systems.</li>
+        <li>Use of unapproved applications or USB devices.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
+      <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and see outcomes</h2>
+      <p class="text-slate-700">Pick the best action for each scenario and get immediate feedback.</p>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-slate-200 grid md:grid-cols-5 gap-4 items-center bg-white shadow-sm">
+          <div class="md:col-span-1 flex justify-center">
+            <div class="p-2 bg-slate-100 rounded">
+              <svg class="svg-box text-violet-600" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="12" width="52" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="#FFFFFF"/>
+                <circle cx="18" cy="26" r="4" fill="currentColor" />
+                <path d="M30 28h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M30 36h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="md:col-span-3">
+            <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+            <p class="text-slate-700 mt-1" x-text="uc.desc"></p>
+
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white transition-colors">Correct action</button>
+              <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition-colors">Partial / mitigated</button>
+              <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white transition-colors">Risky / ignore</button>
+            </div>
+
+            <!-- Feedback Box -->
+            <div class="mt-3" x-html="outcomes[uc.id]" x-transition></div>
+
+            <!-- Incident Simulation for 'bad' actions -->
+            <div class="mt-3 p-3 bg-red-50 border border-red-200 text-red-800 rounded" x-show="ucResult[uc.id]==='breach'" x-transition>
+              🚨 <strong>Incident:</strong> This risky action led to a simulated security breach. Unauthorized access was recorded, and an incident was escalated.
+            </div>
+
+          </div>
+
+          <div class="md:col-span-1 text-right text-xs text-slate-500">
+            <div x-text="uc.context"></div>
+          </div>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-slate-900">Best Practices for Defence</h2>
+      <ul class="list-disc pl-5 mt-3 text-slate-700 space-y-2">
+        <li><strong>Lock Workstations:</strong> Use shortcuts (Win+L for Windows, Control+Command+Q for Mac).</li>
+        <li><strong>Clean Desk Policy:</strong> Keep sensitive documents out of sight.</li>
+        <li><strong>Monitor Positioning:</strong> Use privacy screens or orient monitors away from public corridors.</li>
+        <li><strong>Software Updates:</strong> Apply patches promptly.</li>
+        <li><strong>USB Security:</strong> Avoid unapproved USB devices and follow IT policies.</li>
+      </ul>
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('best'); go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-slate-900">Conclusion</h2>
+      <p class="text-slate-700 mt-3">
+        Workstation security prevents unauthorized access and protects sensitive company information. By locking devices, organizing desks, updating software, and following IT policies, employees reduce the risk of data breaches and maintain a secure work environment.
+      </p>
+
+      <div class="mt-6 flex gap-3">
+        <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>     
+      </div>      
+    </section>
+  </main>
+</div>
+
+<script>
+function workstationModule(){
+  return {
+    navOrder:['intro','usecases','best','conclusion'],
+    labels:{ intro:'Intro', usecases:'Use Cases', best:'Best Practices', conclusion:'Conclusion' },
+    active: localStorage.getItem('ws_active') || 'intro',
+    outcomes: JSON.parse(localStorage.getItem('ws_outcomes') || '{}'),
+    ucResult:{}, // track bad action scenarios
+    quizUrl:'#Quiz',
+
+    useCases:[
+      {
+        id:'uc1',
+        title:'Unattended Unlocked Computer',
+        desc:'An employee steps away without locking their computer. A visitor accesses confidential files.',
+        lesson:"Always lock your workstation when unattended.",
+        feedback:{
+          correct:'✅ Excellent. Locking your computer prevents unauthorized access.',
+          partial:'⚠️ Some security applied but risk remains if screen is visible.',
+          bad:'❌ Major risk. Anyone can access sensitive data.'
+        },
+        why:'Unattended unlocked devices are one of the most common sources of insider data breaches.',
+        context:'Desktop/Office'
+      },
+      {
+        id:'uc2',
+        title:'Sensitive Screen Visibility',
+        desc:'A monitor displays client data facing a public corridor and unauthorized individuals view confidential info.',
+        lesson:"Position monitors away from public view or use privacy screens.",
+        feedback:{
+          correct:'✅ Great. Proper screen positioning protects confidentiality.',
+          partial:'⚠️ Minimal mitigation, but better placement recommended.',
+          bad:'❌ Exposure of sensitive information.'
+        },
+        why:'Information leakage through visual means is a real compliance issue in regulated industries.',
+        context:'Public-facing workstation'
+      },
+      {
+        id:'uc3',
+        title:'Outdated Software Vulnerability',
+        desc:'Workstation software is unpatched, leaving it open to exploit and lateral movement.',
+        lesson:"Regularly update systems and only use approved applications.",
+        feedback:{
+          correct:'✅ Updates applied, system secure.',
+          partial:'⚠️ Some updates applied, but gaps remain.',
+          bad:'❌ Vulnerabilities exploited, incident triggered.'
+        },
+        why:'Unpatched software is a top 5 initial access vector for real-world breaches.',
+        context:'Workstation software'
+      },
+      {
+        id:'uc4',
+        title:'Unauthorized USB Device',
+        desc:'An unknown USB is plugged in, introducing malware to the workstation and network.',
+        lesson:"Avoid unapproved USB devices and follow IT guidelines.",
+        feedback:{
+          correct:'✅ Safe practice followed.',
+          partial:'⚠️ Device checked but not fully approved.',
+          bad:'❌ Malware introduced through USB.'
+        },
+        why:'Removable media is still used in targeted attacks, especially in regulated environments.',
+        context:'Peripheral/USB'
+      }
+    ],
+
+    init(){
+      this.useCases.forEach(u => {
+        if(!(u.id in this.outcomes)) this.outcomes[u.id] = '';
+        if(!(u.id in this.ucResult)) this.ucResult[u.id] = '';
+      });
+    },
+
+    go(section){
+      this.active = section;
+      localStorage.setItem('ws_active', section);
+      const nav = document.getElementById('module-nav');
+      if (nav) {
+        window.scrollTo({ top: nav.offsetTop - 20, behavior: 'smooth' });
+      }
+    },
+
+    complete(section){
+      // placeholder if needed later
+    },
+
+    ucAct(id, action){
+      const uc = this.useCases.find(u=>u.id===id);
+      if(!uc) return;
+
+      const msg = uc.feedback[action];
+      let boxClass = 'bg-slate-50 border border-red-600 text-red-700';
+      if(action==='correct') boxClass = 'bg-slate-50 border border-green-600 text-green-700';
+      else if(action==='partial') boxClass = 'bg-slate-50 border border-amber-500 text-amber-700';
+
+      this.outcomes[id] = `
+        <div class="p-3 rounded ${boxClass}">
+          ${msg}
+          <div class="mt-2 italic text-sm text-slate-500">${uc.lesson}</div>
+          <button class="mt-2 text-violet-700 underline text-sm" @click="toggleWhy('${id}')">Why this matters</button>
+          <div x-show="whyOpen['${id}']" x-transition class="mt-2 p-2 bg-white border border-slate-200 rounded text-slate-700">
+            ${uc.why}
+          </div>
+        </div>`;
+
+      this.ucResult[id] = (action==='bad') ? 'breach' : '';
+      localStorage.setItem('ws_outcomes', JSON.stringify(this.outcomes));
+    },
+
+    whyOpen:{},
+
+    toggleWhy(id){
+      this.whyOpen[id] = !this.whyOpen[id];
+    }
+  }
+}
+</script>
+</body>
+</html>

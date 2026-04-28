@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en" x-data="emailModule()" x-init="init()" class="antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Email & Phishing Awareness</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#F8F5F1;
+      --surface:#FFFFFF;
+      --border:#E5E7EB;
+      --text:#111827;
+      --muted:#6B7280;
+      --brand:#7C3AED;
+      --brand-700:#6D28D9;
+      --brand-soft:#F3E8FF;
+    }
+    html, body { height:100%; background:var(--bg); }
+    body { color:var(--text); }
+    .card { background:var(--surface); border:1px solid var(--border); box-shadow:0 16px 40px rgba(17,24,39,0.08); }
+    [x-cloak]{display:none!important;}
+    .muted{ color:var(--muted); }
+    .chip-active{ background:var(--brand); color:#fff; }
+    .chip{ background:#F3F4F6; color:#374151; }
+    .chip:hover{ background:#E5E7EB; }
+
+    .outcome-box{
+      padding:12px;
+      border-radius:10px;
+      border:1px solid;
+    }
+    .outcome-box[data-variant="green"]{ background:#ECFDF5; border-color:#34D399; color:#065F46; }
+    .outcome-box[data-variant="yellow"]{ background:#FFFBEB; border-color:#FBBF24; color:#92400E; }
+    .outcome-box[data-variant="red"]{ background:#FEF2F2; border-color:#F87171; color:#991B1B; }
+    .outcome-lesson{ margin-top:8px; font-style:italic; font-size:0.875rem; color:var(--muted); }
+    .outcome-why-btn{ margin-top:8px; color:var(--brand-700); text-decoration:underline; font-size:0.875rem; }
+    .outcome-why{ margin-top:8px; padding:10px; background:#F9FAFB; border:1px solid var(--border); border-radius:10px; color:#374151; }
+  </style>
+</head>
+<body>
+
+<div class="max-w-6xl mx-auto p-6">
+  <!-- HEADER -->
+  <header class="mb-6 flex justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Email & Phishing Awareness</h1>
+      <p class="text-sm text-gray-600 mt-1">Recognize, prevent, and respond to email-based threats</p>
+
+      <div class="mt-4 text-sm card p-4 rounded">
+        <strong class="block text-gray-900 mb-2">Learning Objectives</strong>
+        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+          <li>Recognize common email-based threats, including phishing, spear-phishing, and malware.</li>
+          <li>Apply safe email practices to protect sensitive information.</li>
+          <li>Verify the legitimacy of senders and links.</li>
+          <li>Report suspicious emails to IT or security teams.</li>
+          <li>Check if accounts have been compromised using trusted resources.</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
+    <template x-for="s in navOrder" :key="s">
+      <button @click="go(s)"
+              :class="active===s?'chip-active':'chip'"
+              class="px-4 py-2 rounded font-medium transition-colors">
+        <span x-text="labels[s]"></span>
+      </button>
+    </template>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="space-y-6">
+
+    <!-- INTRO -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-700">Introduction</h2>
+      <p class="mt-3 text-gray-700">
+        Email remains the most common attack vector used by cybercriminals. Phishing attacks trick employees into divulging passwords, clicking malicious links, or downloading malware. Even well-intentioned emails can pose risks if they are spoofed or maliciously crafted.
+      </p>
+
+      <h3 class="mt-4 font-semibold text-gray-900">Why Email Security Matters</h3>
+      <ul class="list-disc pl-5 mt-2 text-gray-700 space-y-1">
+        <li><strong>Credential Theft:</strong> Attackers often use phishing emails to steal login information.</li>
+        <li><strong>Malware Delivery:</strong> Email attachments may contain ransomware, spyware, or viruses.</li>
+        <li><strong>Business Email Compromise:</strong> Sophisticated attacks impersonate trusted contacts.</li>
+        <li><strong>Data Breaches:</strong> Compromised email accounts can lead to major leaks.</li>
+      </ul>
+      <p>By understanding email threats and practicing vigilance, employees play a key role in protecting organizational data.</p>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="go('usecases')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Start Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded space-y-6">
+      <h2 class="text-2xl font-semibold text-purple-700">Use Cases — choose actions and see outcomes</h2>
+      <p class="text-gray-700">Pick the best action for each scenario and get immediate feedback.</p>
+
+      <template x-for="uc in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-gray-200 space-y-3 bg-white shadow-sm">
+          <h3 class="font-semibold text-gray-900" x-text="uc.title"></h3>
+          <p class="text-gray-700" x-text="uc.desc"></p>
+
+          <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2" x-show="uc.id!=='uc5'">
+            <button @click="ucAct(uc.id,'correct')" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors">Correct action</button>
+            <button @click="ucAct(uc.id,'partial')" class="px-3 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 transition-colors">Partial / mitigated</button>
+            <button @click="ucAct(uc.id,'bad')" class="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors">Risky / ignore</button>
+          </div>
+
+          <!-- UC5 special (breach check) -->
+          <div class="mt-3 grid grid-cols-2 gap-2" x-show="uc.id==='uc5'">
+            <button @click="breachResult='breached'" class="px-3 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors">Breached Email</button>
+            <button @click="breachResult='clean'" class="px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition-colors">Not Breached Email</button>
+          </div>
+
+          <!-- Outcome box -->
+          <div class="mt-3" x-html="outcomes[uc.id]" x-show="uc.id!=='uc5'" x-transition></div>
+
+            <!-- Image Placeholder for UC5 -->
+          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='breached'">
+            <div class="p-3 bg-white border border-red-200 text-red-800 rounded">
+              <div class="mt-3 grid grid-cols-2 gap-2" >
+            <img src="Screenshot 2025-09-29 145115.png" alt="">
+            <img src="Screenshot 2025-09-29 145139.png" alt="">
+          </div>
+            </div>
+          </div>
+          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='clean'">
+            <div class="p-3 bg-white border border-green-200 text-green-800 rounded">
+              <img src="Screenshot 2025-09-29 145152.png" alt="">
+            </div>
+          </div>
+
+          <!-- Special breach simulation display -->
+          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='breached'" x-transition>
+            <div class="p-3 bg-red-50 border border-red-200 text-red-800 rounded">
+              🚨 This email address appeared in past breaches. Immediate action required: change passwords and enable MFA.
+            </div>
+          </div>
+          <div class="mt-3" x-show="uc.id==='uc5' && breachResult==='clean'" x-transition>
+            <div class="p-3 bg-green-50 border border-green-200 text-green-800 rounded">
+              ✅ No known breaches found for this email.
+            </div>
+          </div>
+
+          <!-- Incident box for bad actions -->
+          <div class="mt-3 p-3 bg-red-50 border border-red-200 text-red-800 rounded" x-show="ucResult[uc.id]==='breach'" x-transition>
+            🚨 <strong>Incident:</strong> A phishing compromise occurred. Credentials or data were exposed.
+          </div>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="go('best')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-700">Best Practices for Defence</h2>
+      <ul class="list-disc pl-5 mt-3 text-gray-700 space-y-2">
+        <li><strong>Verify Senders:</strong> Check email address details carefully.</li>
+        <li><strong>Hover Before Clicking:</strong> Inspect URLs before clicking.</li>
+        <li><strong>Don’t Share Credentials:</strong> Never send passwords or MFA codes.</li>
+        <li><strong>Report Suspicious Emails:</strong> Use the phishing report tools.</li>
+        <li><strong>Use Trusted Tools:</strong> Check if your email is in known breaches.</li>
+        <li><strong>Stay Informed:</strong> Regular phishing awareness helps prevent attacks.</li>
+      </ul>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="go('conclusion')" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Finish → Conclusion</button>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded">
+      <h2 class="text-2xl font-semibold text-purple-700">Conclusion</h2>
+      <p class="text-gray-700 mt-3">
+        Phishing and email-based attacks are persistent threats. By verifying senders, avoiding suspicious links, reporting incidents, and proactively checking for compromised emails, employees protect themselves and the organization. Vigilance is key to cybersecurity hygiene.
+      </p>
+
+      <div class="mt-6 flex gap-3">
+        <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function emailModule(){
+  return {
+    navOrder:['intro','usecases','best','conclusion'],
+    labels:{intro:'Intro', usecases:'Use Cases', best:'Best Practices', conclusion:'Conclusion'},
+    active: localStorage.getItem('em_active')||'intro',
+    outcomes: JSON.parse(localStorage.getItem('em_outcomes')||'{}'),
+    ucResult:{},
+    whyOpen:{},
+    breachResult:'',
+    quizUrl: '#Quiz',
+
+    useCases:[
+      {
+        id:'uc1',
+        title:'Credential Harvesting via Phishing Email',
+        desc:'An email appears to be from IT, asking to reset a password via a fake login page.',
+        lesson:'Always verify senders and URLs.',
+        feedback:{
+          correct:'✅ Excellent. Verifying the sender prevents credential theft.',
+          partial:'⚠️ Better than nothing, but further checks are needed.',
+          bad:'❌ Credentials exposed, attacker gained access.'
+        },
+        why:'Credential harvesting is the most common first step in account compromise.'
+      },
+      {
+        id:'uc2',
+        title:'Malware-Laden Attachment',
+        desc:'An invoice attachment contains hidden malware.',
+        lesson:'Open attachments only from verified sources.',
+        feedback:{
+          correct:'✅ Good. Safe handling of attachments blocks malware.',
+          partial:'⚠️ Mild risk reduction but not fully secure.',
+          bad:'❌ Malware executed, compromising the system.'
+        },
+        why:'Malware is often delivered through disguised attachments.'
+      },
+      {
+        id:'uc3',
+        title:'Spear Phishing Attack',
+        desc:'Spoofed executive email instructs payment related to a real project.',
+        lesson:'Always verify unusual requests via another trusted channel.',
+        feedback:{
+          correct:'✅ Spot on. Independent verification stopped fraud.',
+          partial:'⚠️ Delay helps but verification is essential.',
+          bad:'❌ Fraudulent transaction occurred.'
+        },
+        why:'Spear phishing is one of the most costly attack types globally.'
+      },
+      {
+        id:'uc4',
+        title:'Urgent Threat or Account Lock',
+        desc:'Email claims account will be locked unless action is taken.',
+        lesson:'Be cautious of urgency tricks; confirm authenticity before acting.',
+        feedback:{
+          correct:'✅ Good. You avoided urgency bait.',
+          partial:'⚠️ Hesitation is better than clicking blindly.',
+          bad:'❌ Account compromised.'
+        },
+        why:'Urgency is a classic social engineering tactic.'
+      },
+      {
+        id:'uc5',
+        title:'Breached Email Account Detection',
+        desc:'Employee checks if their email has appeared in a breach.',
+        lesson:'Early detection enables quick security response.'
+      }
+    ],
+
+    init(){
+      this.useCases.forEach(u=>{
+        if(!(u.id in this.outcomes)) this.outcomes[u.id]='';
+        if(!(u.id in this.ucResult)) this.ucResult[u.id]='';
+      });
+    },
+
+    go(s){
+      this.active=s;
+      localStorage.setItem('em_active', s);
+      const nav=document.getElementById('module-nav');
+      if(nav){
+        window.scrollTo({ top: nav.offsetTop - 30, behavior: 'smooth' });
+      }
+    },
+
+    ucAct(id,action){
+      const uc=this.useCases.find(u=>u.id===id);
+      if(!uc) return;
+      const variant=action==='correct'?'green':action==='partial'?'yellow':'red';
+      const msg=uc.feedback[action];
+
+      this.outcomes[id]=`
+        <div class="outcome-box" data-variant="${variant}">
+          ${msg}
+          <div class="outcome-lesson">${uc.lesson}</div>
+          <button class="outcome-why-btn" @click="toggleWhy('${id}')">Why this matters</button>
+          <div x-show="whyOpen['${id}']" x-transition class="outcome-why">
+            ${uc.why}
+          </div>
+        </div>`;
+
+      this.ucResult[id]=(action==='bad')?'breach':'';
+      localStorage.setItem('em_outcomes', JSON.stringify(this.outcomes));
+    },
+
+    toggleWhy(id){
+      this.whyOpen[id]=!this.whyOpen[id];
+    }
+  }
+}
+</script>
+</body>
+</html>

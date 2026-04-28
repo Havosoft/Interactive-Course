@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Incident Response & Reporting Protocols</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1)); border: 1px solid rgba(148,163,184,0.3); box-shadow: 0 12px 30px rgba(148,163,184,0.12); }
+    [x-cloak] { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+
+<div class="max-w-6xl mx-auto p-6" x-data="incidentModule()" x-init="init()">
+
+  <!-- HEADER -->
+  <header class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Topic 5: Incident Response & Reporting Protocols</h1>
+      <p class="text-sm text-slate-500">Recognizing, reporting, and responding to incidents</p>
+      <div class="mt-3 text-xs text-slate-500">
+        <strong>Learning Objectives:</strong>
+        <ul class="ml-4 list-disc">
+          <li>Recognize signs of a cybersecurity incident.</li>
+          <li>Follow proper incident response procedures to contain and mitigate threats.</li>
+          <li>Report incidents promptly and accurately to IT/security teams.</li>
+          <li>Understand the roles of employees in organizational incident response.</li>
+          <li>Contribute to post-incident review and continuous improvement.</li>
+        </ul>
+      </div>
+    </div>
+    
+  </header>
+
+  <!-- NAV -->
+  <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Use Cases</button>
+    <button @click="go('best')" :class="active==='best' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Checklist</button>
+    <button @click="go('conclusion')" :class="active==='conclusion' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded">Conclusion</button>
+  </nav>
+
+  <!-- INTRO -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Introduction</h2>
+    <p class="text-slate-700 mb-4">
+      Cybersecurity incidents—such as malware infections, phishing attacks, unauthorized access, or data breaches—can occur at any time. Rapid identification and response are critical to minimizing damage. Employees play a crucial role as the first line of defense, helping detect and report incidents before they escalate.
+    </p>
+
+    <h3 class="text-lg font-semibold text-slate-900 mb-2">Why Incident Response Matters</h3>
+    <ul class="list-disc pl-5 text-slate-700 space-y-2">
+      <li><strong>Limits Damage:</strong> Quick response prevents further spread or loss.</li>
+      <li><strong>Protects Data:</strong> Ensures sensitive information is safeguarded.</li>
+      <li><strong>Maintains Compliance:</strong> Meets regulatory requirements for reporting breaches.</li>
+      <li><strong>Supports Recovery:</strong> Provides clear steps for restoration and mitigation.</li>
+    </ul>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-purple-600 px-4 py-2 rounded text-white">Start Use Cases →</button>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+  <h2 class="text-2xl font-semibold text-slate-900">Use Cases — Choose Your Response and See the Outcome</h2>
+  <p class="text-slate-700 mb-3 text-sm">Select how you would respond to each security incident and view the result.</p>
+
+  <template x-for="uc in useCases" :key="uc.id">
+    <article class="p-4 rounded border border-slate-300 grid md:grid-cols-5 gap-4 items-start">
+      <div class="md:col-span-1 flex justify-center">
+        <div class="w-24 h-24 flex items-center justify-center bg-slate-100 rounded" x-html="uc.svg"></div>
+      </div>
+
+      <div class="md:col-span-4">
+        <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+        <p class="text-slate-700 text-sm mt-1" x-text="uc.desc"></p>
+
+        <!-- Contextual buttons -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <template x-for="(label, key) in uc.buttons" :key="key">
+            <button
+              @click="ucAct(uc.id, key)"
+              :class="{
+                'bg-green-600': key==='good',
+                'bg-yellow-600': key==='medium',
+                'bg-red-600': key==='bad',
+                'ring-2 ring-offset-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                'ring-2 ring-offset-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                'ring-2 ring-offset-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+              }"
+              class="px-3 py-2 rounded text-white font-medium transition"
+              x-text="label">
+            </button>
+          </template>
+        </div>
+
+        <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+        <p class="text-sm text-slate-500 italic mt-2" x-text="uc.lesson"></p>
+      </div>
+    </article>
+  </template>
+
+  <div class="flex justify-end">
+    <button @click="complete('usecases'); go('best')" class="bg-purple-600 px-4 py-2 rounded text-white">
+      Next: Best Practices →
+    </button>
+  </div>
+</section>
+
+  <!-- BEST PRACTICES -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">🛡 Best Practices for Defence</h2>
+    <div class="mt-3 text-slate-700 space-y-3">
+      <p><strong class="text-slate-900">1. Recognize Incident Indicators</strong><br>System slowdowns, unexpected pop-ups, or encrypted files. Suspicious emails, links, or attachments. Unusual login patterns or device behavior.</p>
+      <p><strong class="text-slate-900">2. Immediate Containment</strong><br>Disconnect compromised devices from networks. Avoid interacting with suspicious emails or files. Preserve logs and evidence for IT/security teams.</p>
+      <p><strong class="text-slate-900">3. Follow Reporting Protocols</strong><br>Notify IT/security immediately using company-approved channels. Provide detailed information, including timestamps, screenshots, and actions taken.</p>
+      <p><strong class="text-slate-900">4. Support Incident Response Team</strong><br>Cooperate fully with investigations. Assist in identifying affected systems or data.</p>
+      <p><strong class="text-slate-900">5. Post-Incident Review & Learning</strong><br>Participate in lessons-learned sessions to improve security practices. Apply recommendations to prevent future incidents.</p>
+      <p><strong class="text-slate-900">6. Maintain Awareness</strong><br>Stay informed about emerging threats. Apply proactive security measures to reduce incident likelihood.</p>
+    </div>
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-slate-500">Back to Use Cases</button>
+      <button @click="complete('best'); go('checklist')" class="bg-purple-600 px-4 py-2 rounded text-white">Next: Checklist →</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Interactive Checklist</h2>
+    <p class="text-slate-700 text-sm mb-4">Tick the items you follow to improve incident response readiness:</p>
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.detect"> Recognize and report unusual device behavior</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.contain"> Disconnect compromised devices quickly</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.report"> Report suspicious incidents promptly</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.cooperate"> Cooperate with IT/security during investigations</label>
+      <label class="p-3 rounded border border-slate-300 flex items-center gap-3"><input type="checkbox" x-model="checklist.review"> Participate in post-incident reviews</label>
+    </div>
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-purple-600 px-4 py-2 rounded text-white">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-slate-200 px-4 py-2 rounded text-slate-700">Finish → Conclusion</button>
+    </div>
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Conclusion</h2>
+    <p class="text-slate-700 mb-4">
+      Effective incident response relies on employee vigilance, prompt reporting, and structured protocols. Recognizing threats early and following established procedures limits damage, protects data, and strengthens organizational resilience. Employees’ proactive participation is essential for maintaining a secure environment.
+    </p>
+    <div class="flex gap-3">
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</button> -->
+      <a :href="quizUrl" class="bg-purple-600 px-4 py-2 rounded text-white">Quiz</a>
+    </div>
+  </section>
+  
+</div>
+
+<script>
+function incidentModule(){
+  return {
+    active:'intro',
+    sections:['intro','usecases','best','checklist','conclusion'],
+    completed:{},
+    outcomes:{},
+    activeChoice: {},
+    quizUrl: '#Quiz', // replace if needed
+    useCases: [
+      {
+        id: 'uc1',
+        title: 'Malware Infection Detected on Laptop',
+        desc: 'An employee notices unusual pop-ups and sluggish performance. They immediately report it to IT.',
+        lesson: 'Early reporting and isolation reduce malware spread.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#f1f5f9"/><circle cx="36" cy="36" r="18" fill="#3b82f6"/></svg>`,
+        buttons: {
+          good: 'Report Immediately to IT',
+          medium: 'Restart Device, Then Report Later',
+          bad: 'Ignore the Signs'
+        }
+      },
+      {
+        id: 'uc2',
+        title: 'Phishing Attempt Received',
+        desc: 'An employee receives an email asking for credentials but suspects it might be a phishing attempt.',
+        lesson: 'Avoid clicking suspicious links and report them right away.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#f1f5f9"/><rect x="20" y="20" width="32" height="32" fill="#ef4444"/></svg>`,
+        buttons: {
+          good: 'Report the Email to Security',
+          medium: 'Delete Without Reporting',
+          bad: 'Click the Link to Check It Out'
+        }
+      },
+      {
+        id: 'uc3',
+        title: 'Lost Company Device',
+        desc: 'An employee misplaces a company laptop while traveling. Sensitive data may be at risk.',
+        lesson: 'Immediate reporting allows IT to trigger remote wipe and lockout protocols.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#f1f5f9"/><path d="M20 30h32v12H20z" fill="#f59e0b"/></svg>`,
+        buttons: {
+          good: 'Report Loss Immediately to IT',
+          medium: 'Look for It First, Report Later',
+          bad: 'Do Nothing and Hope It’s Found'
+        }
+      },
+      {
+        id: 'uc4',
+        title: 'Unauthorized Access Detected',
+        desc: 'Multiple failed login attempts occur on an employee’s account. IT notifies the user.',
+        lesson: 'Cooperation and quick response help prevent further breach attempts.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#f1f5f9"/><path d="M20 20h32v32H20z" fill="#10b981"/></svg>`,
+        buttons: {
+          good: 'Contact IT and Reset Password',
+          medium: 'Wait to See If It Stops',
+          bad: 'Ignore the Notification'
+        }
+      },
+      {
+        id: 'uc5',
+        title: 'Insider Threat Identification',
+        desc: 'Unusual activity suggests a colleague may be accessing sensitive data without authorization.',
+        lesson: 'Responsible reporting helps prevent internal misuse or data theft.',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#f1f5f9"/><circle cx="36" cy="36" r="16" fill="#8b5cf6"/></svg>`,
+        buttons: {
+          good: 'Report to Security Immediately',
+          medium: 'Ask the Colleague About It',
+          bad: 'Ignore the Suspicion'
+        }
+      }
+    ],
+    checklist:{detect:false,contain:false,report:false,cooperate:false,review:false},
+    gapResult:'',
+    init(){
+      this.sections.forEach(s=>this.completed[s]=localStorage.getItem('incident_done_'+s)==='1');
+      this.active=localStorage.getItem('incident_last')||'intro';
+      try{this.outcomes=JSON.parse(localStorage.getItem('incident_outcomes'))||{}}catch(e){}
+      try{this.checklist=JSON.parse(localStorage.getItem('incident_checklist'))||this.checklist}catch(e){}
+    },
+    go(id){this.active=id;localStorage.setItem('incident_last',id);
+      // scroll to top of interactive content
+    const container = document.getElementById('module-nav');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 30,
+        behavior: 'smooth'
+      });
+    }
+    },
+    complete(name){this.completed[name]=true;localStorage.setItem('incident_done_'+name,'1');},
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+      const messages = {
+        good: `<div class='p-3 rounded bg-slate-50 border border-green-600 text-green-700'>
+          ✅ Excellent — this prompt action ensures quick containment and reduces organizational risk.
+        </div>`,
+        medium: `<div class='p-3 rounded bg-slate-50 border border-amber-500 text-amber-700'>
+          ⚠️ Some action taken, but delay or hesitation could increase exposure.
+        </div>`,
+        bad: `<div class='p-3 rounded bg-slate-50 border border-red-600 text-red-700'>
+          ❌ Risky — ignoring or delaying response could lead to widespread compromise.
+        </div>`
+      };
+      this.outcomes[id] = messages[action] || '';
+      localStorage.setItem('incident_outcomes', JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('incident_checklist',JSON.stringify(this.checklist));
+      const missing=Object.entries(this.checklist).filter(([k,v])=>!v).map(([k])=>k);
+      if(missing.length===0) this.gapResult='<div class="p-3 rounded bg-green-50 border border-green-500 text-green-800">No gaps detected — strong incident response readiness.</div>';
+      else this.gapResult='<div class="p-3 rounded bg-yellow-50 border border-yellow-500 text-yellow-800">Missing: '+missing.join(', ')+'</div>';
+    },
+    restart(){
+      // this.sections.forEach(s=>{localStorage.removeItem('incident_done_'+s);this.completed[s]=false;});
+      // localStorage.removeItem('incident_last');
+      // localStorage.removeItem('incident_outcomes');
+      // localStorage.removeItem('incident_checklist');
+      // this.outcomes={};this.checklist={detect:false,contain:false,report:false,cooperate:false,review:false};
+      // this.gapResult='';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Advanced-Cyber-Threats-Response-Module?lecture_uuid=37bfebc1-71c9-4db0-971f-74efd7e76613#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>
+
+
+
+

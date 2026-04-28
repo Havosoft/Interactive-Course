@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Insider Threat Awareness</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1)); border: 1px solid rgba(148,163,184,0.3); box-shadow: 0 12px 30px rgba(148,163,184,0.12); }
+    [x-cloak] { display: none !important; }
+    .risk-meter { height: 12px; border-radius: 999px; overflow: hidden; background: rgba(15,23,42,0.08); }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-slate-900 antialiased" x-data="insiderModule()" x-init="init()">
+
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- Header -->
+    <header class="flex justify-between gap-6 mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900">Insider Threat Awareness</h1>
+        <p class="text-sm text-slate-500">Understand, spot, and report insider risks — protect people & data.</p>
+        <div class="mt-3 text-xs text-slate-500">
+          <strong>Learning objectives:</strong>
+          <ul class="ml-4 list-disc">
+            <li>Understand what constitutes an insider threat and the risks it poses</li>
+            <li>Recognize both intentional and unintentional insider threats</li>
+            <li>Apply proactive measures to prevent insider-related security incidents.</li>
+            <li>Report suspicious behavior safely and effectively.</li>
+            <li>Contribute to creating a security-aware workplace culture.</li>
+          </ul>
+        </div>
+      </div>      
+    </header>
+
+    <!-- Navigation -->
+    <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
+      <button @click="go('intro')" :class="active==='intro' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-3 py-2 rounded transition-colors">Intro</button>
+      <button @click="go('usecases')" :class="active==='usecases' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-3 py-2 rounded transition-colors">Use Cases</button>
+      <button @click="go('best')" :class="active==='best' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-3 py-2 rounded transition-colors">Best Practices</button>
+      <button @click="go('checklist')" :class="active==='checklist' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-3 py-2 rounded transition-colors">Checklist</button>
+      <button @click="go('sim')" :class="active==='sim' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-3 py-2 rounded transition-colors">Simulator</button>
+      <button @click="go('takeaway')" :class="active==='takeaway' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-3 py-2 rounded transition-colors">Takeaway</button>
+    </nav>
+
+    <!-- Panels -->
+
+    <!-- Intro -->
+    <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-2xl font-semibold text-slate-900 mb-3">Introduction</h2>
+      <p class="text-slate-700 mb-3">An insider threat comes from someone within the organization — an employee, contractor or partner — who compromises security either deliberately or accidentally. Because insiders often have legitimate access, their actions can bypass many controls and cause serious harm.</p>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <div class="p-4 rounded border border-slate-200 bg-white shadow-sm">
+            <h3 class="font-semibold">Why it matters</h3>
+            <ul class="list-disc list-inside text-slate-700 mt-2">
+              <li>High Impact: Insiders often have legitimate access, making it easier to bypass security controls.</li>
+              <li>Difficult to Detect: Insider activity can blend in with normal business operations.</li>
+              <li>Financial and Reputational Damage: Insider breaches can lead to legal penalties, regulatory fines, and loss of customer trust.</li>
+              <li>Combination with External Threats: Insiders may collaborate with external attackers, amplifying risks.</li>
+            </ul>
+          </div>
+
+          <div class="p-4 rounded border border-slate-200 bg-white shadow-sm">
+            <h3 class="font-semibold">Who is an insider?</h3>
+            <p class="text-sm text-slate-500">Employees, contractors, vendors — anyone with privileged access or proximity to sensitive information.</p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded border border-slate-200 bg-white shadow-sm">
+          <!-- Inline SVG placeholder (replaceable) -->
+          <svg width="100%" height="200" viewBox="0 0 800 200" class="rounded w-full h-48 object-contain" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="insider-illustration">
+            <rect width="100%" height="100%" rx="12" fill="#F1F5F9"/>
+            <g transform="translate(40,30)" fill="#7C3AED">
+              <circle cx="40" cy="40" r="28" opacity="0.95"/>
+              <rect x="90" y="10" width="320" height="60" rx="8" fill="#FFFFFF"/>
+              <rect x="420" y="10" width="320" height="60" rx="8" fill="#FFFFFF"/>
+            </g>
+          </svg>          
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Use Cases →</button>
+      </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+      <div class="flex items-start justify-between">
+        <div>
+          <h2 class="text-2xl font-semibold text-slate-900">Use Cases — choose actions and view outcomes</h2>
+          <p class="text-slate-700">Pick the best action for each scenario and get immediate feedback. Outcomes are tailored to each scenario.</p>
+        </div>
+
+        <!-- RISK RADAR -->
+        <div class="w-80 p-3 rounded border border-slate-200 bg-white shadow-sm">
+          <div class="flex justify-between items-baseline">
+            <div class="text-sm text-slate-700">Insider Risk Radar</div>
+            <div class="text-xs text-slate-500">Score: <span class="font-semibold" x-text="riskScore"></span>/100</div>
+          </div>
+
+          <div class="mt-3">
+            <div class="risk-meter">
+              <div :style="`width:${riskScore}%`" class="h-full transition-all"
+                   :class="riskScore>75 ? 'bg-red-600' : (riskScore>40 ? 'bg-yellow-500' : 'bg-green-500')"></div>
+            </div>
+            <div class="text-xs text-slate-500 mt-2" x-text="riskLabel"></div>
+          </div>
+
+          <div class="mt-3 space-y-2 text-xs">
+            <template x-for="(label, key) in radarOptions" :key="key">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" x-model="radar[key]" @change="updateRisk">
+                <span x-text="label" class="text-slate-700"></span>
+              </label>
+            </template>
+          </div>
+
+          <div class="mt-3">
+            <button @click="generateReport()" class="w-full bg-indigo-600 text-white px-3 py-2 rounded text-sm">Generate quick incident report</button>
+          </div>
+        </div>
+      </div>
+
+      <template x-for="(uc, index) in useCases" :key="uc.id">
+        <article class="p-4 rounded border border-slate-200 bg-white shadow-sm grid md:grid-cols-5 gap-4 items-start">
+          <div class="md:col-span-1 flex justify-center">
+            <div class="w-28 h-28 flex items-center justify-center bg-slate-100 rounded">
+              <div x-html="uc.svgInline" class="w-20 h-20"></div>
+            </div>
+          </div>
+
+          <div class="md:col-span-3">
+            <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+            <p class="text-slate-700" x-text="uc.desc"></p>
+
+            <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <!-- actions now map to labels per scenario (good/mediocre/bad) -->
+              <button @click="ucAct(index,'good')" class="px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white text-sm transition-colors" x-text="uc.buttons.good"></button>
+              <button @click="ucAct(index,'medium')" class="px-3 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white text-sm transition-colors" x-text="uc.buttons.medium"></button>
+              <button @click="ucAct(index,'bad')" class="px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white text-sm transition-colors" x-text="uc.buttons.bad"></button>
+            </div>
+
+            <div class="mt-3" x-html="outcomes[uc.id]"></div>
+          </div>
+
+          <div class="md:col-span-1 text-right">
+            <div class="text-xs text-slate-500">Scenario</div>
+            <div class="text-sm text-slate-700" x-text="uc.location"></div>
+            <div class="mt-3 text-xs text-slate-500">Confidence</div>
+            <div class="mt-1">
+              <progress :value="ucConfidence[uc.id] || 0" max="100" class="w-full"></progress>
+            </div>
+          </div>
+        </article>
+      </template>
+
+      <div class="flex justify-end">
+        <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Best Practices →</button>
+      </div>
+    </section>
+
+    <!-- Best Practices -->
+    <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-2xl font-semibold text-slate-900">🛡 Best Practices for Defence</h2>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <ul class="list-disc list-inside space-y-2 text-slate-700">
+          <li><strong>Least Privilege:</strong> Provide access to sensitive systems only to employees who need it to perform their job. Regularly review and update access permissions.</li>
+          <li><strong>Monitoring & Logging:</strong> Implement systems to monitor unusual activity on network, email, and data storage systems. Review logs periodically to detect potential threats.</li>
+          <li><strong>Training & Awareness:</strong> Train staff to recognize insider threat indicators, including unusual data access or policy violations. Encourage employees to report suspicious behavior without fear of retaliation.</li>
+        </ul>
+
+        <ul class="list-disc list-inside space-y-2 text-slate-700">
+          <li><strong>Secure Credentials & Devices:</strong> Enforce password hygiene, MFA, and proper workstation security. Ensure company devices are not used for personal storage or unapproved software.</li>
+          <li><strong>Incident Reporting & Response:</strong> Establish clear procedures for reporting suspected insider activity. Investigate incidents promptly while preserving evidence.</li>
+          <li><strong>Background Checks:</strong>Conduct thorough pre-employment screening for sensitive roles. Regularly reassess risk for contractors and employees in critical positions.</li>
+        </ul>
+      </div>
+
+      <div class="mt-6">
+        <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Checklist →</button>
+      </div>
+    </section>
+
+    <!-- Interactive Checklist -->
+    <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-2xl font-semibold text-slate-900">Interactive Checklist — Assess your organisation</h2>
+      <p class="text-slate-700">Check items your organisation already has in place and analyze gaps.</p>
+
+      <div class="grid md:grid-cols-2 gap-3 mt-4">
+        <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.leastPrivilege"> Principle of least privilege
+        </label>
+
+        <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.monitoring"> Monitoring & logging systems
+        </label>
+
+        <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.training"> Employee training & awareness
+        </label>
+
+        <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.mfa"> Strong auth (MFA) & credential hygiene
+        </label>
+
+        <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.reporting"> Confidential reporting channels
+        </label>
+
+        <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+          <input type="checkbox" x-model="checklist.vetting"> Background checks & vendor vetting
+        </label>
+      </div>
+
+      <div class="mt-4">
+        <button @click="analyzeGaps" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+        <button @click="complete('checklist'); go('sim')" class="ml-2 bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded transition-colors">Next → Simulator</button>
+      </div>
+
+      <div class="mt-4" x-html="gapResult"></div>
+    </section>
+
+    <!-- Simulator / Timeline -->
+    <section x-show="active==='sim'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-2xl font-semibold text-slate-900 mb-3">Incident Timeline Simulator</h2>
+      <p class="text-slate-700 mb-4">Step through a short scenario and decide how to act. Your choices change the incident outcome and risk score.</p>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="md:col-span-2">
+          <div class="space-y-4">
+            <template x-for="(step, idx) in simSteps" :key="idx">
+              <div class="p-4 rounded border border-slate-200 bg-white shadow-sm">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <div class="text-sm text-slate-500">Step <span x-text="idx+1"></span></div>
+                    <div class="font-semibold text-slate-900" x-text="step.title"></div>
+                    <div class="text-slate-700 mt-1" x-text="step.desc"></div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs text-slate-500">Impact if ignored</div>
+                    <div class="text-sm" x-text="step.impact"></div>
+                  </div>
+                </div>
+
+                <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <button @click="simChoose(idx,'report')" :disabled="step.choice" class="px-3 py-2 rounded bg-indigo-600 text-sm">Report</button>
+                  <button @click="simChoose(idx,'investigate')" :disabled="step.choice" class="px-3 py-2 rounded bg-yellow-600 text-sm">Investigate</button>
+                  <button @click="simChoose(idx,'ignore')" :disabled="step.choice" class="px-3 py-2 rounded bg-red-600 text-sm">Ignore</button>
+                </div>
+
+                <div class="mt-3 text-sm" x-show="step.choice">
+                  <div x-show="step.choice === 'report'" class="text-green-700">You reported this: good — reduces overall risk.</div>
+                  <div x-show="step.choice === 'investigate'" class="text-amber-700">You investigated: mitigates risk if followed up.</div>
+                  <div x-show="step.choice === 'ignore'" class="text-red-700">You ignored it: increases risk and likely leads to escalation.</div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <div class="md:col-span-1 p-4 rounded border border-slate-200 bg-white shadow-sm">
+          <div class="text-sm text-slate-500">Simulator Risk</div>
+          <div class="text-3xl font-bold text-slate-900 my-3" x-text="simRisk + '/100'"></div>
+          <div class="risk-meter mb-3"><div :style="`width:${simRisk}%`" class="h-full" :class="simRisk>70? 'bg-red-600': (simRisk>35?'bg-yellow-500':'bg-green-500')"></div></div>
+
+          <div class="text-sm text-slate-700" x-text="simAdvice"></div>
+
+          <div class="mt-4">
+            <button @click="resetSim" class="w-full bg-slate-700 hover:bg-slate-800 text-white px-3 py-2 rounded transition-colors">Reset Simulation</button>
+            <button @click="downloadSimReport" class="w-full bg-indigo-600 px-3 py-2 rounded mt-2">Download Sim Report</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button @click="go('takeaway')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Finish → Takeaway</button>
+      </div>
+    </section>
+
+    <!-- Takeaway -->
+    <section x-show="active==='takeaway'" x-cloak class="card p-6 rounded-lg">
+      <h2 class="text-2xl font-semibold text-slate-900">Takeaway</h2>
+      <p class="text-slate-700 mb-3">Insider threats are a people + process + technology challenge. Enforce least-privilege access, monitor activity, train staff, provide safe reporting, and vet personnel to reduce risks.</p>
+
+      <div class="flex gap-3">
+        <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>  -->
+        <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>       
+      </div>
+    </section>    
+  </div>
+
+  <script>
+    function insiderModule(){
+      return {
+        active: localStorage.getItem('insider_active') || 'intro',
+        sections: ['intro','usecases','best','checklist','sim','takeaway'],
+        completed: {},
+        quizUrl: '#Quiz', // replace if needed
+        useCases: [
+          { id: 'u1', title: 'Malicious Insider Theft', desc: 'An employee copies customer data to a personal device to sell it.', location: 'Offboarding / Data Access',
+            svgInline: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F1F5F9"/><path d="M7 12h10" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><path d="M7 8h6" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="17" r="2" fill="#10B981"/></svg>`,
+            buttons: { good: 'Report & Revoke Access', medium: 'Ask for Explanation', bad: 'Ignore' }
+          },
+          { id: 'u2', title: 'Accidental Data Exposure', desc: 'A staff member emails a confidential report to the wrong recipient.', location: 'Email / DLP',
+            svgInline: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F1F5F9"/><path d="M6 8h12v8H6z" stroke="#3B82F6" stroke-width="1.6"/><path d="M8 10h8" stroke="#3B82F6" stroke-width="1.6"/></svg>`,
+            buttons: { good: 'Notify Recipient & IT', medium: 'Ask Sender to Retract', bad: 'Do Nothing' }
+          },
+          { id: 'u3', title: 'Social Engineering Exploitation', desc: 'An insider is manipulated into revealing credentials.', location: 'Phone / Chat',
+            svgInline: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F1F5F9"/><path d="M12 7a3 3 0 110 6 3 3 0 010-6z" stroke="#EC4899" stroke-width="1.6"/><path d="M4 19c1.333-3 4-4 8-4s6.667 1 8 4" stroke="#EC4899" stroke-width="1.6"/></svg>`,
+            buttons: { good: 'Block Account & Investigate', medium: 'Change Passwords', bad: 'Ignore' }
+          },
+          { id: 'u4', title: 'Policy Violations (Convenience)', desc: 'Employees use personal cloud storage for work files to be faster.', location: 'Shadow IT',
+            svgInline: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F1F5F9"/><path d="M6 12h12" stroke="#8B5CF6" stroke-width="1.6"/><path d="M8 8h8" stroke="#8B5CF6" stroke-width="1.6"/></svg>`,
+            buttons: { good: 'Enforce Policy & Provide Tools', medium: 'Warn & Educate', bad: 'Allow' }
+          },
+          { id: 'u5', title: 'Insider-External Collaboration', desc: 'A contractor assists external attackers with access.', location: 'Third-Party / Vendor',
+            svgInline: `<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#F1F5F9"/><path d="M8 12h8" stroke="#10B981" stroke-width="1.6"/><path d="M12 7v10" stroke="#10B981" stroke-width="1.6"/></svg>`,
+            buttons: { good: 'Revoke & Investigate', medium: 'Suspend Contractor', bad: 'Ignore' }
+          }
+        ],
+        outcomes: {},
+        ucConfidence: {},
+
+        // Radar options used to calculate a simple risk score
+        radarOptions: {
+          lateHours: 'Repeated out-of-hours access',
+          largeDownloads: 'Unusual large file downloads',
+          roleChange: 'Recent role change or terminated tasks',
+          usbUse: 'Unapproved USB/device usage',
+          complaints: 'Behavioral complaints / financial stress'
+        },
+        radar: { lateHours:false, largeDownloads:false, roleChange:false, usbUse:false, complaints:false },
+        riskScore: 5, // 0-100
+        riskLabel: 'Low',
+
+        checklist: { leastPrivilege: false, monitoring: false, training:false, mfa:false, reporting:false, vetting:false },
+        gapResult: '',
+
+        // Simulator
+        simSteps: [
+          { title: 'Employee requests access to restricted share', desc: 'Requests appear urgent and pretexted.', impact: 'May expose customer data', choice: null },
+          { title: 'Employee starts large off-hours downloads', desc: 'Files copied to external thumb drive.', impact: 'Possible exfiltration', choice: null },
+          { title: 'Contractor asks to bypass standard change control', desc: 'Requests elevated permissions to deploy code.', impact: 'Could introduce backdoor', choice: null }
+        ],
+        simRisk: 10,
+        simAdvice: 'Low — keep monitoring.',
+
+        init(){
+          // restore outcomes
+          try { this.outcomes = JSON.parse(localStorage.getItem('insider_outcomes') || '{}'); } catch(e){ this.outcomes = {}; }
+          // ensure outcomes keys exist
+          this.useCases.forEach(u => { if(!this.outcomes[u.id]) this.outcomes[u.id] = ''; this.ucConfidence[u.id] = this.ucConfidence[u.id] || 0; });
+          // restore radar & checklist
+          try {
+            let saved = JSON.parse(localStorage.getItem('insider_radar') || '{}'); if(Object.keys(saved).length) this.radar = saved;
+          } catch(e){}
+          try {
+            let saved = JSON.parse(localStorage.getItem('insider_checklist') || '{}'); if(Object.keys(saved).length) this.checklist = saved;
+          } catch(e){}
+          this.updateRisk();
+        },
+
+        saveState(){
+          localStorage.setItem('insider_outcomes', JSON.stringify(this.outcomes || {}));
+          localStorage.setItem('insider_radar', JSON.stringify(this.radar || {}));
+          localStorage.setItem('insider_checklist', JSON.stringify(this.checklist || {}));
+          localStorage.setItem('insider_active', this.active);
+        },
+
+        go(id){
+          this.active = id;
+          localStorage.setItem('insider_active', id);
+
+          // scroll to navigation (so nav stays visible in mobile)
+          const container = document.getElementById('module-nav');
+          if (container) {
+            window.scrollTo({ top: container.offsetTop - 20, behavior: 'smooth' });
+          }
+        },
+
+        complete(name){
+          this.completed[name] = true;
+          localStorage.setItem('insider_done_'+name,'1');
+        },
+
+        ucAct(index, level){
+          const uc = this.useCases[index];
+          let html = '';
+          if(level === 'good'){
+            html = `<div class="p-3 rounded bg-slate-50 border border-green-600 text-green-700">Good choice — this action prevents or limits insider impact. Good practice: enforce controls & monitoring.</div>`;
+            this.ucConfidence[uc.id] = Math.min(100, (this.ucConfidence[uc.id] || 0) + 20);
+            // small risk decrease
+            this.riskScore = Math.max(0, this.riskScore - 8);
+          } else if(level === 'medium'){
+            html = `<div class="p-3 rounded bg-slate-50 border border-amber-500 text-amber-700">Partial/mitigated — some controls help, but residual risk remains. Consider stronger controls or monitoring.</div>`;
+            this.ucConfidence[uc.id] = Math.min(100, (this.ucConfidence[uc.id] || 0) + 10);
+            this.riskScore = Math.max(0, this.riskScore - 3);
+          } else {
+            html = `<div class="p-3 rounded bg-slate-50 border border-red-600 text-red-700">Risky/ignored — this behaviour allows insider incidents. Follow policy and report suspicious actions.</div>`;
+            this.ucConfidence[uc.id] = Math.max(0, (this.ucConfidence[uc.id] || 0) - 10);
+            this.riskScore = Math.min(100, this.riskScore + 12);
+          }
+          this.outcomes[uc.id] = html;
+          this.saveState();
+          this.updateRiskLabel();
+        },
+
+        // Radar risk scoring
+        updateRisk(){
+          let base = 5;
+          base += this.radar.lateHours ? 18 : 0;
+          base += this.radar.largeDownloads ? 22 : 0;
+          base += this.radar.roleChange ? 12 : 0;
+          base += this.radar.usbUse ? 16 : 0;
+          base += this.radar.complaints ? 18 : 0;
+
+          // checklist reduces score if in place
+          base -= this.checklist.leastPrivilege ? 8 : 0;
+          base -= this.checklist.monitoring ? 10 : 0;
+          base -= this.checklist.mfa ? 6 : 0;
+          base = Math.min(100, Math.max(0, base));
+          this.riskScore = base;
+          this.updateRiskLabel();
+          this.saveState();
+        },
+
+        updateRiskLabel(){
+          if(this.riskScore > 75) this.riskLabel = 'High — immediate investigation recommended';
+          else if(this.riskScore > 40) this.riskLabel = 'Medium — escalate and monitor';
+          else this.riskLabel = 'Low — routine monitoring';
+        },
+
+        generateReport(){
+          // quick, simple text report that user can download
+          const now = new Date().toISOString();
+          const selected = Object.keys(this.radar).filter(k => this.radar[k]).map(k => this.radarOptions[k]);
+          const report = [
+            `Insider Quick Report`,
+            `Generated: ${now}`,
+            ``,
+            `Risk Score: ${this.riskScore}/100`,
+            `Radar indicators: ${selected.length ? selected.join('; ') : 'None'}`,
+            ``,
+            `Checklist status: ${Object.entries(this.checklist).map(([k,v]) => k+': '+(v?'Yes':'No')).join('; ')}`,
+            ``,
+            `Observed scenarios & actions:`,
+            ...this.useCases.map(u => `${u.title} -> ${this.outcomes[u.id] ? 'Action taken' : 'No action'}`)
+          ].join("\n");
+
+          const blob = new Blob([report], {type: 'text/plain'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = `insider-report-${Date.now()}.txt`;
+          document.body.appendChild(a); a.click();
+          setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+        },
+
+        // Simulator functions
+        simChoose(idx, choice){
+          let step = this.simSteps[idx];
+          if(step.choice) return;
+          step.choice = choice;
+          if(choice === 'report'){ this.simRisk = Math.max(0, this.simRisk - 12); }
+          else if(choice === 'investigate'){ this.simRisk = Math.max(0, this.simRisk - 6); }
+          else { this.simRisk = Math.min(100, this.simRisk + 18); }
+          // update advice
+          if(this.simRisk > 70) this.simAdvice = 'High risk — escalate to incident response and consider freezing accounts.';
+          else if(this.simRisk > 35) this.simAdvice = 'Moderate risk — follow up and investigate immediately.';
+          else this.simAdvice = 'Low risk — monitor and verify actions taken.';
+        },
+
+        resetSim(){
+          this.simSteps.forEach(s => s.choice = null);
+          this.simRisk = 10;
+          this.simAdvice = 'Low — keep monitoring.';
+        },
+
+        downloadSimReport(){
+          const now = new Date().toISOString();
+          const report = [
+            `Simulation Report`,
+            `Generated: ${now}`,
+            '',
+            `Simulation Risk: ${this.simRisk}/100`,
+            '',
+            ...this.simSteps.map((s, i) => `Step ${i+1}: ${s.title} -> Choice: ${s.choice || 'none'}`)
+          ].join('\n');
+
+          const blob = new Blob([report], {type: 'text/plain'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = `sim-report-${Date.now()}.txt`;
+          document.body.appendChild(a); a.click();
+          setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+        },
+
+        analyzeGaps(){
+          localStorage.setItem('insider_checklist', JSON.stringify(this.checklist));
+          const keys = Object.keys(this.checklist);
+          const missing = keys.filter(k => !this.checklist[k]);
+          if(missing.length === 0){
+            this.gapResult = `<div class="p-3 rounded bg-slate-50 border border-green-600 text-green-700">No major gaps — strong baseline controls detected.</div>`;
+          } else {
+            // friendly names
+            const map = {
+              leastPrivilege: 'Least Privilege',
+              monitoring: 'Monitoring & Logging',
+              training: 'Training & Awareness',
+              mfa: 'MFA & Credential Hygiene',
+              reporting: 'Confidential Reporting',
+              vetting: 'Background Checks & Vetting'
+            };
+            this.gapResult = `<div class="p-3 rounded bg-slate-50 border border-amber-500 text-amber-700">Missing controls: ${missing.map(m => map[m]).join(', ')}</div>`;
+          }
+          this.saveState();
+        },
+
+        restart(){
+          // navigate to LMS quiz or reset
+          window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Foundations-of-Cybersecurity-Awareness-Module?lecture_uuid=39a7f615-2618-45c1-bebd-868695bd295c#Quiz";
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>

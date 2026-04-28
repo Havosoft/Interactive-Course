@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Personal Responsibility & Company Data Protection</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    .card { background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1)); border: 1px solid rgba(148,163,184,0.3); box-shadow: 0 12px 30px rgba(148,163,184,0.12); }
+    [x-cloak] { display:none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+
+<div class="max-w-5xl mx-auto p-6" x-data="responsibilityModule()" x-init="init()">
+  <!-- Header -->
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold text-slate-900">Personal Responsibility & Company Data Protection</h1>
+    <p class="text-sm text-slate-500 mt-1">Every employee plays a role in safeguarding data</p>
+
+    <div class="mt-4 card p-4 rounded">
+      <strong class="block text-slate-900 mb-2">Learning Objectives</strong>
+      <ul class="list-disc pl-5 space-y-1 text-sm text-slate-700">
+        <li>Understand their role in safeguarding company data.</li>
+        <li>Recognize how personal actions impact organizational cybersecurity.</li>
+        <li>Apply best practices for protecting sensitive data both at work and remotely.</li>
+        <li>Respond appropriately to potential security incidents or policy violations.</li>
+        <li>Foster a culture of accountability and vigilance in data protection.</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav id="module-nav" class="mb-6 flex flex-wrap gap-2">
+    <button @click="go('intro')" :class="btnCls('intro')" class="px-4 py-2 rounded transition-colors">Intro</button>
+    <button @click="go('usecases')" :class="btnCls('usecases')" class="px-4 py-2 rounded transition-colors">Use Cases</button>
+    <button @click="go('best')" :class="btnCls('best')" class="px-4 py-2 rounded transition-colors">Best Practices</button>
+    <button @click="go('checklist')" :class="btnCls('checklist')" class="px-4 py-2 rounded transition-colors">Checklist</button>
+    <button @click="go('conclusion')" :class="btnCls('conclusion')" class="px-4 py-2 rounded transition-colors">Conclusion</button>
+  </nav>
+
+  <!-- Intro -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Introduction</h2>
+    <p class="text-slate-700 mb-4">
+      While technology, policies, and security tools provide essential protection, employees themselves are the most critical defense against data breaches. Personal responsibility in handling company information can prevent accidental leaks, insider threats, and exposure to cyberattacks.
+    </p>
+
+    <h3 class="text-lg font-semibold text-slate-900 mb-2">Why Personal Responsibility Matters</h3>
+    <ul class="list-disc pl-5 text-slate-700 space-y-2">
+      <li><strong>Human Factor:</strong> Most data breaches involve some human error, such as weak passwords or careless sharing of sensitive information.</li>
+      <li><strong>Remote Work Risks:</strong> Employees accessing data outside the office must remain vigilant against phishing, unsecured networks, and device theft.</li>
+      <li><strong>Regulatory Compliance:</strong> Proper handling of data ensures compliance with laws and industry standards.</li>
+      <li><strong>Company Reputation:</strong> Breaches caused by negligence can damage customer trust and the company’s credibility.</li>
+    </ul>
+
+    <div class="mt-4 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next → Use Cases</button>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Use Cases — Choose Your Action</h2>
+    <p class="text-slate-700 text-sm mb-4">
+      Select the most appropriate action for each situation to learn the best security response.
+    </p>
+
+    <template x-for="uc in useCases" :key="uc.id">
+      <article class="p-4 border border-slate-200 bg-white shadow-sm rounded grid md:grid-cols-5 gap-4 items-start">
+        <!-- Icon -->
+        <div class="md:col-span-1 flex justify-center">
+          <div class="w-20 h-20 bg-slate-100 rounded flex items-center justify-center" x-html="uc.svg"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="md:col-span-4">
+          <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+          <p class="text-slate-700 text-sm mt-1" x-text="uc.desc"></p>
+
+          <!-- 👇 Scenario-specific action buttons -->
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <template x-for="(label, key) in uc.buttons" :key="key">
+              <button
+                @click="ucAct(uc.id, key)"
+                :class="{
+                  'bg-green-600 hover:bg-green-700': key==='good',
+                  'bg-yellow-500 hover:bg-yellow-600': key==='medium',
+                  'bg-red-600 hover:bg-red-700': key==='bad',
+                  'ring-2 ring-offset-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                  'ring-2 ring-offset-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                  'ring-2 ring-offset-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+                }"
+                class="px-3 py-2 rounded text-white font-medium transition-colors"
+                x-text="label"></button>
+            </template>
+          </div>
+
+          <!-- 👇 Outcome feedback -->
+          <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+
+          <!-- Lesson -->
+          <p class="text-sm text-slate-500 italic mt-2" x-text="uc.lesson"></p>
+        </div>
+      </article>
+    </template>
+
+    <div class="flex justify-end">
+      <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">
+        Next → Best Practices
+      </button>
+    </div>
+  </section>
+
+  <!-- Best Practices -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">🛡 Best Practices for Defence</h2>
+
+    <div class="space-y-3 text-slate-700 text-sm">
+      <p><strong class="text-slate-900">1. Strong Passwords & Authentication</strong><br>
+      Use unique, complex passwords for each account. Enable multi-factor authentication wherever possible.</p>
+
+      <p><strong class="text-slate-900">2. Secure Devices</strong><br>
+      Lock devices when unattended and use encryption. Avoid leaving devices in public or unsecured locations.</p>
+
+      <p><strong class="text-slate-900">3. Safe Data Sharing</strong><br>
+      Use company-approved platforms for file sharing. Avoid sharing sensitive data over personal emails or unsecured channels.</p>
+
+      <p><strong class="text-slate-900">4. Software Updates & Patch Management</strong><br>
+      Keep operating systems, applications, and security tools updated. Apply patches promptly to reduce vulnerability exposure.</p>
+
+      <p><strong class="text-slate-900">5. Vigilance & Incident Reporting</strong><br>
+      Report suspicious emails, unusual system behavior, or lost devices immediately. Follow company incident response procedures.</p>
+
+      <p><strong class="text-slate-900">6. Awareness & Training</strong><br>
+      Participate in cybersecurity awareness programs. Stay informed on new threats and secure work practices.</p>
+
+      <p><strong class="text-slate-900">7. Personal Accountability</strong><br>
+      Understand that each employee’s actions directly affect the company’s security posture. Foster a culture of accountability and peer support for safe data handling.</p>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-slate-500">← Back</button>
+      <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next → Checklist</button>
+    </div>
+  </section>
+
+  <!-- Checklist -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Interactive Checklist</h2>
+    <p class="text-slate-700 text-sm mb-4">Tick the items you follow consistently:</p>
+
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-2"><input type="checkbox" x-model="checklist.passwords"> Strong, unique passwords used</label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-2"><input type="checkbox" x-model="checklist.devices"> Devices locked & encrypted</label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-2"><input type="checkbox" x-model="checklist.sharing"> Sensitive data only via secure channels</label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-2"><input type="checkbox" x-model="checklist.updates"> Systems and apps updated</label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-2"><input type="checkbox" x-model="checklist.reporting"> Suspicious activity reported</label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-2"><input type="checkbox" x-model="checklist.training"> Participate in awareness training</label>
+    </div>
+
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+    </div>
+    <div class="mt-4" x-html="gapResult"></div>
+
+    <div class="mt-6 flex justify-between">
+      <button @click="go('best')" class="text-slate-500">← Back</button>
+      <button @click="complete('checklist'); go('conclusion')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next → Conclusion</button>
+    </div>
+  </section>
+
+  <!-- Conclusion -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Conclusion</h2>
+    <p class="text-slate-700 text-sm">
+      Protecting company data is not solely the responsibility of IT—every employee plays a vital role. Personal responsibility, vigilance, and adherence to security policies prevent data breaches, safeguard sensitive information, and maintain regulatory compliance. A security-aware workforce is the foundation of a resilient organization.
+    </p>
+
+    <div class="mt-4 flex gap-2">
+      <!-- <button @click="restart" class="bg-purple-600 px-4 py-2 rounded">Quiz</button> -->
+      <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>
+    </div>
+  </section>
+</div>
+
+<script>
+function responsibilityModule(){
+  return {
+    active:'intro',
+    completed:{},
+    checklist:{passwords:false,devices:false,sharing:false,updates:false,reporting:false,training:false},
+    gapResult:'',
+    quizUrl: '#Quiz', // replace if needed
+    outcomes: {},
+      useCases: [
+      {
+        id: 1,
+        title: "Weak Password Practices",
+        desc: "An employee uses the same password for personal and company accounts, which is later leaked in a breach.",
+        lesson: "Use strong, unique passwords and enable MFA to reduce risk.",
+        svg: `<svg width="36" height="36"><circle cx="18" cy="18" r="16" fill="#9f7aea"/></svg>`,
+        buttons: {
+          good: "Use Strong, Unique Password",
+          medium: "Change Password After Breach",
+          bad: "Keep Reusing Same Password"
+        }
+      },
+      {
+        id: 2,
+        title: "Unsecured Device Handling",
+        desc: "A company laptop is left unattended in a café, exposing sensitive files to anyone passing by.",
+        lesson: "Always secure devices physically and digitally.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#f87171"/></svg>`,
+        buttons: {
+          good: "Lock and Encrypt the Device",
+          medium: "Hide Laptop Under Table",
+          bad: "Leave It Unattended"
+        }
+      },
+      {
+        id: 3,
+        title: "Improper Email Practices",
+        desc: "Employees share confidential client information via unsecured personal email accounts.",
+        lesson: "Use company-approved encrypted channels.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#60a5fa"/></svg>`,
+        buttons: {
+          good: "Use Company Email with Encryption",
+          medium: "Forward Later from Work Account",
+          bad: "Send via Personal Email"
+        }
+      },
+      {
+        id: 4,
+        title: "Neglecting Software Updates",
+        desc: "An employee ignores system and app updates, leaving vulnerabilities exposed to attackers.",
+        lesson: "Keep all systems up to date to prevent exploits.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#fbbf24"/></svg>`,
+        buttons: {
+          good: "Enable Automatic Updates",
+          medium: "Delay Updates Occasionally",
+          bad: "Ignore Update Prompts"
+        }
+      },
+      {
+        id: 5,
+        title: "Reporting Suspicious Activity",
+        desc: "An employee notices unusual access patterns to shared files and reports it to IT immediately.",
+        lesson: "Prompt reporting allows rapid incident response.",
+        svg: `<svg width="36" height="36"><rect width="36" height="36" rx="6" fill="#34d399"/></svg>`,
+        buttons: {
+          good: "Report to IT Security Immediately",
+          medium: "Ask a Colleague First",
+          bad: "Ignore It — Probably Nothing"
+        }
+      }
+    ],
+     activeChoice: {},
+
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+
+      const messages = {
+        good: `<div class='p-3 rounded bg-slate-50 border border-green-600 text-green-700'>
+          ✅ Excellent — this is a secure and recommended action.
+        </div>`,
+        medium: `<div class='p-3 rounded bg-slate-50 border border-amber-500 text-amber-700'>
+          ⚠️ Some protection — but consider stronger measures.
+        </div>`,
+        bad: `<div class='p-3 rounded bg-slate-50 border border-red-600 text-red-700'>
+          ❌ Risky choice — this can lead to data compromise.
+        </div>`
+      };
+
+      this.outcomes[id] = messages[action] || '';
+    },
+    init(){
+      this.active=localStorage.getItem('resp_active')||'intro';
+      this.sections=['intro','usecases','best','checklist','conclusion'];
+      this.sections.forEach(s=>{this.completed[s]=localStorage.getItem('resp_done_'+s)==='1';});
+      try{this.checklist=JSON.parse(localStorage.getItem('resp_checklist'))||this.checklist;}catch(e){}
+    },
+    go(s){this.active=s;localStorage.setItem('resp_active',s);
+      // scroll to top of interactive content
+    const container = document.getElementById('module-nav');
+    if (container) {
+      window.scrollTo({
+        top: container.offsetTop - 30,
+        behavior: 'smooth'
+      });
+    }
+    },
+    complete(s){this.completed[s]=true;localStorage.setItem('resp_done_'+s,'1');},
+    btnCls(s){return this.active===s?'bg-violet-600 text-white':'bg-slate-200 text-slate-700';},
+    analyzeGaps(){
+      localStorage.setItem('resp_checklist',JSON.stringify(this.checklist));
+      const missing=Object.entries(this.checklist).filter(([k,v])=>!v).map(([k])=>k);
+      if(!missing.length){this.gapResult='<div class="p-3 bg-green-50 border border-green-200 text-green-800 rounded">Excellent! You are following all personal responsibility best practices.</div>';}
+      else{
+        const labels={passwords:"Strong passwords",devices:"Device security",sharing:"Safe data sharing",updates:"Regular updates",reporting:"Incident reporting",training:"Awareness training"};
+        const list=missing.map(m=>labels[m]||m).join(", ");
+        this.gapResult='<div class="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded">You should improve on: '+list+'</div>';
+      }
+    },
+    restart(){
+      // this.sections.forEach(s=>localStorage.removeItem('resp_done_'+s));
+      // localStorage.removeItem('resp_active');
+      // localStorage.removeItem('resp_checklist');
+      // this.active='intro';
+      // this.completed={};
+      // this.checklist={passwords:false,devices:false,sharing:false,updates:false,reporting:false,training:false};
+      // this.gapResult='';
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Secure-Mobility-Data-Protection-Module?lecture_uuid=13522f19-e8cb-409b-a5bd-c8e89c1ae781#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSE Mastery Training Course</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e88e5 0%, #00897b 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #1e88e5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #00897b;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e88e5 0%, #00897b 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+        }
+
+        .stat-card i {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #ffd700;
+            color: #333;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e88e5 0%, #00897b 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            color: #1e88e5;
+            margin-bottom: 20px;
+        }
+
+        .lesson-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid transparent;
+        }
+
+        .lesson-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .lesson-item.active {
+            background: linear-gradient(135deg, #1e88e5 0%, #00897b 100%);
+            color: white;
+            border-left-color: #ffd700;
+        }
+
+        .lesson-item.completed {
+            background: #4caf50;
+            color: white;
+        }
+
+        .lesson-item .lesson-points {
+            margin-left: auto;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .main-content {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lesson-content h2 {
+            color: #1e88e5;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lesson-content h3 {
+            color: #00897b;
+            margin: 25px 0 15px 0;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #1e88e5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .quiz {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            border: 2px solid #1e88e5;
+        }
+
+        .quiz h3 {
+            color: #1e88e5;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin: 20px 0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: #1e88e5;
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .option.selected {
+            background: #1e88e5;
+            color: white;
+            border-color: #1e88e5;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #1e88e5 0%, #00897b 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .achievement {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transform: translateX(400px);
+            transition: transform 0.5s;
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        .achievement.show {
+            transform: translateX(0);
+        }
+
+        .achievement-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .achievement-icon.gold {
+            color: #ffd700;
+        }
+
+        .achievement-icon.points {
+            color: #4caf50;
+        }
+
+        ul {
+            margin-left: 25px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        strong {
+            color: #1e88e5;
+        }
+
+        .scenario {
+            background: linear-gradient(135deg, #e3f2fd 0%, #e0f2f1 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #1e88e5;
+        }
+
+        .scenario h4 {
+            color: #00897b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-hard-hat"></i> HSE Mastery Training Course</h1>
+            <p>Health, Safety & Environment Professional Certification Program</p>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3 id="points">0</h3>
+                    <p>Total Points</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h3 id="achievements">0</h3>
+                    <p>Badges Earned</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3 id="completed">0/7</h3>
+                    <p>Modules Complete</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-medal"></i>
+                    <div class="level-badge" id="level">Trainee</div>
+                    <p style="margin-top: 10px;">Current Level</p>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress" style="width: 0%">0%</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="sidebar">
+                <h2><i class="fas fa-book"></i> Training Modules</h2>
+                <div id="lesson-list"></div>
+            </div>
+
+            <div class="main-content">
+                <div id="lesson-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievement" id="achievement-popup">
+        <div class="achievement-icon gold" id="achievement-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <h3 id="achievement-title" style="text-align: center; color: #1e88e5;"></h3>
+        <p id="achievement-desc" style="text-align: center; margin-top: 10px;"></p>
+    </div>
+
+    <script>
+        const lessons = [
+            {
+                id: 1,
+                title: "Introduction to HSE",
+                points: 150,
+                content: `
+                    <h2><i class="fas fa-shield-alt"></i> Introduction to HSE</h2>
+                    
+                    <div class="info-box">
+                        <strong>What is HSE?</strong><br>
+                        HSE stands for <strong>Health, Safety, and Environment</strong> - a management system and discipline focused on protecting people and the environment from harm in the workplace and beyond.
+                    </div>
+
+                    <h3>The Three Pillars of HSE</h3>
+                    
+                    <div class="success-box">
+                        <strong><i class="fas fa-heartbeat"></i> Health</strong><br>
+                        Prioritizes employee well-being by identifying and controlling workplace hazards that can lead to illness, such as exposure to chemicals or ergonomic risks. Includes implementing control measures like ventilation, PPE, and promoting wellness programs.
+                    </div>
+
+                    <div class="warning-box">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Safety</strong><br>
+                        Focuses on preventing accidents like falls, fires, and injuries from machinery. Involves conducting risk assessments, training employees on safety protocols, and having emergency response plans in place.
+                    </div>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-leaf"></i> Environment</strong><br>
+                        Aims to minimize the negative impact of an organization's operations on the environment, such as reducing pollution, waste, and carbon emissions.
+                    </div>
+
+                    <h3>Core HSE Functions</h3>
+                    <ul>
+                        <li><strong>Risk Management:</strong> Systematically identify hazards and assess risks, then implement controls to mitigate them</li>
+                        <li><strong>Compliance:</strong> Ensure the organization meets all legal and regulatory requirements</li>
+                        <li><strong>Continuous Improvement:</strong> Regular inspections, checks, and updates to procedures</li>
+                    </ul>
+
+                    <h3>Why HSE Matters</h3>
+                    <ul>
+                        <li><i class="fas fa-user-shield"></i> <strong>Protects People:</strong> Safeguards employees, contractors, and the public</li>
+                        <li><i class="fas fa-chart-line"></i> <strong>Prevents Losses:</strong> Reduces accidents, injuries, and property damage</li>
+                        <li><i class="fas fa-recycle"></i> <strong>Ensures Sustainability:</strong> Contributes to long-term environmental responsibility</li>
+                        <li><i class="fas fa-award"></i> <strong>Maintains Reputation:</strong> Builds trust with customers and stakeholders</li>
+                    </ul>
+                `,
+                quiz: {
+                    question: "What are the three main pillars of HSE?",
+                    options: [
+                        "Health, Security, Economics",
+                        "Health, Safety, Environment",
+                        "Hygiene, Safety, Efficiency",
+                        "Hazards, Systems, Evaluation"
+                    ],
+                    correct: 1
+                }
+            },
+            {
+                id: 2,
+                title: "Risk Management",
+                points: 200,
+                content: `
+                    <h2><i class="fas fa-search"></i> Risk Management in HSE</h2>
+                    
+                    <p>Risk management is the foundation of effective HSE practices. It's a systematic approach to identifying, assessing, and controlling hazards in the workplace.</p>
+
+                    <h3>The Risk Management Process</h3>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-eye"></i> Step 1: Identify Hazards</h4>
+                        <p>Find potential dangers in your workplace:</p>
+                        <ul>
+                            <li>Trip hazards (cables, uneven surfaces)</li>
+                            <li>Chemical exposure (cleaning agents, solvents)</li>
+                            <li>Noise levels (machinery, tools)</li>
+                            <li>Ergonomic risks (repetitive movements, poor posture)</li>
+                            <li>Equipment hazards (moving parts, electrical)</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-clipboard-check"></i> Step 2: Assess Risks</h4>
+                        <p>Evaluate each hazard by considering:</p>
+                        <ul>
+                            <li><strong>Severity:</strong> How serious would the harm be?</li>
+                            <li><strong>Likelihood:</strong> How likely is it to occur?</li>
+                            <li><strong>Frequency:</strong> How often are people exposed?</li>
+                        </ul>
+                        <div class="info-box" style="margin-top: 15px;">
+                            <strong>Risk Rating = Severity × Likelihood</strong><br>
+                            High-risk items require immediate action!
+                        </div>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-tools"></i> Step 3: Implement Controls</h4>
+                        <p><strong>Hierarchy of Controls (Most to Least Effective):</strong></p>
+                        <ul>
+                            <li><strong>Elimination:</strong> Remove the hazard completely</li>
+                            <li><strong>Substitution:</strong> Replace with something safer</li>
+                            <li><strong>Engineering Controls:</strong> Barriers, ventilation, machine guards</li>
+                            <li><strong>Administrative Controls:</strong> Safe work procedures, training, permits</li>
+                            <li><strong>PPE:</strong> Last line of defense (hard hats, gloves, masks)</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong><i class="fas fa-exclamation-circle"></i> Remember:</strong> Risk management is ongoing! Reassess regularly, especially when processes change or incidents occur.
+                    </div>
+                `,
+                quiz: {
+                    question: "According to the Hierarchy of Controls, what is the MOST effective way to control a hazard?",
+                    options: [
+                        "Personal Protective Equipment (PPE)",
+                        "Administrative controls and training",
+                        "Elimination of the hazard",
+                        "Engineering controls like barriers"
+                    ],
+                    correct: 2
+                }
+            },
+            {
+                id: 3,
+                title: "HSE Officer Responsibilities",
+                points: 200,
+                content: `
+                    <h2><i class="fas fa-user-tie"></i> HSE Officer Daily Responsibilities</h2>
+
+                    <h3>Key Activities & Responsibilities</h3>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-tasks"></i> Core Functions</strong>
+                        <ul>
+                            <li>Identify and assess workplace hazards</li>
+                            <li>Implement and monitor safety controls</li>
+                            <li>Conduct inspections and audits</li>
+                            <li>Deliver training and communicate safety requirements</li>
+                            <li>Investigate incidents and prevent recurrence</li>
+                            <li>Ensure regulatory compliance</li>
+                        </ul>
+                    </div>
+
+                    <h3>A Day in the Life of an HSE Officer</h3>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-sun"></i> Before Shift</h4>
+                        <ul>
+                            <li>Arrive early and review site conditions</li>
+                            <li>Inspect PPE availability and condition</li>
+                            <li>Hold toolbox talks with teams</li>
+                            <li>Review permits and high-risk work plans</li>
+                            <li>Check weather conditions for outdoor work</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-clock"></i> During Shift</h4>
+                        <ul>
+                            <li>Patrol the site and observe work activities</li>
+                            <li>Check permits to work are properly completed</li>
+                            <li>Ensure PPE is being used correctly</li>
+                            <li>Monitor high-risk jobs (working at heights, confined spaces)</li>
+                            <li>Address unsafe behaviors immediately</li>
+                            <li>Respond to incidents or near misses</li>
+                            <li>Consult with workers about safety concerns</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-moon"></i> After Shift</h4>
+                        <ul>
+                            <li>Document all inspections and observations</li>
+                            <li>Report issues to management</li>
+                            <li>Close out permits to work</li>
+                            <li>Plan corrective actions for identified hazards</li>
+                            <li>Prepare for the next day</li>
+                        </ul>
+                    </div>
+
+                    <h3>Essential Skills</h3>
+                    <ul>
+                        <li><strong>Communication:</strong> Clearly convey safety requirements to all levels</li>
+                        <li><strong>Observation:</strong> Spot hazards and unsafe conditions quickly</li>
+                        <li><strong>Documentation:</strong> Maintain accurate records and reports</li>
+                        <li><strong>Leadership:</strong> Influence positive safety culture</li>
+                        <li><strong>Problem-solving:</strong> Find practical solutions to safety challenges</li>
+                    </ul>
+                `,
+                quiz: {
+                    question: "What should an HSE Officer do FIRST when they arrive at the site before a shift?",
+                    options: [
+                        "Start documenting yesterday's incidents",
+                        "Arrive early and review site conditions",
+                        "Begin training new workers",
+                        "Issue permits to work"
+                    ],
+                    correct: 1
+                }
+            },
+            {
+                id: 4,
+                title: "Inspections & Audits",
+                points: 250,
+                content: `
+                    <h2><i class="fas fa-search-plus"></i> HSE Inspections & Audits</h2>
+
+                    <p>Regular inspections and audits are critical for identifying hazards, ensuring compliance, and driving continuous improvement.</p>
+
+                    <h3>Key Areas to Inspect</h3>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-file-alt"></i> Documentation</strong>
+                        <ul>
+                            <li>Risk Assessments and Method Statements (RAMS)</li>
+                            <li>Health & Safety Policies</li>
+                            <li>Training Records</li>
+                            <li>Equipment Maintenance Logs</li>
+                            <li>Incident Reports and Investigations</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong><i class="fas fa-building"></i> Workplace Conditions</strong>
+                        <ul>
+                            <li>General housekeeping (clear walkways, no spills/debris)</li>
+                            <li>Adequate lighting and ventilation</li>
+                            <li>Emergency exits are clear and marked</li>
+                            <li>Fire extinguishers accessible and inspected</li>
+                            <li>First aid facilities available</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <strong><i class="fas fa-cogs"></i> Equipment & Machinery</strong>
+                        <ul>
+                            <li>Guards and safety features in place</li>
+                            <li>Proper maintenance and inspection records</li>
+                            <li>Functionality checks (brakes, lights, alarms)</li>
+                            <li>Isolation procedures (LOTO - Lockout/Tagout)</li>
+                            <li>Lifting gear certifications current</li>
+                            <li>Handheld tools in good condition</li>
+                        </ul>
+                    </div>
+
+                    <h3>What Inspectors Look For</h3>
+                    <ul>
+                        <li><strong>Evidence of Proactive Management:</strong> Up-to-date records, training, action plans</li>
+                        <li><strong>Effective Control Measures:</strong> Safety measures that actually work in practice</li>
+                        <li><strong>Legal Compliance:</strong> Meeting mandatory health and safety requirements</li>
+                        <li><strong>Worker Engagement:</strong> Employees can confidently discuss safety procedures</li>
+                        <li><strong>Identified Hazards:</strong> Unsafe conditions, practices, or substances</li>
+                    </ul>
+
+                    <h3>How to Prepare for Inspections</h3>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-clipboard-list"></i> Best Practices</h4>
+                        <ul>
+                            <li><strong>Conduct Internal Audits:</strong> Use checklists for regular self-assessment</li>
+                            <li><strong>Organize Documents:</strong> Keep all H&S paperwork accessible and current</li>
+                            <li><strong>Train Staff:</strong> Ensure everyone knows their safety role</li>
+                            <li><strong>Fix Issues Immediately:</strong> Address minor problems before they become major non-compliances</li>
+                            <li><strong>Maintain Equipment:</strong> Keep maintenance logs updated</li>
+                            <li><strong>Review Procedures:</strong> Ensure all safety procedures are current and followed</li>
+                        </ul>
+                    </div>
+                `,
+                quiz: {
+                    question: "What does LOTO stand for in equipment safety?",
+                    options: [
+                        "Last Out, Turn Off",
+                        "Lockout/Tagout",
+                        "List of Tools Only",
+                        "Lift Operator Training Obligation"
+                    ],
+                    correct: 1
+                }
+            },
+            {
+                id: 5,
+                title: "Training & Communication",
+                points: 200,
+                content: `
+                    <h2><i class="fas fa-chalkboard-teacher"></i> HSE Training & Communication</h2>
+
+                    <p>Effective training and communication are essential for building a strong safety culture and ensuring everyone understands their responsibilities.</p>
+
+                    <h3>Types of HSE Training</h3>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-door-open"></i> Induction Training</strong>
+                        <p>For all new employees and contractors:</p>
+                        <ul>
+                            <li>Company safety policies and procedures</li>
+                            <li>Emergency procedures and assembly points</li>
+                            <li>General hazards and controls</li>
+                            <li>Reporting requirements for incidents</li>
+                            <li>Location of first aid and safety equipment</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <strong><i class="fas fa-user-cog"></i> Task-Specific Training</strong>
+                        <p>Training for specific job functions:</p>
+                        <ul>
+                            <li>Working at heights</li>
+                            <li>Confined space entry</li>
+                            <li>Forklift operation</li>
+                            <li>Chemical handling (COSHH)</li>
+                            <li>First aid and emergency response</li>
+                            <li>Fire warden duties</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong><i class="fas fa-redo"></i> Refresher Training</strong>
+                        <p>Regular updates to maintain competency:</p>
+                        <ul>
+                            <li>Annual safety updates</li>
+                            <li>Changes to procedures or equipment</li>
+                            <li>Lessons learned from incidents</li>
+                            <li>New regulations or standards</li>
+                        </ul>
+                    </div>
+
+                    <h3>Effective Communication Methods</h3>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-comments"></i> Communication Channels</h4>
+                        <ul>
+                            <li><strong>Toolbox Talks:</strong> Short, focused safety discussions before work begins</li>
+                            <li><strong>Safety Briefings:</strong> Daily or weekly team meetings</li>
+                            <li><strong>Visual Aids:</strong> Clear signage, posters, and labels</li>
+                            <li><strong>Safety Alerts:</strong> Immediate communication of new hazards</li>
+                            <li><strong>Notice Boards:</strong> Central location for safety information</li>
+                            <li><strong>Digital Platforms:</strong> Email, apps, or messaging systems</li>
+                        </ul>
+                    </div>
+
+                    <h3>Best Practices for Training</h3>
+                    <ul>
+                        <li><strong>Make it Relevant:</strong> Use real examples from your workplace</li>
+                        <li><strong>Hands-On Practice:</strong> Demonstrate procedures, don't just talk about them</li>
+                        <li><strong>Encourage Questions:</strong> Create a safe environment for learning</li>
+                        <li><strong>Document Everything:</strong> Keep records of who was trained and when</li>
+                        <li><strong>Assess Understanding:</strong> Test knowledge through quizzes or demonstrations</li>
+                        <li><strong>Follow Up:</strong> Verify that training is being applied on the job</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-lightbulb"></i> Pro Tip:</strong> People remember:<br>
+                        10% of what they read | 20% of what they hear | 30% of what they see | 50% of what they see and hear | <strong>90% of what they do</strong>
+                    </div>
+                `,
+                quiz: {
+                    question: "What is the primary purpose of toolbox talks?",
+                    options: [
+                        "To distribute tools to workers",
+                        "Short, focused safety discussions before work begins",
+                        "Annual safety certification renewal",
+                        "Equipment maintenance training"
+                    ],
+                    correct: 1
+                }
+            },
+            {
+                id: 6,
+                title: "Incident Management",
+                points: 250,
+                content: `
+                    <h2><i class="fas fa-ambulance"></i> Incident Management & Response</h2>
+
+                    <p>Proper incident management prevents future accidents and ensures quick, effective response when incidents occur.</p>
+
+                    <h3>Types of Incidents</h3>
+
+                    <div class="warning-box">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Incidents Requiring Reporting:</strong>
+                        <ul>
+                            <li><strong>Accidents:</strong> Events resulting in injury or damage</li>
+                            <li><strong>Near Misses:</strong> Events that could have caused harm but didn't</li>
+                            <li><strong>Dangerous Occurrences:</strong> Specific events listed in regulations</li>
+                            <li><strong>Occupational Illnesses:</strong> Work-related health conditions</li>
+                            <li><strong>Property Damage:</strong> Damage to equipment or facilities</li>
+                        </ul>
+                    </div>
+
+                    <h3>Immediate Response Steps</h3>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-first-aid"></i> STEP 1: Ensure Safety</h4>
+                        <ul>
+                            <li>Stop work immediately if unsafe</li>
+                            <li>Provide first aid to injured persons</li>
+                            <li>Call emergency services if needed</li>
+                            <li>Secure the scene to prevent further incidents</li>
+                            <li>Isolate hazardous materials or equipment</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-phone"></i> STEP 2: Report & Notify</h4>
+                        <ul>
+                            <li>Notify your supervisor immediately</li>
+                            <li>Contact HSE officer or safety coordinator</li>
+                            <li>Report to authorities if legally required</li>
+                            <li>Document time, location, and people involved</li>
+                            <li>Take photos of the scene (if safe to do so)</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-search"></i> STEP 3: Investigate</h4>
+                        <ul>
+                            <li>Gather facts (who, what, when, where, why, how)</li>
+                            <li>Interview witnesses separately</li>
+                            <li>Examine equipment and conditions</li>
+                            <li>Review relevant procedures and training records</li>
+                            <li>Identify root causes, not just symptoms</li>
+                        </ul>
+                    </div>
+
+                    <h3>Root Cause Analysis</h3>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-project-diagram"></i> The 5 Whys Technique</strong>
+                        <p>Ask "Why?" five times to get to the root cause:</p>
+                        <ul>
+                            <li><strong>Incident:</strong> Worker slipped and fell</li>
+                            <li><strong>Why?</strong> There was oil on the floor</li>
+                            <li><strong>Why?</strong> Machine was leaking</li>
+                            <li><strong>Why?</strong> Seal was worn out</li>
+                            <li><strong>Why?</strong> Maintenance was overdue</li>
+                            <li><strong>Why?</strong> No preventive maintenance schedule</li>
+                            <li><strong>Root Cause:</strong> Lack of maintenance system</li>
+                        </ul>
+                    </div>
+
+                    <h3>Corrective Actions</h3>
+                    <ul>
+                        <li><strong>Immediate:</strong> Quick fixes to prevent recurrence right away</li>
+                        <li><strong>Short-term:</strong> Temporary measures (1-30 days)</li>
+                        <li><strong>Long-term:</strong> Permanent solutions addressing root causes</li>
+                        <li><strong>Follow-up:</strong> Verify actions are effective</li>
+                    </ul>
+
+                    <div class="success-box">
+                        <strong><i class="fas fa-check-circle"></i> Remember:</strong> Near misses are learning opportunities! Encourage reporting by creating a blame-free culture focused on learning and improvement.
+                    </div>
+
+                    <h3>Emergency Preparedness</h3>
+                    <ul>
+                        <li>Emergency Response Plans documented and practiced</li>
+                        <li>Evacuation routes clearly marked and unobstructed</li>
+                        <li>Assembly points designated and known to all</li>
+                        <li>First aid trained personnel and equipped stations</li>
+                        <li>Regular emergency drills conducted</li>
+                        <li>Emergency contact numbers displayed prominently</li>
+                    </ul>
+                `,
+                quiz: {
+                    question: "What is a 'near miss' in HSE terminology?",
+                    options: [
+                        "An accident that resulted in minor injury",
+                        "An event that could have caused harm but didn't",
+                        "A scheduled inspection that was missed",
+                        "A training session that wasn't completed"
+                    ],
+                    correct: 1
+                }
+            },
+            {
+                id: 7,
+                title: "Building Safety Culture",
+                points: 300,
+                content: `
+                    <h2><i class="fas fa-users"></i> Building a Strong Safety Culture</h2>
+
+                    <p>A positive safety culture is where everyone takes responsibility for safety - from leadership to frontline workers.</p>
+
+                    <h3>Leadership & Culture</h3>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-user-shield"></i> Lead by Example</strong>
+                        <p>Management must visibly champion safety:</p>
+                        <ul>
+                            <li>Always wear required PPE, even for short visits</li>
+                            <li>Participate in safety walks and inspections</li>
+                            <li>Stop work if conditions are unsafe</li>
+                            <li>Allocate resources for safety improvements</li>
+                            <li>Discuss safety in every meeting</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <strong><i class="fas fa-hands-helping"></i> Involve Employees</strong>
+                        <p>Engagement creates ownership:</p>
+                        <ul>
+                            <li>Establish safety committees with worker representatives</li>
+                            <li>Encourage hazard reporting and suggestions</li>
+                            <li>Involve workers in risk assessments</li>
+                            <li>Empower workers to stop unsafe work</li>
+                            <li>Act on feedback and close the communication loop</li>
+                        </ul>
+                    </div>
+
+                    <h3>Key Elements of Safety Culture</h3>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-comments"></i> Open Communication</h4>
+                        <ul>
+                            <li>Create blame-free reporting environment</li>
+                            <li>Encourage reporting of near misses and hazards</li>
+                            <li>Share lessons learned from incidents</li>
+                            <li>Provide multiple channels for safety concerns</li>
+                            <li>Respond quickly to reported issues</li>
+                        </ul>
+                    </div>
+
+                    <div class="scenario">
+                        <h4><i class="fas fa-award"></i> Recognize & Reward</h4>
+                        <ul>
+                            <li>Acknowledge safe behaviors and good catches</li>
+                            <li>Celebrate safety milestones</li>
+                            <li>Reward teams for safety improvements</li>
+                            <li>Highlight safety champions</li>
+                            <li>Make safety achievements visible</li>
+                        </ul>
+                    </div>
+
+                    <h3>Continuous Improvement Framework</h3>
+
+                    <div class="info-box">
+                        <strong><i class="fas fa-sync-alt"></i> Plan-Do-Check-Act Cycle</strong>
+                        <ul>
+                            <li><strong>Plan:</strong> Identify improvement opportunities and set objectives</li>
+                            <li><strong>Do:</strong> Implement changes on a small scale first</li>
+                            <li><strong>Check:</strong> Monitor results and gather data</li>
+                            <li><strong>Act:</strong> Standardize successes or adjust as needed</li>
+                        </ul>
+                    </div>
+
+                    <h3>Measuring Safety Performance</h3>
+
+                    <div class="warning-box">
+                        <strong><i class="fas fa-chart-line"></i> Key Performance Indicators (KPIs)</strong>
+                        <p><strong>Lagging Indicators (outcomes):</strong></p>
+                        <ul>
+                            <li>Lost Time Injury Frequency Rate (LTIFR)</li>
+                            <li>Total Recordable Injury Frequency Rate (TRIFR)</li>
+                            <li>Number of incidents per month</li>
+                        </ul>
+                        <p><strong>Leading Indicators (proactive):</strong></p>
+                        <ul>
+                            <li>Safety observations completed</li>
+                            <li>Near misses reported</li>
+                            <li>Hazards identified and corrected</li>
+                            <li>Training completion rates</li>
+                            <li>Safety inspection scores</li>
+                        </ul>
+                    </div>
+
+                    <h3>Actionable Steps to Improve Culture</h3>
+                    <ul>
+                        <li><strong>Start with Leadership:</strong> Get senior management buy-in and visible commitment</li>
+                        <li><strong>Assess & Prioritize:</strong> Identify gaps through audits and employee feedback</li>
+                        <li><strong>Empower Staff:</strong> Make reporting easy and involve workers in solutions</li>
+                        <li><strong>Train & Communicate:</strong> Deliver relevant, ongoing training</li>
+                        <li><strong>Measure & Adapt:</strong> Track both leading and lagging indicators</li>
+                        <li><strong>Celebrate Wins:</strong> Recognize improvements and safety achievements</li>
+                    </ul>
+
+                    <div class="success-box">
+                        <strong><i class="fas fa-trophy"></i> Congratulations!</strong><br>
+                        You've completed all 7 modules of the HSE Mastery Training Course. You're now equipped with the knowledge to contribute to a safer, healthier workplace!
+                    </div>
+                `,
+                quiz: {
+                    question: "Which type of safety indicator is considered proactive and helps prevent incidents?",
+                    options: [
+                        "Lost Time Injury Frequency Rate (LTIFR)",
+                        "Number of incidents per month",
+                        "Safety observations and near miss reports",
+                        "Total Recordable Injury Frequency Rate"
+                    ],
+                    correct: 2
+                }
+            }
+        ];
+
+        let currentLesson = 0;
+        let points = 0;
+        let completedLessons = new Set();
+        let achievementCount = 0;
+
+        function getLevel() {
+            if (points < 300) return "Trainee";
+            if (points < 600) return "HSE Coordinator";
+            if (points < 1000) return "HSE Officer";
+            if (points < 1400) return "Senior HSE Officer";
+            return "HSE Manager";
+        }
+
+        function renderLessons() {
+            const list = document.getElementById('lesson-list');
+            list.innerHTML = lessons.map((lesson, idx) => `
+                <div class="lesson-item ${idx === currentLesson ? 'active' : ''} ${completedLessons.has(lesson.id) ? 'completed' : ''}" 
+                     onclick="loadLesson(${idx})">
+                    <i class="fas ${completedLessons.has(lesson.id) ? 'fa-check-circle' : 'fa-circle'}"></i>
+                    <span>${lesson.title}</span>
+                    <span class="lesson-points">+${lesson.points}</span>
+                </div>
+            `).join('');
+        }
+
+        function loadLesson(idx) {
+            currentLesson = idx;
+            const lesson = lessons[idx];
+            const container = document.getElementById('lesson-container');
+            
+            container.innerHTML = `
+                <div class="lesson-content active">
+                    ${lesson.content}
+                    
+                    <div class="quiz">
+                        <h3><i class="fas fa-question-circle"></i> Knowledge Check</h3>
+                        <div class="question">
+                            <p><strong>${lesson.quiz.question}</strong></p>
+                            <div class="options" id="quiz-options">
+                                ${lesson.quiz.options.map((opt, i) => `
+                                    <div class="option" onclick="selectOption(${i})" data-index="${i}">
+                                        <i class="fas fa-circle" style="font-size: 0.8em;"></i>
+                                        ${opt}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <button class="btn" onclick="checkAnswer()" id="check-btn">
+                            <i class="fas fa-check"></i> Submit Answer
+                        </button>
+                        <button class="btn" onclick="nextLesson()" id="next-btn" style="display: none;">
+                            <i class="fas fa-arrow-right"></i> Next Module
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            renderLessons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        let selectedAnswer = null;
+
+        function selectOption(idx) {
+            selectedAnswer = idx;
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === idx) opt.classList.add('selected');
+            });
+        }
+
+        function checkAnswer() {
+            if (selectedAnswer === null) {
+                alert('Please select an answer before submitting!');
+                return;
+            }
+            
+            const lesson = lessons[currentLesson];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, i) => {
+                opt.onclick = null;
+                if (i === lesson.quiz.correct) {
+                    opt.classList.add('correct');
+                    opt.querySelector('i').className = 'fas fa-check-circle';
+                } else if (i === selectedAnswer) {
+                    opt.classList.add('incorrect');
+                    opt.querySelector('i').className = 'fas fa-times-circle';
+                }
+            });
+            
+            if (selectedAnswer === lesson.quiz.correct) {
+                if (!completedLessons.has(lesson.id)) {
+                    const oldLevel = getLevel();
+                    points += lesson.points;
+                    completedLessons.add(lesson.id);
+                    const newLevel = getLevel();
+                    
+                    updateStats();
+                    showAchievement('Correct Answer!', `+${lesson.points} Points Earned`, 'points');
+                    
+                    if (oldLevel !== newLevel) {
+                        setTimeout(() => {
+                            achievementCount++;
+                            showAchievement('Level Up!', `You are now a ${newLevel}!`, 'gold');
+                        }, 2000);
+                    }
+                    
+                    if (completedLessons.size === 3) {
+                        setTimeout(() => {
+                            achievementCount++;
+                            showAchievement('Achievement Unlocked!', 'Halfway Champion', 'gold');
+                        }, 4000);
+                    }
+                    
+                    if (completedLessons.size === lessons.length) {
+                        setTimeout(() => {
+                            achievementCount++;
+                            showAchievement('Course Complete!', 'HSE Master Certified!', 'gold');
+                        }, 4000);
+                    }
+                }
+            } else {
+                showAchievement('Incorrect', 'Review the material and try again!', 'points');
+            }
+            
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextLesson() {
+            if (currentLesson < lessons.length - 1) {
+                loadLesson(currentLesson + 1);
+            } else {
+                const finalMessage = `
+                    <div style="text-align: center; padding: 50px;">
+                        <i class="fas fa-trophy" style="font-size: 5em; color: #ffd700;"></i>
+                        <h2 style="color: #1e88e5; margin: 20px 0;">Congratulations!</h2>
+                        <p style="font-size: 1.2em;">You've completed the entire HSE Mastery Training Course!</p>
+                        <p style="margin: 20px 0;">Total Points: <strong>${points}</strong></p>
+                        <p style="margin: 20px 0;">Final Level: <strong>${getLevel()}</strong></p>
+                        <p style="margin: 20px 0;">Achievements: <strong>${achievementCount}</strong></p>
+                        <div class="success-box" style="margin: 30px auto; max-width: 600px;">
+                            <strong>You are now certified as an HSE professional!</strong><br>
+                            Continue to apply these principles in your workplace to keep everyone safe.
+                        </div>
+                        <button class="btn" onclick="loadLesson(0)">
+                            <i class="fas fa-redo"></i> Review Course
+                        </button>
+                    </div>
+                `;
+                document.getElementById('lesson-container').innerHTML = finalMessage;
+            }
+            selectedAnswer = null;
+        }
+
+        function updateStats() {
+            document.getElementById('points').textContent = points;
+            document.getElementById('achievements').textContent = achievementCount;
+            document.getElementById('completed').textContent = `${completedLessons.size}/${lessons.length}`;
+            document.getElementById('level').textContent = getLevel();
+            
+            const progress = (completedLessons.size / lessons.length) * 100;
+            const progressBar = document.getElementById('progress');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function showAchievement(title, desc, iconType = 'gold') {
+            const popup = document.getElementById('achievement-popup');
+            const icon = document.getElementById('achievement-icon');
+            
+            icon.className = `achievement-icon ${iconType}`;
+            
+            if (iconType === 'gold') {
+                icon.innerHTML = '<i class="fas fa-trophy"></i>';
+            } else {
+                icon.innerHTML = '<i class="fas fa-star"></i>';
+            }
+            
+            document.getElementById('achievement-title').textContent = title;
+            document.getElementById('achievement-desc').textContent = desc;
+            
+            popup.classList.add('show');
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3500);
+        }
+
+        // Initialize
+        loadLesson(0);
+    </script>
+</body>
+</html>

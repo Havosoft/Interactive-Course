@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Travel Security — Airports, Hotels, Co-Working Spaces</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js CDN -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    /* small custom */
+    .card { background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1)); border: 1px solid rgba(148,163,184,0.3); box-shadow: 0 12px 30px rgba(148,163,184,0.12); }
+    [x-cloak] { display:none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+
+<div class="max-w-6xl mx-auto p-6" x-data="travelModule()" x-init="init()">
+  <!-- Header -->
+  <header class="flex justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Travel Security</h1>
+      <p class="text-sm text-slate-500">Airports, Hotels, Co-Working Spaces — practical guidance for safe travel</p>
+
+      <div class="mt-3 text-xs text-slate-600">
+        <strong>Learning objectives:</strong>
+        <ul class="ml-4 list-disc">
+          <li>Recognize security risks associated with business travel and temporary workspaces.</li>
+          <li>Apply safe practices when using airport facilities, hotels, and co-working spaces.</li>
+          <li>Protect personal devices, sensitive documents, and company data while traveling.</li>
+          <li>Respond appropriately to security incidents in public or temporary work environments.</li>
+        </ul>
+      </div>
+    </div>   
+  </header>
+
+  <!-- Nav -->
+  <nav id="module-nav" class="mb-6 flex gap-2 flex-wrap">
+    <button @click="go('intro')" :class="active==='intro' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded transition-colors">Intro</button>
+    <button @click="go('usecases')" :class="active==='usecases' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded transition-colors">Use Cases</button>
+    <button @click="go('best')" :class="active==='best' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded transition-colors">Best Practices</button>
+    <button @click="go('checklist')" :class="active==='checklist' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded transition-colors">Checklist</button>
+    <button @click="go('conclusion')" :class="active==='conclusion' ? 'bg-violet-600 text-white' : 'bg-slate-200 text-slate-700'" class="px-4 py-2 rounded transition-colors">Conclusion</button>
+  </nav>
+
+  <!-- INTRO -->
+  <section x-show="active==='intro'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900 mb-3">Introduction</h2>
+
+    <p class="text-slate-700 mb-4">
+      Business travel and working in temporary or public spaces can expose employees and organizational data to unique security threats. Airports, hotels, and co-working spaces are high-traffic areas where malicious actors can attempt theft, espionage, or cyber attacks. Awareness and preparation are essential to mitigate risks.
+    </p>
+
+    <h3 class="text-lg font-semibold text-slate-900 mb-2">Why Travel Security Matters</h3>
+    <ul class="list-disc pl-5 text-slate-700 space-y-2">
+      <li><strong>Device Theft:</strong> Laptops, phones, and tablets are common targets in public areas.</li>
+      <li><strong>Data Interception:</strong> Public Wi-Fi networks at airports or hotels can be exploited to intercept sensitive communications.</li>
+      <li><strong>Physical Security Threats:</strong> Unauthorized access to rooms, workspaces, or luggage can lead to data compromise.</li>
+      <li><strong>Social Engineering Risks:</strong> High-traffic environments make employees targets for phishing, impersonation, or manipulation.</li>
+    </ul>
+
+    <div class="mt-6 flex justify-end">
+      <button @click="complete('intro'); go('usecases')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Start Use Cases →</button>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+<section x-show="active==='usecases'" x-cloak class="card p-6 rounded-lg space-y-6">
+  <h2 class="text-2xl font-semibold text-slate-900">Use Cases — Choose the Best Response</h2>
+  <p class="text-slate-700 mb-3 text-sm">Select what you’d do in each scenario to see the security impact of your choice.</p>
+
+  <template x-for="uc in useCases" :key="uc.id">
+    <article class="p-4 rounded border border-slate-200 bg-white shadow-sm grid md:grid-cols-5 gap-4 items-start">
+      <!-- SVG -->
+      <div class="md:col-span-1 flex justify-center">
+        <div class="w-28 h-28 flex items-center justify-center bg-slate-100 rounded" x-html="uc.svg"></div>
+      </div>
+
+      <!-- Content -->
+      <div class="md:col-span-3">
+        <h3 class="font-semibold text-slate-900" x-text="uc.title"></h3>
+        <p class="text-slate-700 text-sm mt-1" x-text="uc.desc"></p>
+
+        <!-- 👇 Scenario-specific buttons -->
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <template x-for="(label, key) in uc.buttons" :key="key">
+            <button
+              @click="ucAct(uc.id, key)"
+              :class="{
+                'bg-green-600 hover:bg-green-700': key==='good',
+                'bg-yellow-500 hover:bg-yellow-600': key==='medium',
+                'bg-red-600 hover:bg-red-700': key==='bad',
+                'ring-2 ring-offset-2 ring-green-400': activeChoice[uc.id]===key && key==='good',
+                'ring-2 ring-offset-2 ring-yellow-400': activeChoice[uc.id]===key && key==='medium',
+                'ring-2 ring-offset-2 ring-red-400': activeChoice[uc.id]===key && key==='bad'
+              }"
+              class="px-3 py-2 rounded text-white font-medium transition-colors"
+              x-text="label">
+            </button>
+          </template>
+        </div>
+
+        <!-- Outcome -->
+        <div class="mt-3" x-show="outcomes[uc.id]" x-html="outcomes[uc.id]"></div>
+
+        <p class="text-sm text-slate-500 italic mt-2" x-text="uc.lesson"></p>
+      </div>
+
+      <!-- Context -->
+      <div class="md:col-span-1 text-right">
+        <div class="text-xs text-slate-500">Context</div>
+        <div class="text-sm text-slate-700" x-text="uc.location"></div>
+      </div>
+    </article>
+  </template>
+
+  <div class="flex justify-end">
+    <button @click="complete('usecases'); go('best')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">
+      Next: Best Practices →
+    </button>
+  </div>
+</section>
+
+  <!-- BEST PRACTICES -->
+  <section x-show="active==='best'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">🛡 Best Practices for Defence</h2>
+
+    <div class="mt-3 text-slate-700 space-y-3">
+      <p><strong class="text-slate-900">1. Physical Security of Devices</strong><br>
+      Always carry laptops and mobile devices on your person when possible. Use locked compartments or hotel safes when leaving devices unattended.</p>
+
+      <p><strong class="text-slate-900">2. Secure Network Connections</strong><br>
+      Avoid unsecured Wi-Fi; always use VPN connections. Verify the legitimacy of networks before connecting.</p>
+
+      <p><strong class="text-slate-900">3. Screen Privacy</strong><br>
+      Use privacy screens to prevent shoulder surfing. Position screens to minimize visibility to bystanders.</p>
+
+      <p><strong class="text-slate-900">4. Safe Handling of Documents</strong><br>
+      Avoid leaving sensitive documents unattended. Use encrypted digital files instead of printed versions when possible.</p>
+
+      <p><strong class="text-slate-900">5. Travel Preparation and Awareness</strong><br>
+      Research destinations for potential security risks. Keep backup copies of critical data in secure, encrypted formats. Be aware of social engineering attempts.</p>
+
+      <p><strong class="text-slate-900">6. Emergency Response Measures</strong><br>
+      Enable remote wipe and tracking on all devices. Report lost or stolen devices immediately. Know company protocols for responding to data breaches while traveling.</p>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button @click="go('usecases')" class="text-slate-500">Back to Use Cases</button>
+      <button @click="complete('best'); go('checklist')" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Next: Checklist →</button>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section x-show="active==='checklist'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Interactive Checklist</h2>
+    <p class="text-slate-700 text-sm mb-4">Tick the items you follow when traveling:</p>
+
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.carryDevices"> Always keep devices on person when travelling
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.vpn"> Use VPN on public Wi-Fi
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.privacyScreen"> Use privacy screens / position monitors away from view
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.secureDocs"> Avoid leaving sensitive documents unattended
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.remoteWipe"> Remote wipe & tracking enabled
+      </label>
+      <label class="p-3 rounded border border-slate-200 bg-white shadow-sm flex items-center gap-3">
+        <input type="checkbox" x-model="checklist.backups"> Backups of critical data (secure/encrypted)
+      </label>
+    </div>
+
+    <div class="mt-4">
+      <button @click="analyzeGaps" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded transition-colors">Analyze Gaps</button>
+      <button @click="complete('checklist'); go('conclusion')" class="ml-2 bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded transition-colors">Finish → Conclusion</button>
+    </div>
+
+    <div class="mt-4" x-html="gapResult"></div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section x-show="active==='conclusion'" x-cloak class="card p-6 rounded-lg">
+    <h2 class="text-2xl font-semibold text-slate-900">Conclusion</h2>
+
+    <p class="text-slate-700 mb-4">
+      Travel security is an essential aspect of protecting both personal and corporate assets. Airports, hotels, and co-working spaces are high-risk areas for physical and cyber threats. By securing devices, using encrypted communications, maintaining document confidentiality, and being aware of surroundings, employees can minimize the risks of traveling and working remotely. Vigilance and preparation are key to maintaining security on the move.
+    </p>
+
+    <div class="flex gap-3">
+      <!-- <button @click="restart()" class="bg-purple-600 px-4 py-2 rounded">Quiz</button>     -->
+      <a :href="quizUrl" class="bg-violet-600 hover:bg-violet-700 px-4 py-2 rounded text-white transition-colors">Quiz</a>  
+    </div>
+  </section>
+</div>
+
+<script>
+function travelModule(){
+  return {
+    active: 'intro',
+    sections: ['intro','usecases','best','checklist','conclusion'],
+    completed: {},
+    activeChoice: {},
+    quizUrl: '#Quiz', // replace if needed
+    useCases: [
+      {
+        id: 'uc1',
+        title: 'Airport Public Charging Station Risk',
+        desc: 'An employee plugs their laptop into a public USB charging station. Malware is injected via a compromised port.',
+        lesson: 'Use personal chargers or USB data blockers to prevent malicious connections.',
+        location: 'Airport — charging area',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#e2e8f0"/><circle cx="36" cy="36" r="18" fill="#0ea5a0"/></svg>`,
+        buttons: {
+          good: 'Use Your Own Charger / USB Blocker',
+          medium: 'Check Port Before Plugging In',
+          bad: 'Plug Directly into Public USB Port'
+        }
+      },
+      {
+        id: 'uc2',
+        title: 'Hotel Room Security Breach',
+        desc: 'A laptop with confidential files is left unattended in a hotel room. Unauthorized staff access it.',
+        lesson: 'Always secure devices in safes or lockable bags when leaving them unattended.',
+        location: 'Hotel room',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#e2e8f0"/><rect x="16" y="16" width="40" height="28" fill="#f59e0b"/></svg>`,
+        buttons: {
+          good: 'Lock Device in Safe or Drawer',
+          medium: 'Log Out but Leave Device Visible',
+          bad: 'Leave Device Unattended on Desk'
+        }
+      },
+      {
+        id: 'uc3',
+        title: 'Co-Working Space Wi-Fi Vulnerability',
+        desc: 'An employee connects to an unsecured Wi-Fi network where attackers can intercept data.',
+        lesson: 'Always connect through a secure VPN or verified corporate network.',
+        location: 'Co-working space — shared Wi-Fi',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#e2e8f0"/><path d="M20 40c0-8 8-12 16-12s16 4 16 12" stroke="#3b82f6" stroke-width="3"/></svg>`,
+        buttons: {
+          good: 'Use VPN / Verified Network',
+          medium: 'Use Mobile Hotspot',
+          bad: 'Join Public Wi-Fi Without Protection'
+        }
+      },
+      {
+        id: 'uc4',
+        title: 'Theft of Luggage Containing Devices',
+        desc: 'A briefcase with a company laptop is stolen at the airport.',
+        lesson: 'Keep devices on you and enable remote wipe or tracking features.',
+        location: 'Airport — baggage area',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#e2e8f0"/><rect x="18" y="18" width="36" height="28" fill="#ef4444"/></svg>`,
+        buttons: {
+          good: 'Keep Devices with You / Enable Tracking',
+          medium: 'Use Regular Lock on Bag',
+          bad: 'Check In Device with Luggage'
+        }
+      },
+      {
+        id: 'uc5',
+        title: 'Shoulder Surfing',
+        desc: 'While working in a public lounge, others can see sensitive data on an employee’s screen.',
+        lesson: 'Use a privacy filter and position screen away from public view.',
+        location: 'Public lounge / waiting area',
+        svg: `<svg width="72" height="72"><rect width="72" height="72" rx="12" fill="#e2e8f0"/><rect x="16" y="16" width="36" height="24" fill="#10b981"/></svg>`,
+        buttons: {
+          good: 'Use Privacy Filter / Change Screen Angle',
+          medium: 'Cover Screen When Possible',
+          bad: 'Work Freely in Public View'
+        }
+      }
+    ],
+    outcomes: {},
+    checklist: { carryDevices:false, vpn:false, privacyScreen:false, secureDocs:false, remoteWipe:false, backups:false },
+    gapResult: '',
+    init(){
+      // restore progress and outcomes
+      this.sections.forEach(s => { this.completed[s] = localStorage.getItem('travel_done_'+s) === '1'; });
+      this.active = localStorage.getItem('travel_last') || 'intro';
+      try {
+        const saved = JSON.parse(localStorage.getItem('travel_outcomes'));
+        if(saved) this.outcomes = saved;
+      } catch(e){}
+      try {
+        const savedc = JSON.parse(localStorage.getItem('travel_checklist'));
+        if(savedc) this.checklist = savedc;
+      } catch(e){}
+    },
+    go(id){
+      this.active = id;
+      localStorage.setItem('travel_last', id);
+      // scroll to top of interactive content
+      const container = document.getElementById('module-nav');
+      if (container) {
+        window.scrollTo({
+          top: container.offsetTop - 30,
+          behavior: 'smooth'
+        });
+      }
+    },
+    complete(name){
+      this.completed[name] = true;
+      localStorage.setItem('travel_done_'+name,'1');
+    },
+    ucAct(id, action) {
+      this.activeChoice[id] = action;
+
+      const messages = {
+        good: `<div class='p-3 rounded bg-slate-50 border border-green-600 text-green-700'>
+          ✅ Excellent — safe and preventive action taken.
+        </div>`,
+        medium: `<div class='p-3 rounded bg-slate-50 border border-amber-500 text-amber-700'>
+          ⚠️ Some protection — consider stronger measures next time.
+        </div>`,
+        bad: `<div class='p-3 rounded bg-slate-50 border border-red-600 text-red-700'>
+          ❌ Risky — this action exposes sensitive data or devices to attack.
+        </div>`
+      };
+
+      this.outcomes[id] = messages[action] || '';
+      localStorage.setItem('travel_outcomes', JSON.stringify(this.outcomes));
+    },
+    analyzeGaps(){
+      localStorage.setItem('travel_checklist', JSON.stringify(this.checklist));
+      const missing = Object.entries(this.checklist).filter(([k,v]) => !v).map(([k]) => {
+        const map = {
+          carryDevices:'Carry devices on person',
+          vpn:'Use VPN on public Wi-Fi',
+          privacyScreen:'Use privacy screens',
+          secureDocs:'Secure physical documents',
+          remoteWipe:'Enable remote wipe & tracking',
+          backups:'Maintain secure backups'
+        };
+        return map[k]||k;
+      });
+      if(missing.length===0){
+        this.gapResult = '<div class="p-3 rounded bg-green-50 border border-green-200 text-green-800">No gaps detected — good travel hygiene.</div>';
+      } else {
+        this.gapResult = '<div class="p-3 rounded bg-amber-50 border border-amber-200 text-amber-800">Missing practices: ' + missing.join(', ') + '.</div>';
+      }
+    },
+    restart(){
+      // this.sections.forEach(s => { localStorage.removeItem('travel_done_'+s); this.completed[s]=false; });
+      // localStorage.removeItem('travel_last');
+      // localStorage.removeItem('travel_outcomes');
+      // localStorage.removeItem('travel_checklist');
+      // this.outcomes = {};
+      // this.checklist = { carryDevices:false, vpn:false, privacyScreen:false, secureDocs:false, remoteWipe:false, backups:false };
+      // this.gapResult = '';
+      // this.go('intro');
+      window.top.location.href = "https://lms.collaboratoor.com/student/my-course/Secure-Mobility-Data-Protection-Module?lecture_uuid=258cd42f-d3be-4cbb-8e71-8eaa2aa5d632#Quiz";
+    }
+  }
+}
+</script>
+</body>
+</html>
